@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 描边颜色 -->
+    <color name="border_clo">#ccc</color>
+    <color name="text_clo">#333</color>
+    <color name="white">#fff</color>
+    <color name="blue">#419DE4</color>
+    
+     <color name="griditems_bg">#ffe8ecef</color>
+      <color name="commo_text_color">#ff333333</color>
+        <color name="line">#ffd3dde6</color>
+        
+         <drawable name="file_list_item_press">#ff5b544d</drawable>
+    <drawable name="file_list_item_normal">#ff787470</drawable>
+    
+    <!-- 点击android navidgation drawer 在导航抽屉中改变List选中项的颜色 -->
+     <color name="selected_drawer">#CD3700</color>
+	<color name="pressed_drawer">#CD3700</color>
+	<color name="backgroung_drawer">#696969</color>
+</resources>

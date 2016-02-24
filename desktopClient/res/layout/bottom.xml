@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
+    android:background="#CD3700"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/id_tab_application"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageButton
+            android:id="@+id/id_tab_application_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:clickable="false"
+            android:src="@drawable/application_list" />
+
+        <TextView
+            android:id="@+id/id_tab_application_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="应用列表"
+            android:textColor="#ffffff" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/id_tab_media"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageButton
+            android:id="@+id/id_tab_media_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:clickable="false"
+            android:src="@drawable/tab_media_normal" />
+
+        <TextView
+             android:id="@+id/id_tab_media_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="媒体库"
+            android:textColor="#2B2B2B" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/id_tab_screen"
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageButton
+            android:id="@+id/id_tab_screen_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:clickable="false"
+            android:src="@drawable/tab_screen_normal" />
+
+        <TextView
+           	android:id="@+id/id_tab_screen_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="无线屏幕"
+            android:textColor="#2B2B2B" />
+    </LinearLayout>
+</LinearLayout>

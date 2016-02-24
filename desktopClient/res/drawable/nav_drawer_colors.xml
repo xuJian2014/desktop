@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/selected_drawer" android:state_activated="true" />
+    <item android:drawable="@color/selected_drawer" android:state_selected="true" />
+    <item android:drawable="@color/pressed_drawer" android:state_pressed="true" />
+    <item android:drawable="@color/backgroung_drawer" android:state_drag_can_accept="true"/>
+</selector>
+<!-- 点击android navidgation drawer 在导航抽屉中改变List选中项的颜色 -->

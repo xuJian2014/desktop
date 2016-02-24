@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/choice_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent" >
+
+    <LinearLayout
+        android:id="@+id/choice_pop_layout"
+        android:layout_width="350dp"
+        android:layout_height="370dp"
+        android:layout_marginLeft="40dip"
+        android:layout_marginRight="40dip"
+        android:layout_centerInParent="true"
+        android:background="@drawable/touchsetting_table_radius_bg"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="5dp"
+            android:background="@android:color/transparent"
+            android:text="选择要连接的终端"
+            android:textColor="#FFFFFF" 
+            android:textSize="25sp"/>
+
+        <Button
+            android:id="@+id/btn_choice_remote"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginLeft="30dip"
+            android:layout_marginRight="30dip"
+            android:layout_marginTop="15dip"
+            android:background="@drawable/btn_style_alert_dialog_button"
+            android:singleLine="true"
+            android:text="远程虚拟桌面" 
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/btn_choice_family"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginLeft="30dip"
+            android:layout_marginRight="30dip"
+            android:layout_marginTop="5dip"
+            android:background="@drawable/btn_style_alert_dialog_button"
+            android:singleLine="true"
+            android:text="家庭控制中心"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btn_choice_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_marginBottom="10dip"
+            android:layout_marginLeft="30dip"
+            android:layout_marginRight="30dip"
+            android:layout_marginTop="10dip"
+            android:background="@drawable/btn_style_alert_dialog_cancel"
+            android:text="取消"
+            android:textColor="#ffffff" 
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" 
+            android:layout_marginTop="7dip"
+            android:layout_marginLeft="8dip"
+            android:layout_marginRight="8dip"
+            android:layout_marginBottom="10dip"
+            android:text="★提示：如果需要重新选择，请回到智能家庭终端首页进行选择！"
+            android:textSize="15sp"/>
+    </LinearLayout>
+
+</RelativeLayout>
