@@ -6,7 +6,7 @@
     android:background="#d3d7d4"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    tools:context=".MainActivity" >
+    tools:context=".Control_MainActivity" >
 
     <GridLayout
         android:id="@+id/GridLayout1"

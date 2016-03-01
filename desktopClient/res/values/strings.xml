@@ -194,4 +194,62 @@
     <string name="text_cancel">Cancel</string>
     <string name="text_remove">Remove</string>
     <string name="text_edit">Edit</string>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <!--  李志的String-->
+     <string name="title_activity_projection">ProjectionActivity</string>
+    <string name="projection_previous">上一张</string>
+    <string name="projection_next">下一张</string>
+    <string name="projection_play">放映</string>
+    <string name="projection_play_current">放映当前页</string>
+    <string name="projection_exit">退出</string>
+    <string name="volume_increase">V+</string>
+    <string name="volume_decrease">V-</string>
+    <string name="volume_mute">Vx</string>
+    <string name="media_control">播放器控制</string>
+    <string name="system_control">系统音量控制</string>
+
+    <drawable name="color_normal">#33B6EA</drawable>
+    <drawable name="color_pressed">#6CA6CD</drawable>
+    <drawable name="grid_item_normal">#FFFFFF</drawable>
+    <drawable name="grid_item_pressed">#CDC9C9</drawable>
+
+    <string name="title_activity_window">WindowActivity</string>
+    <string name="title_activity_power">PowerActivity</string>
+    <string name="title_activity_browser">BrowserActivity</string>
+    <string name="power_off">关机</string>
+    <string name="power_sleep">睡眠</string>
+    <string name="power_lock">锁定</string>
+    <string name="power_restart">重启</string>
+    <string name="power_off_cancel">取消关机</string>
+    <string name="window_max">最大化</string>
+    <string name="window_min">最小化</string>
+    <string name="window_close">关闭窗口</string>
+    <string name="window_switch_left">向左切换</string>
+    <string name="window_switch_right">向右切换</string>
+    <string name="window_desktop">显示桌面</string>
+    <string name="browse_down">向下浏览</string>
+    <string name="browse_up">向上浏览</string>
+    <string name="browse_refresh">刷新</string>
+    <string name="browse_close">关闭标签</string>
+    <string name="browse_stop_refresh">停止刷新</string>
+    <string name="browse_next_label">下一标签</string>
+    <string name="browse_previous_label">上一标签</string>
+    <string name="browse_homepage">主页</string>
+    <string name="browse_search">搜索</string>
+    <string name="browse_bookmark">书签</string>
+    <string name="browse_fullscreen">全屏</string>
+    <string name="power_off_sleep">休眠</string>
+    <string name="power_cancel">取消</string>
+    
 </resources>

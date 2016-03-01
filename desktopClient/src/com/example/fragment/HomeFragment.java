@@ -7,10 +7,16 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+
+import android.androidVNC.VncCanvasActivity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
@@ -28,14 +34,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.Entity.RequestMesg;
 import com.example.Entity.ResponseMesg;
+import com.example.controller.Control_MainActivity;
 import com.example.desktop.R;
 import com.example.touch.ChoiceActivity;
-import com.example.touch.KeyboardActivity;
-import com.example.touch.MouseActivity;
+import com.example.utilTool.HomeForScreenThread;
 import com.example.utilTool.MyGridAdapter;
 import com.example.utilTool.MyGridView;
+import com.example.utilTool.SendMsgThread;
 import com.example.utilTool.SendMultiUdpMessage;
 import com.example.utilTool.TcpReceive;
 public class HomeFragment extends Fragment 
@@ -49,10 +57,20 @@ public class HomeFragment extends Fragment
 	private Thread response_thread;
 	private boolean is_Scan_falg=false;  //当前操作是否为扫描操作
 	private ImageView image;
+	
+	String connectionIP;
+	String connectionPwd;
+	SharedPreferences getVNCPreferences;
+	Editor vncEditor;
+	private String[] content_Screen=new String[]{};
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
 	{
 		View logonView = inflater.inflate(R.layout.fragment_home_test, null);
+		
+		getVNCPreferences = getActivity().getSharedPreferences("VNCConnect", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
+		vncEditor = getVNCPreferences.edit();
 		progressBar=(ProgressBar)logonView.findViewById(R.id.progressBar1);
 		textView=(TextView)logonView.findViewById(R.id.textView1);
 		gridview=(MyGridView)logonView.findViewById(R.id.gridview);
@@ -70,6 +88,7 @@ public class HomeFragment extends Fragment
 		super.onPause();
 		handler.removeCallbacks(null);
 	}
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
@@ -85,15 +104,51 @@ public class HomeFragment extends Fragment
 						connectProxyServer();
 						break;
 					case 1:
+						 SharedPreferences getRemotePreferences = getActivity().getSharedPreferences("Remote", Context.MODE_PRIVATE);
+						 connectionIP = getRemotePreferences.getString("remoteIP", "0000");
+						 connectionPwd = getRemotePreferences.getString("remotePassword", "0000");
+						 
+						vncEditor.putString("IP", connectionIP);
+						vncEditor.putString("password", connectionPwd);
+						vncEditor.commit();
+						startActivity(new Intent(getActivity(), VncCanvasActivity.class));
 						break;
 					case 2:
+						SharedPreferences getFamilyPreferences = getActivity().getSharedPreferences("configInfo", Context.MODE_PRIVATE);
+						connectionIP = getFamilyPreferences.getString("homeServiceIp", "0000");
+						connectionPwd = getFamilyPreferences.getString("homeServicePwd", "0000");
+						vncEditor.putString("IP", connectionIP);
+						vncEditor.putString("password", connectionPwd);
+						vncEditor.commit();
+						startActivity(new Intent(getActivity(), VncCanvasActivity.class));
 						break;
 					case 3:
+						HomeForScreenThread sendMsgThread=new HomeForScreenThread(handler, getActivity(),"screen");
+						Thread thread =new Thread(sendMsgThread);
+						thread.start();
+						
+						
+						
+						
+						/*final String screenStr[]=new String[]{"小米TV","乐视TV","屏幕三"};
+						AlertDialog.Builder builder=new Builder(getActivity());
+						builder.setItems(screenStr, new DialogInterface.OnClickListener() 
+						{
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which)
+							{
+								Toast.makeText(getActivity(), "您选择的是"+screenStr[which], Toast.LENGTH_SHORT).show();
+								
+							}
+						});
+						builder.create().show();*/
 						break;
 					case 4:
 						startChoiceRemoteFamilyActivity("game");
 						break;
 					case 5:
+						startActivity(new Intent(getActivity(), Control_MainActivity.class));
 						break;
 					case 6:
 						startChoiceRemoteFamilyActivity("mouse");
@@ -245,6 +300,38 @@ public class HomeFragment extends Fragment
 					image.setBackgroundResource(R.drawable.vmachine_failed);
 					progressBar.setVisibility(View.GONE);
 					textView.setVisibility(View.GONE);
+					break;
+				case 9:
+					Toast.makeText(getActivity(), "家庭服务中心拒绝连接", Toast.LENGTH_LONG).show();
+					break;
+				case 10:
+					Toast.makeText(getActivity(), "家庭服务中心已关闭", Toast.LENGTH_LONG).show();
+					break;
+				case 11:
+					String screenStr=msg.getData().getString("msg");
+					if(screenStr.equals("error")||null==screenStr)
+					{
+						Toast.makeText(getActivity(), "获取屏幕失败", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						content_Screen=screenStr.split(",");
+						AlertDialog.Builder builder=new Builder(getActivity());
+						builder.setItems(content_Screen, new DialogInterface.OnClickListener() 
+						{
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which)
+							{
+								Toast.makeText(getActivity(), "您选择的是"+content_Screen[which], Toast.LENGTH_SHORT).show();
+								
+							}
+						});
+						builder.create().show();
+					}
+					break;
+				case 12:
+					Toast.makeText(getActivity(), "连接家庭服务中心发生错误", Toast.LENGTH_LONG).show();
 					break;
 				default:
 					break;
