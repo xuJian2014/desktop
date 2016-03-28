@@ -58,7 +58,7 @@ public class MyGridAdapter extends BaseAdapter
 	{
 		if (convertView == null)
 		{
-			convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_item, parent, false);
+			convertView = LayoutInflater.from(mContext).inflate(R.layout.phone_grid_item, parent, false);
 		}
 		TextView tv = BaseViewHolder.get(convertView, R.id.tv_item);
 		ImageView iv = BaseViewHolder.get(convertView, R.id.iv_item);

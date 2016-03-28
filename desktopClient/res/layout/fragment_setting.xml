@@ -58,7 +58,27 @@
                 android:id="@+id/homeService"
                 android:clickable="true"
                  style="@style/usertext" 
-                 android:text="家庭终端设备" />
+                 android:text="家庭服务终端" />
+          	<ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+        <View style="@style/bg_line"/>
+          <!-- 下圆角-->
+       <LinearLayout style="@style/bottom_layout">
+            <TextView
+                android:id="@+id/virtualMachine"
+                android:clickable="true"
+                 style="@style/usertext" 
+                 android:text="远程虚拟机" />
+          	<ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+         <View style="@style/bg_line"/>
+          <!-- 下圆角-->
+       <LinearLayout style="@style/bottom_layout">
+            <TextView
+                android:id="@+id/defaultConnectSetting"
+                android:clickable="true"
+                 style="@style/usertext" 
+                 android:text="默认连接设置" />
           	<ImageView style="@style/img_arrow"/>
         </LinearLayout>
     </LinearLayout>

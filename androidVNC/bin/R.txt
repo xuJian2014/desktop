@@ -123,6 +123,7 @@ int string arrow_left 0x7f040005
 int string arrow_right 0x7f040006
 int string arrow_up 0x7f040007
 int string auto 0x7f040008
+int string bianma 0x7f04004f
 int string button_send_text 0x7f040009
 int string button_send_without_saving 0x7f04000a
 int string center_mouse 0x7f04000b

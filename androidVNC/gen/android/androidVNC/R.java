@@ -144,6 +144,7 @@ public final class R {
         public static int arrow_right=0x7f040006;
         public static int arrow_up=0x7f040007;
         public static int auto=0x7f040008;
+        public static int bianma=0x7f04004f;
         public static int button_send_text=0x7f040009;
         public static int button_send_without_saving=0x7f04000a;
         public static int center_mouse=0x7f04000b;

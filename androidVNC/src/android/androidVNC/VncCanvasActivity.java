@@ -20,6 +20,7 @@
 //
 package android.androidVNC;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -61,7 +63,7 @@ public class VncCanvasActivity extends Activity {
 
 	public static String IP;
 	public static String password;
-
+	
 	SharedPreferences getPreferences;
 	/**
 	 * @author Michael A. MacDonald
@@ -586,7 +588,8 @@ public class VncCanvasActivity extends Activity {
 		database = new VncDatabase(this);
 
 		Intent i = getIntent();
-		connection = new ConnectionBean();
+		connection = new ConnectionBean();	
+		
 		Uri data = i.getData();
 
 		if ((data != null) && (data.getScheme().equals("vnc"))) {
@@ -660,20 +663,71 @@ public class VncCanvasActivity extends Activity {
 		setContentView(R.layout.canvas);
 
 		vncCanvas = (VncCanvas) findViewById(R.id.vnc_canvas);
+		
+		
+		
 		zoomer = (ZoomControls) findViewById(R.id.zoomer);
-
+		
+		
 		vncCanvas.initializeVncCanvas(connection, new Runnable() {
 			public void run() {
 				setModes();
+				/*vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
+				vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
+				vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
+				vncCanvas.scaling.zoomIn(VncCanvasActivity.this);*/
+				
+				
+				//获得Android设备的分辨率
+				DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+				getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+				int AndroidW = mDisplayMetrics.widthPixels;
+				int AndroidH = mDisplayMetrics.heightPixels;
+				Log.i("Android client width:", "Width = " + AndroidW);
+				Log.i("Android client height:", "Height = " + AndroidH);
+				
+				//获得远程终端的屏幕分辨率
+				int clientW = vncCanvas.rfb.framebufferWidth;
+				int clientH = vncCanvas.rfb.framebufferHeight;
+				
+				//获得远程终端的服务模型（本地机（application）和虚拟机（service）放大比例不同）,然后决定放缩比例
+				String clientMode = vncCanvas.rfb.desktopName;
+				int index =vncCanvas.rfb.desktopName.indexOf("- ");
+				clientMode = vncCanvas.rfb.desktopName.substring(index).trim();
+				if(clientMode.contains("service"))
+				{
+					int dis = (int) Math.ceil(AndroidH/clientH);
+					System.out.println("BiLi: "+dis);
+					
+					for(int i =0;i<=dis;i++)
+					{
+						vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
+					}
+
+				}
+				
 			}
 		});
 		
 		zoomer.hide();
 		//zoomer.show();
+		
 		//vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
 		//vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
-		//vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
-		//vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
+		
+		//解决初始屏幕大小问题
+		/*Thread thread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Thread.sleep(500);
+				//handler.sned
+				handler.sendMessage();
+			}
+		});
+		thread.start();*/
+		//AbstractScaling.getById(R.id.itemFitToScreen).setScaleTypeForActivity(this);
 		
 		
 		
@@ -728,6 +782,44 @@ public class VncCanvasActivity extends Activity {
 		inputHandler = getInputHandlerById(R.id.itemInputFitToScreen);
 	}
 
+	
+	
+	/**
+	 * 调整屏幕大小线程
+	 * @author songshi
+	 *
+	 */
+	/*public class zoomerThread extends Thread{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			super.run();
+		}
+
+	}
+	Runnable zooRunnable =new Runnable() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			zoomer.show();
+			vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
+		}
+		
+	};*/
+	/*TimerTask task =new TimerTask() {
+		
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			zoomer.show();
+			vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
+		}
+	};*/
+	//Timer timer =new Timer();
+	//timer.schedule(task,500);
+	
 	/**
 	 * Set modes on start to match what is specified in the ConnectionBean;
 	 * color mode (already done) scaling, input mode

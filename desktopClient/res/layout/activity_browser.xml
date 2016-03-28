@@ -3,145 +3,153 @@
     android:id="@+id/LinearLayoutInput"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F6F2ED"
     android:orientation="vertical"
     tools:context=".BrowserActivity" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dip"
+        android:layout_weight="12.5"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/ButtonBrowserFullscreen"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_fullscreen" />
 
         <Button
             android:id="@+id/ButtonBrowserBookmark"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_bookmark" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dip"
+        android:layout_weight="12.5" >
 
         <Button
             android:id="@+id/ButtonBrowserSearch"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_search" />
 
         <Button
             android:id="@+id/ButtonBrowserHomePage"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_homepage" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dip"
+        android:layout_weight="12.5" >
 
         <Button
             android:id="@+id/ButtonBrowserPrevPage"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_previous_label" />
 
         <Button
             android:id="@+id/ButtonBrowserNextPage"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_next_label" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dip"
+        android:layout_weight="12.5" >
 
         <Button
             android:id="@+id/ButtonBrowserStopRefresh"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_stop_refresh" />
 
         <Button
             android:id="@+id/ButtonBrowserClose"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_close" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dip"
+        android:layout_weight="12.5" >
 
         <Button
             android:id="@+id/ButtonBrowserRefresh"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="80dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_refresh" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dip"
+        android:layout_weight="12.5" >
 
         <Button
             android:id="@+id/ButtonBrowserUp"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_up" />
 
         <Button
             android:id="@+id/ButtonBrowserDown"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="80dp"
-            android:layout_margin="10dp"
-            android:layout_weight="0.5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
+            android:layout_weight="1"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/browse_down" />
     </LinearLayout>

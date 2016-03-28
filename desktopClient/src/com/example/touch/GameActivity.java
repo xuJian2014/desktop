@@ -71,7 +71,7 @@ public class GameActivity extends Activity {
 						ConnectServer.getInstance().close();
 						ConnectServer.getInstance().connect(ip);
 						ConnectServer.getInstance().sendAction(new AuthentificationAction(password));
-						AuthentificationResponseAction response = ConnectServer.getInstance().recvAction();
+						AuthentificationResponseAction response = (AuthentificationResponseAction) ConnectServer.getInstance().recvAction();
 						isValid  = response.authentificated;
 						Log.d("debug", "RUN");
 					} catch (Exception e) {

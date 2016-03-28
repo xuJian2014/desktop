@@ -39,6 +39,7 @@ public class KeyboardUtil {
 
 	private final ExecutorService singleThread;
 	List<Keyboard.Key> keyList;
+	protected int count = 0;
 
 	public KeyboardUtil(Activity act, Context ctx) {
 		this.ctx = ctx;
@@ -138,22 +139,7 @@ public class KeyboardUtil {
 						keyboardView.setKeyboard(k2);
 						keyboardMain = false;
 						break;
-					case KeyboardAction.VK_VOLUME_UP :
-						action = new SystemControlAction(
-								SystemControlAction.VOLUME_UP);
-						break;
-					case KeyboardAction.VK_VOLUME_DOWN :
-						action = new SystemControlAction(
-								SystemControlAction.VOLUME_DOWN);
-						break;
-					case KeyboardAction.VK_VOLUME_MUTE :
-						action = new SystemControlAction(
-								SystemControlAction.VOLUME_MUTE);
-						break;
-					case KeyboardAction.VK_POWER :
-						action = new SystemControlAction(
-								SystemControlAction.POWER);
-						break;
+					
 					case KeyboardAction.VK_PRINTSCREEN :
 						/*action = new SystemControlAction(
 								SystemControlAction.SAVE_SCREEN);*/
@@ -182,10 +168,6 @@ public class KeyboardUtil {
 					case KeyboardAction.VK_WINDOWS :
 					case Keyboard.KEYCODE_CANCEL :
 					case Keyboard.KEYCODE_MODE_CHANGE :
-					case KeyboardAction.VK_VOLUME_UP :
-					case KeyboardAction.VK_VOLUME_DOWN :
-					case KeyboardAction.VK_VOLUME_MUTE :
-					case KeyboardAction.VK_POWER :
 					case KeyboardAction.VK_PRINTSCREEN :
 						return;
 					default :
@@ -197,26 +179,42 @@ public class KeyboardUtil {
 				lock.lock();
 				isPressing = true;
 				sendAction2Remote(action);
-				lock.unlock();
 				lastcode = primaryCode;
+				if ((count & 0xa) == 0xa) {
+					count = 0;
+				}
+				final int c = ++count;
+				lock.unlock();
 
-				singleThread.execute(new Runnable() {
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 
-					@Override
-					public void run() {
-						try {
-							if (isPressing && lastcode == primaryCode) {
-								Thread.sleep(800);
+				if (isPressing && lastcode == primaryCode) {
+					singleThread.execute(new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								if (isPressing && lastcode == primaryCode
+										&& c == count) {
+									Thread.sleep(700);
+								} else {
+									return;
+								}
+								while (isPressing && lastcode == primaryCode
+										&& c == count) {
+									sendAction2Remote(action);
+									Thread.sleep(80);
+								}
+							} catch (InterruptedException e) {
+								e.printStackTrace();
 							}
-							while (isPressing && lastcode == primaryCode) {
-								sendAction2Remote(action);
-								Thread.sleep(80);
-							}
-						} catch (InterruptedException e) {
-							e.printStackTrace();
 						}
-					}
-				});
+					});
+				}
 			}
 
 			@Override
@@ -229,10 +227,6 @@ public class KeyboardUtil {
 					case KeyboardAction.VK_WINDOWS :
 					case Keyboard.KEYCODE_CANCEL :
 					case Keyboard.KEYCODE_MODE_CHANGE :
-					case KeyboardAction.VK_VOLUME_UP :
-					case KeyboardAction.VK_VOLUME_DOWN :
-					case KeyboardAction.VK_VOLUME_MUTE :
-					case KeyboardAction.VK_POWER :
 					case KeyboardAction.VK_PRINTSCREEN :
 						return;
 					default :
@@ -241,6 +235,7 @@ public class KeyboardUtil {
 						lock.lock();
 						isPressing = false;
 						sendAction2Remote(keyboardAction);
+						lastcode = -1;
 						lock.unlock();
 				}
 			}

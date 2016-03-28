@@ -15,7 +15,7 @@ class ZoomScaling extends AbstractScaling {
 	static final String TAG = "ZoomScaling";
 
 	private Matrix matrix;
-	int canvasXOffset;
+	public int canvasXOffset;
 	int canvasYOffset;
 	float scaling;
 	float minimumScale;
@@ -71,7 +71,8 @@ class ZoomScaling extends AbstractScaling {
 	void zoomIn(VncCanvasActivity activity) {
 		resetMatrix();
 		standardizeScaling();
-		scaling += 0.25;
+	
+		scaling += 0.50;
 		if (scaling > 4.0)
 		{
 			scaling = (float)4.0;
@@ -99,7 +100,8 @@ class ZoomScaling extends AbstractScaling {
 	void zoomOut(VncCanvasActivity activity) {
 		resetMatrix();
 		standardizeScaling();
-		scaling -= 0.25;
+
+		scaling -= 0.20;
 		if (scaling < minimumScale)
 		{
 			scaling = minimumScale;
@@ -177,6 +179,7 @@ class ZoomScaling extends AbstractScaling {
 		minimumScale = activity.vncCanvas.bitmapData.getMinimumScale();
 		canvasXOffset = -activity.vncCanvas.getCenteredXOffset();
 		canvasYOffset = -activity.vncCanvas.getCenteredYOffset();
+		
 		resetMatrix();
 		activity.vncCanvas.setImageMatrix(matrix);
 		// Reset the pan position to (0,0)

@@ -35,13 +35,25 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 	private List<ScreenItem> screenList=new ArrayList<ScreenItem>();
 	String responseMesgScreen;
 	Screen_List_Adapter adapter;
+	
+	SharedPreferences sharedPreferences;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
 	{
 		view=inflater.inflate(R.layout.screen_list, container, false);
 		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"screen");
 		listView=(ReFlashListView) view.findViewById(R.id.listView1);
+		sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
 		listView.setInterface(this);
+		
 		Thread thread =new Thread(sendMsgThread);
 		thread.start();
 		return view;
@@ -68,7 +80,7 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 					break;
 				case 2:
 					screenStr=msg.getData().getString("msg");
-					if(screenStr.equals("error")||null==screenStr)
+					if(null==screenStr||"".equals(screenStr)||"error".equals(screenStr))
 					{
 						Toast.makeText(getActivity(), "获取屏幕失败", Toast.LENGTH_LONG).show();
 					}
@@ -90,19 +102,15 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 	};
 	private void binderListData(String[] str)
 	{
-		ScreenItem screenItem=null;
+		ScreenItem screenItem;
 		cleanListView();
-		SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
+		
 		for(int i=0;i<str.length;i++)
 		{
-			String screenName=null;
-			if(sharedPreferences.contains(str[i]))
+			String screenName=str[i];
+			if(sharedPreferences.contains(screenName))
 			{
-				screenName=sharedPreferences.getString(str[i], null);
-			}
-			else
-			{
-				screenName=str[i];
+				screenName=sharedPreferences.getString(screenName, "...");
 			}
 			screenItem=new ScreenItem(screenName, R.drawable.screen_item);
 			screenList.add(screenItem);
@@ -124,8 +132,9 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 				View screenNameView = layoutInflater.inflate(R.layout.screen_name_dialog, null);
 				final TextView originScreenNameTextView = (TextView) screenNameView.findViewById(R.id.originScreenNameId);
 				final EditText alterScreenNameEdit = (EditText) screenNameView.findViewById(R.id.editText1);
-				final String originScreenName = screenList.get(position - 1).getscreenName();
-				originScreenNameTextView.setText(originScreenName);
+				//final String originScreenName = screenList.get(position - 1).getscreenName();
+				final String originScreenName=content_Screen[position-1];
+				originScreenNameTextView.setText(screenList.get(position - 1).getscreenName());
 				builder.setTitle("修改屏幕名称");
 				builder.setView(screenNameView);
 				builder.setPositiveButton("取消", new OnClickListener() 
@@ -148,7 +157,6 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 						}
 						else
 						{
-							SharedPreferences sharedPreferences = getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
 							SharedPreferences.Editor editor = sharedPreferences.edit();
 							editor.putString(originScreenName, alterScreenName);
 							if (editor.commit())
@@ -163,7 +171,7 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 					}
 				});
 				builder.show();
-			}
+			} 
 		});
 
 	}

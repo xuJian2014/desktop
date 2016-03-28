@@ -12,7 +12,6 @@ import java.net.UnknownHostException;
 import com.example.Entity.RequestMesg;
 import com.example.Entity.ResponseMesg;
 import com.example.desktop.R;
-import com.example.utilTool.StaticValue;
 import com.example.utilTool.StringUtil;
 import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
@@ -81,11 +80,13 @@ public class LoginFragment extends Fragment
 			switch (msg.what) 
 			{
 				case 0:
-					mDialog.cancel();
+					if(mDialog!=null)
+						mDialog.cancel();
 					Toast.makeText(getActivity(), "未知主机错误，重新配置服务器IP", Toast.LENGTH_LONG).show();
 					break;
 				case 1:
-					mDialog.cancel();
+					if(mDialog!=null)
+						mDialog.cancel();
 					Toast.makeText(getActivity(), "连接代理服务器超时", Toast.LENGTH_LONG).show();
 					break;
 				case 2:
@@ -97,10 +98,11 @@ public class LoginFragment extends Fragment
 					 Toast.makeText(getActivity(), "正在开机，请耐心等待...", Toast.LENGTH_LONG).show(); 
 					 break;
 				case 4:
-					mDialog.cancel();
+					if(mDialog!=null)
+						mDialog.cancel();
 					Bundle bundle=msg.getData();
 					ResponseMesg responseMesg=(ResponseMesg) bundle.getSerializable("message");
-					StaticValue.setvMachineIp(responseMesg.getResponserMesg());  
+					
 					//写入远程连接所需的IP
 					prefVNC = getActivity().getSharedPreferences("Remote",Context.MODE_PRIVATE);
 					editorVNC=prefVNC.edit();
@@ -110,19 +112,23 @@ public class LoginFragment extends Fragment
 					Toast.makeText(getActivity(), "您的登录IP地址为:"+responseMesg.getResponserMesg(), Toast.LENGTH_LONG).show();
 					break;
 				case 5:
-					mDialog.cancel();
+					if(mDialog!=null)
+						mDialog.cancel();
 					Toast.makeText(getActivity(), "对不起，您的登录信息有误，请确认后重新登录", Toast.LENGTH_LONG).show(); 
 					break;
 				case 6:
-					mDialog.cancel();
+					if(mDialog!=null)
+						mDialog.cancel();
 					Toast.makeText(getActivity(), "对不起，代理服务器返回信息出现未知错误", Toast.LENGTH_LONG).show(); 
 					break;
 				case 7:
-					mDialog.cancel();
+					if(mDialog!=null)
+						mDialog.cancel();
 					Toast.makeText(getActivity(), "对不起，您是新用户，请注册后再登陆", Toast.LENGTH_LONG).show(); 
 					break;
 				case 8:
-					mDialog.cancel();
+					if(mDialog!=null)
+						mDialog.cancel();
 					Toast.makeText(getActivity(), "对不起，代理服务器返回信息出现未知错误", Toast.LENGTH_LONG).show(); 
 				default:
 					break;
@@ -140,40 +146,44 @@ public class LoginFragment extends Fragment
 			{
 				 String userName=mEtLogon.getText().toString();
 	             String passWord=mEtPwd.getText().toString();
-	             //写入远程连接所需的Password
-				 prefVNC = getActivity().getSharedPreferences("Remote",Context.MODE_PRIVATE);
-				 editorVNC = prefVNC.edit();
-				 editorVNC.putString("remotePassword", passWord);
-				 editorVNC.commit();
-				
+	             
 	             if(StringUtil.isNullString(userName)||StringUtil.isNullString(passWord))
 	             {
 	            	 Toast.makeText(getActivity(), "用户名和密码不能为空!", Toast.LENGTH_SHORT).show();
-	            	 return;
 	             }
-	             editor = pref.edit();
-	             if(rememberPass.isChecked())
+	             else
 	             {
-					editor.putBoolean("remember_password", true);
-					editor.putString("userName", userName);
-					editor.putString("passWord", passWord);
-				 }
-	             else 
-	             {
-					editor.clear();
+		             //写入远程连接所需的Password
+					 prefVNC = getActivity().getSharedPreferences("Remote",Context.MODE_PRIVATE);
+					 editorVNC = prefVNC.edit();
+					 editorVNC.putString("remotePassword", passWord);
+					 editorVNC.commit();
+					
+		            
+		             editor = pref.edit();
+		             if(rememberPass.isChecked())
+		             {
+						editor.putBoolean("remember_password", true);
+						editor.putString("userName", userName);
+						editor.putString("passWord", passWord);
+					 }
+		             else 
+		             {
+						editor.clear();
+		             }
+					 editor.commit();
+					 mDialog = new ProgressDialog(getActivity());  
+		             mDialog.setTitle("登陆");  
+		             mDialog.setMessage("正在登陆服务器，请稍后...");  
+		             mDialog.show();  
+					 SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
+		             String homeServiceIp=sharedPreferences.getString("homeServiceIp", "192.168.1.103");
+		             requestMesg=new RequestMesg(userName, passWord,homeServiceIp,0,6000);
+		             
+		             Client client=new Client(requestMesg);
+		             Thread request_thread=new Thread(client);
+		             request_thread.start();  
 	             }
-				 editor.commit();
-				 mDialog = new ProgressDialog(getActivity());  
-	             mDialog.setTitle("登陆");  
-	             mDialog.setMessage("正在登陆服务器，请稍后...");  
-	             mDialog.show();  
-				 SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
-	             String homeServiceIp=sharedPreferences.getString("homeServiceIp", "192.168.1.103");
-	             requestMesg=new RequestMesg(userName, passWord,homeServiceIp,0,6000);
-	             
-	             Client client=new Client(requestMesg);
-	             Thread request_thread=new Thread(client);
-	             request_thread.start();        
 			}
 		});
 		 mBtnReset.setOnClickListener(new OnClickListener()
@@ -243,7 +253,7 @@ public class LoginFragment extends Fragment
 		{
 			try
 			{
-			 	 clientReceive=new ServerSocket(listenPort);
+			 	clientReceive=new ServerSocket(listenPort);
 			 	int i=0;
 				while(flag)
 				{

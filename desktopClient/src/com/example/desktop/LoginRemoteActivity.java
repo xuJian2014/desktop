@@ -1,7 +1,5 @@
 package com.example.desktop;
 
-import com.example.utilTool.StaticValue;
-
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -23,8 +21,6 @@ public class LoginRemoteActivity extends Activity
 		setContentView(R.layout.activity_login_remote);
 		textView=(TextView) findViewById(R.id.textView2);
 		button=(Button) findViewById(R.id.button1);
-		String vMachineIp=StaticValue.getvMachineIp();
-		textView.setText(vMachineIp);
 		button.setOnClickListener(new OnClickListener() 
 		{
 			@Override

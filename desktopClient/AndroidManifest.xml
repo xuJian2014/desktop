@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="12"
+        android:minSdkVersion="14"
         android:targetSdkVersion="10" />
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="com.android.setting.permission.ALLSHARE_CAST_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -86,8 +87,7 @@
         
         <activity android:name="com.example.controller.BrowserActivity"></activity>
         <activity android:name="com.example.controller.Control_MainActivity"></activity>
-        <activity android:name="com.example.controller.MediaCtlActivity"></activity>
-        <activity android:name="com.example.controller.PowerActivity"></activity>
+        <activity android:name="com.example.controller.SystemActivity"></activity>
         <activity android:name="com.example.controller.ProjectionActivity"></activity>
         <activity android:name="com.example.controller.WindowActivity"></activity>
         

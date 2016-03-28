@@ -1,5 +1,4 @@
 package com.example.fragment;
-import java.util.List;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -30,15 +29,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.desktop.R;
-import com.example.utilTool.GridAdapter;
-import com.example.utilTool.GridInfo;
 import com.example.utilTool.ReFlashExpandableListView;
 import com.example.utilTool.ReFlashExpandableListView.IReflashListener;
 import com.example.utilTool.ScreenResponseMsg;
 import com.example.utilTool.SendMsgAppScreen;
 import com.example.utilTool.Send_AppImage_Msg;
 import com.example.utilTool.Send_AppImage_Msg.MyCallBack;
-import com.example.utilTool.StaticValue;
 
 public class Application_List_Fragment extends Fragment implements IReflashListener
 {
@@ -48,7 +44,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 	private  String[] content_VmApp;//远端虚拟机应用列表
 	private  String[] screenList=new String[]{};//屏幕列表
 	private String resultStr=null;;
-	private  String[] armTypes= new String[]{"正在运行","已安装"};;
+	private  String[] armTypes= new String[]{"正在运行","已安装"};
 	private  String[][] arms = new String[][]{};//二维数组，表示ExpandableListview数据
 	private int[] images = new int[]
 		     	{
@@ -68,16 +64,19 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 	private ProgressDialog mDialog; 
 	private String screenIsSuccess;
 	private ExpandableListContextMenuInfo info;
-	//private AdapterContextMenuInfo info;
 	MyAdapter adapter;
-	private String MachineIp; //远程虚拟机IP地址
+	
 	private LinearLayout childView;
+	
+	SharedPreferences remoteIpInfo;
+	String remoteIp;;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		MachineIp =StaticValue.getvMachineIp();
+		
+		remoteIpInfo=getActivity().getSharedPreferences("Remote",Context.MODE_PRIVATE);
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,33 +86,56 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		listView=(ReFlashExpandableListView) view.findViewById(R.id.listView1);
 		gridView=(GridView) view.findViewById(R.id.gridView1);
 		listView.setInterface(this);
-		Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), "app," + "192.168.1.109", new MyCallBack() 
+		
+		remoteIp=getRemoteIp();
+		if(remoteIp==null||"".equals(remoteIp))
 		{
-			@Override
-			public void getResult(String application_arrs,Bitmap[] bitmapArrs)
+			Toast.makeText(getActivity(), "获取远程虚拟机应用失败，请登录代理服务器获取IP地址", Toast.LENGTH_SHORT).show();
+		}
+		else
+		{
+			
+			Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), "app," + remoteIp, new MyCallBack() 
 			{
-				Message message=handler.obtainMessage();
-				if(null==application_arrs||null==bitmapArrs)
+				@Override
+				public void getResult(String application_arrs,Bitmap[] bitmapArrs)
 				{
-					message.what=6;
-					handler.sendMessage(message);
+					Message message=handler.obtainMessage();
+					if(null==application_arrs||null==bitmapArrs)
+					{
+						message.what=6;
+						handler.sendMessage(message);
+					}
+					else
+					{
+						System.out.println("执行回调函数");
+						message.obj=bitmapArrs;
+						Bundle bundle=new Bundle();
+						bundle.putString("appListMsg", application_arrs);
+						message.setData(bundle);
+						message.what=2;
+						handler.sendMessage(message);
+					}
 				}
-				else
-				{
-					System.out.println("执行回调函数");
-					message.obj=bitmapArrs;
-					Bundle bundle=new Bundle();
-					bundle.putString("appListMsg", application_arrs);
-					System.out.println("回调函数："+application_arrs);
-					message.setData(bundle);
-					message.what=2;
-					handler.sendMessage(message);
-				}
-			}
-		});
-		Thread thread = new Thread(sendMsgThread);
-		thread.start();
+			});
+			Thread thread = new Thread(sendMsgThread);
+			thread.start();
+		}
 		return view;
+	}
+	
+	private String getRemoteIp()
+	{
+		String remoteIp=null;
+		
+		if(!remoteIpInfo.contains("remoteIP")) 
+		{
+			SharedPreferences.Editor editor=remoteIpInfo.edit();
+			editor.putString("remoteIP", "");
+			editor.commit();
+		}
+		remoteIp=remoteIpInfo.getString("remoteIP", "");
+		return remoteIp;
 	}
 	public Handler handler=new Handler()
 	{
@@ -124,7 +146,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 				case 0:
 					if(mDialog!=null)
 						mDialog.cancel();
-					Toast.makeText(getActivity(), "家庭服务中心拒绝连接", Toast.LENGTH_LONG).show();
+					Toast.makeText(getActivity(), "家庭服务端IP地址不正确", Toast.LENGTH_LONG).show();
 					break;
 				case 1:
 					if(mDialog!=null)
@@ -167,7 +189,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 						{
 							if(sharedPreferences.contains(screenList[i]))
 							{
-								screenList[i]=sharedPreferences.getString(screenList[i], null);
+								screenList[i]=sharedPreferences.getString(screenList[i], "...");
 							}
 						}
 						showScreen(screenList);
@@ -317,7 +339,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
         	    }
         	   catch(Exception e )
         	   {
-        		   System.out.println("-----"+e.getMessage());
+        		  e.printStackTrace();
         	   }        	   
         	    return resizedBitmap;
         	}
@@ -398,18 +420,6 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		listView.invalidate();
 	}
 	
-	/*private void binderGridata(String[] homeAppList,Bitmap[] bitmapArrs)
-	{  
-        gridList = new ArrayList<GridInfo>();  
-        for(int i=0;i<homeAppList.length;i++)
-        	gridList.add(new GridInfo(homeAppList[i]));
-        gridAdapter = new GridAdapter(getActivity(),homeAppList,bitmapArrs);  
-       // gridAdapter.setList(gridList);  
-        gridView.setAdapter(gridAdapter);  
-        registerForContextMenu(gridView);
-        gridView.invalidate();
-	}*/
-	
 	private void showScreen(String[] str)
 	{
 		AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
@@ -423,8 +433,9 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		         mDialog.setTitle("投影");  
 		         mDialog.setMessage("正在进行投影，请稍等...");  
 		         mDialog.show();
-		         ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), ExpandableListView.getPackedPositionGroup(info.packedPosition)+","+ExpandableListView.getPackedPositionChild(info.packedPosition)+",screen,"+String.valueOf(which));
-		        // ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler,getActivity(),String.valueOf(0)+","+info.position+",screen,"+String.valueOf(which));
+		         ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
+		        		 ExpandableListView.getPackedPositionGroup(info.packedPosition)+","+
+		        				 ExpandableListView.getPackedPositionChild(info.packedPosition)+",screen,"+String.valueOf(which));
 		         Thread thread=new Thread(msgAppScreen);
 				 thread.start();
 			}
@@ -436,18 +447,13 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 	public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo)
 	{
 		 super.onCreateContextMenu(menu, v, menuInfo);
+		 info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
 		 MenuInflater inflater = getActivity().getMenuInflater();
 		 inflater.inflate(R.menu.application_menu, menu);
 		
 	}
 	public boolean onContextItemSelected(MenuItem item) 
 	{ 
-		info = (ExpandableListContextMenuInfo) item.getMenuInfo();
-		//info=item.getMenuInfo();
-		//gridItemId=item.getGroupId();
-		//info = (AdapterContextMenuInfo) item.getMenuInfo();
-		
-		//item.getGroupId();
 		switch (item.getItemId()) 
 		{
 			case R.id.screen: //投影屏幕
@@ -458,21 +464,6 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 				SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),"display");
 				Thread threadScreen =new Thread(sendMsgScreen);
 				threadScreen.start(); 	
-				break;
-			case R.id.close: //关闭
-				ScreenResponseMsg closeMsg=new ScreenResponseMsg(handler, getActivity(),info+",close");
-				Thread closeMsgThread =new Thread(closeMsg);
-				closeMsgThread.start();
-				break;
-			case R.id.max:  //最大化
-				ScreenResponseMsg maxMsg=new ScreenResponseMsg(handler, getActivity(),info+",max");
-				Thread maxMsgThread =new Thread(maxMsg);
-				maxMsgThread.start();
-				break;
-			case R.id.min: //最小化
-				ScreenResponseMsg minMsg=new ScreenResponseMsg(handler, getActivity(),info+",min");
-				Thread minMsgThread =new Thread(minMsg);
-				minMsgThread.start();
 				break;
 			default:
 				break;
@@ -488,31 +479,41 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 	private void setReflashData() 
 	{
 		childView.removeAllViews();
-		Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), "app," + "192.168.1.109", new MyCallBack() 
+		
+		String remoteIp=null;
+		remoteIp=getRemoteIp();
+		if(remoteIp==null||"".equals(remoteIp))
 		{
-			@Override
-			public void getResult(String application_arrs,Bitmap[] bitmapArrs)
+			Toast.makeText(getActivity(), "获取远程虚拟机应用失败，请登录代理服务器获取IP地址", Toast.LENGTH_LONG).show();
+		}
+		else
+		{
+			Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), "app," +remoteIp, new MyCallBack() 
 			{
-				System.out.println("执行回调函数:"+application_arrs);
-				Message message=handler.obtainMessage();
-				if(null==application_arrs||null==bitmapArrs)
+				@Override
+				public void getResult(String application_arrs,Bitmap[] bitmapArrs)
 				{
-					message.what=6;
-					handler.sendMessage(message);
+					System.out.println("执行回调函数:"+application_arrs);
+					Message message=handler.obtainMessage();
+					if(null==application_arrs||null==bitmapArrs)
+					{
+						message.what=6;
+						handler.sendMessage(message);
+					}
+					else
+					{
+						message.obj=bitmapArrs;
+						Bundle bundle=new Bundle();
+						bundle.putString("appListMsg", application_arrs);
+						message.setData(bundle);
+						message.what=2;
+						handler.sendMessage(message);
+					}
 				}
-				else
-				{
-					message.obj=bitmapArrs;
-					Bundle bundle=new Bundle();
-					bundle.putString("appListMsg", application_arrs);
-					message.setData(bundle);
-					message.what=2;
-					handler.sendMessage(message);
-				}
-			}
-		});
-		Thread thread = new Thread(sendMsgThread);
-		thread.start();
+			});
+			Thread thread = new Thread(sendMsgThread);
+			thread.start();
+		}
 	}
 	@Override
 	public void onReflash() 
@@ -520,5 +521,4 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		setReflashData();
 		listView.reflashComplete();
 	}
-	
 }

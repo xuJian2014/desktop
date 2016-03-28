@@ -2,255 +2,269 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
 
-   <LinearLayout
-       android:id="@+id/linear1"
-       android:layout_width="0dp"
-       android:layout_height="match_parent"
-       android:layout_marginBottom="15dp"
-       android:layout_marginLeft="25dp"
-       android:layout_marginRight="15dp"
-       android:layout_marginTop="15dp"
-       android:layout_weight="1"
-       android:orientation="vertical" >
-		
-    <LinearLayout 
-    android:id="@+id/linear11"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-    
-       <TextView
-	    android:id="@+id/up"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="上：" />
-       <EditText 
-            android:id="@+id/up_edit"
-            android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="W"/>
-        
-   	</LinearLayout>
-	
-    <LinearLayout 
-    android:id="@+id/linear12"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-    
-           <TextView
-	    android:id="@+id/down"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="下：" />
-       <EditText 
-            android:id="@+id/down_edit"
-            android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="S"/>
-   	</LinearLayout>
-   	
-     <LinearLayout 
-    android:id="@+id/linear13"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-       <TextView
-	    android:id="@+id/left"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="左：" />
-       <EditText 
-            android:id="@+id/left_edit"
-            android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="A"/>
-   	</LinearLayout>
-   	
-   <LinearLayout 
-    android:id="@+id/linear14"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-       <TextView
-	    android:id="@+id/right"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="右：" />
-       <EditText 
-            android:id="@+id/right_edit"
-            android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="D"/>
-   	</LinearLayout>
-    
-	</LinearLayout>
-	
-	<LinearLayout
-	    android:id="@+id/linear2"
-	    android:layout_width="0dp"
-	    android:layout_height="match_parent"
-	    android:layout_margin="5dp"
-	    android:layout_weight="1"
-	    android:orientation="vertical" >
+    <LinearLayout
+        android:id="@+id/linear1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal" >
 
-<LinearLayout 
-    android:id="@+id/linear21"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-       <TextView
-	    android:id="@+id/purple"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="紫：" />
+        <LinearLayout
+            android:id="@+id/linear11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
 
-       <EditText
-           android:id="@+id/purple_edit"
-           android:layout_width="0dp"
-           android:layout_height="wrap_content"
-           android:layout_weight="1"
-           android:text="U" />
+            <TextView
+                android:id="@+id/up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="上："
+                android:textSize="18sp" />
 
-   	</LinearLayout>
-    
-	<LinearLayout 
-    android:id="@+id/linear22"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-       <TextView
-	    android:id="@+id/green"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="绿：" />
-       <EditText 
-            android:id="@+id/green_edit"
-            android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="I"/>
-   	</LinearLayout>
+            <EditText
+                android:id="@+id/up_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="W" />
+        </LinearLayout>
 
-	
-<LinearLayout 
-    android:id="@+id/linear23"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-       <TextView
-	    android:id="@+id/orange"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="橙：" />
-       <EditText 
-            android:id="@+id/orange_edit"
-            android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="O"/>
-   	</LinearLayout>
+        <LinearLayout
+            android:id="@+id/linear12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
 
-<LinearLayout 
-    android:id="@+id/linear24"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-       <TextView
-	    android:id="@+id/red"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="红：" />
-       <EditText 
-            android:id="@+id/red_edit"
-            android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="J"/>
-   	</LinearLayout>
-   
-    
-<LinearLayout 
-    android:id="@+id/linear25"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-       <TextView
-	    android:id="@+id/blue"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="蓝：" />
-       <EditText 
-            android:id="@+id/blue_edit"
-            android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="K"/>
-   	</LinearLayout>
+            <TextView
+                android:id="@+id/down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="下："
+                android:textSize="18sp" />
 
+            <EditText
+                android:id="@+id/down_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="S" />
+        </LinearLayout>
 
-<LinearLayout 
-    android:id="@+id/linear26"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
-    android:layout_weight="1"
-    android:orientation="horizontal" >	
-       <TextView
-	    android:id="@+id/white"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="白：" />
-       <EditText 
-            android:id="@+id/white_edit"
-            android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="L"/>
-   	</LinearLayout>
+        <LinearLayout
+            android:id="@+id/linear13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
 
+            <TextView
+                android:id="@+id/left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="左："
+                android:textSize="18sp" />
 
+            <EditText
+                android:id="@+id/left_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A" />
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/linear14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
 
+            <TextView
+                android:id="@+id/right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="右："
+                android:textSize="18sp" />
 
-	</LinearLayout>
+            <EditText
+                android:id="@+id/right_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="D" />
+        </LinearLayout>
+    </LinearLayout>
 
-	<Button
-	    android:id="@+id/save"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="保存" />
+    <LinearLayout
+        android:id="@+id/linear2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="25dp"
+        android:orientation="horizontal" >
 
-	<Button
-	    android:id="@+id/cancel"
-	    android:layout_width="0dp"
-	    android:layout_height="wrap_content"
-	    android:layout_weight="1"
-	    android:text="重置" />
-    
+        <LinearLayout
+            android:id="@+id/linear21"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/purple"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="紫："
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/purple_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="U" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="绿："
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/green_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="I" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear23"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/orange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="橙："
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/orange_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="O" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" >
+
+        <LinearLayout
+            android:id="@+id/linear24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="红："
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/red_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="J" >
+
+                <requestFocus />
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear25"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="蓝："
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/blue_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="K" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear26"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="白："
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/white_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="L" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" >
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:text="保存" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:text="重置" />
+
+    </LinearLayout>
+
 </LinearLayout>

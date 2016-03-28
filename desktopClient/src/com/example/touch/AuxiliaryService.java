@@ -16,7 +16,6 @@ public class AuxiliaryService extends Service implements ServiceListener {
     }
 
     public void onCreate() {
-        // ����serviceʱһ�� ʵ��һ��TableShowView�����ҵ������fun()��������ע�ᵽwindowManager��
         super.onCreate();
         new EasyTouchView(this, this).initTouchViewEvent();
     }

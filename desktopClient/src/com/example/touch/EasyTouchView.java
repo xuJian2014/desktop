@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
 
+import com.example.controller.Control_MainActivity;
 import com.example.desktop.MainActivity;
 import com.example.desktop.R;
 
@@ -138,7 +139,7 @@ public class EasyTouchView extends View {
             switch (v.getId()) {
             
             case R.id.show_setting_table_item_mouse_button:
-				if (!TouchFlag.getInstance().isValid() && !chooseFlag) {
+				/*if (!TouchFlag.getInstance().isValid() && !chooseFlag) {
 					startChoiceRemoteFamilyActivity("mouse");
 					chooseFlag = true;
 				}else{
@@ -147,11 +148,16 @@ public class EasyTouchView extends View {
 					iMouse.setClass(mContext, MouseActivity.class);
 					iMouse.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					mContext.getApplicationContext().startActivity(iMouse);
-				}
+				}*/
+				hideSettingTable("虚拟鼠标");
+				Intent iMouse = new Intent();
+				iMouse.setClass(mContext, MouseActivity.class);
+				iMouse.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.getApplicationContext().startActivity(iMouse);
                 break;
                 
             case R.id.show_setting_table_item_virturlkeyboard_button:
-				if (!TouchFlag.getInstance().isAuthentificated() && !chooseFlag) {
+				/*if (!TouchFlag.getInstance().isAuthentificated() && !chooseFlag) {
 					startChoiceRemoteFamilyActivity("keyboard");
 					chooseFlag = true;
 				} else {
@@ -160,27 +166,26 @@ public class EasyTouchView extends View {
 	                iKeyboard.setClass(mContext, KeyboardActivity.class);
 	                iKeyboard.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	                mContext.getApplicationContext().startActivity(iKeyboard);
-				}
-            	/*hideSettingTable("虚拟键盘");
+				}*/
+            	hideSettingTable("虚拟键盘");
 				Intent iKeyboard = new Intent();
                 iKeyboard.setClass(mContext, KeyboardActivity.class);
                 iKeyboard.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.getApplicationContext().startActivity(iKeyboard);*/
+                mContext.getApplicationContext().startActivity(iKeyboard);
                 break;
                 
             case R.id.show_setting_table_item_keymouse_button:
-				if (!chooseFlag) {
-					startChoiceRemoteFamilyActivity("vnc");
-					chooseFlag = true;
-				} else {
-					hideSettingTable("VNC");
+			
+            	//startChoiceRemoteFamilyActivity("vnc");
+            	
+				hideSettingTable("VNC");
 
-					Intent iVNCDesktop = new Intent();
-					iVNCDesktop.setClass(mContext, VncCanvasActivity.class);// 直接跳转到“画布”界面
+				Intent iVNCDesktop = new Intent();
+				iVNCDesktop.setClass(mContext, VncCanvasActivity.class);// 直接跳转到“画布”界面
 					// iKeyMouse.setClass(mContext, androidVNC.class);      //跳转到“连接信息”界面
-					iVNCDesktop.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					mContext.getApplicationContext().startActivity(iVNCDesktop);
-				}
+				iVNCDesktop.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				mContext.getApplicationContext().startActivity(iVNCDesktop);
+				
             	/*hideSettingTable("VNC");
 
 				Intent iVNCDesktop = new Intent();
@@ -212,7 +217,11 @@ public class EasyTouchView extends View {
                 
             case R.id.show_setting_table_item_setting_button:
             	hideSettingTable("设置");
-                
+            	mPopuWin.dismiss();
+				Intent iCtrl = new Intent();
+				iCtrl.setClass(mContext, Control_MainActivity.class);
+				iCtrl.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				mContext.getApplicationContext().startActivity(iCtrl);
                 /*Intent iSeting = new Intent();
                 iSeting.setClass(mContext, MainActivity.class);
                 iSeting.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -220,7 +229,7 @@ public class EasyTouchView extends View {
                 break;
                 
             case R.id.show_setting_table_item_back_button:
-            	if (!chooseFlag) {         //还需要一个连接成功的标识
+            	/*if (!chooseFlag) {         //还需要一个连接成功的标识
 					startChoiceRemoteFamilyActivity("game");
 					chooseFlag = true;
 				} else {
@@ -229,13 +238,13 @@ public class EasyTouchView extends View {
 					iGame.setClass(mContext, GameActivity.class);
 					iGame.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					mContext.getApplicationContext().startActivity(iGame);
-				}
+				}*/
             	
-            	/*hideSettingTable("虚拟手柄");
+            	hideSettingTable("虚拟手柄");
             	Intent iSeting = new Intent();
                 iSeting.setClass(mContext, GameActivity.class);
                 iSeting.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				mContext.startActivity(iSeting);*/
+				mContext.startActivity(iSeting);
                 break;
                 
             case R.id.show_setting_table_item_home_button:

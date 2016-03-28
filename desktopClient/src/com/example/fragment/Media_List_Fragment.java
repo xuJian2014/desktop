@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -31,11 +33,10 @@ import com.example.utilTool.ScreenResponseMsg;
 import com.example.utilTool.SendMsgAppScreen;
 import com.example.utilTool.SendMsgThread;
 import com.example.utilTool.Send_FileSystem_MsgThread;
-import com.example.utilTool.StaticValue;
 public class Media_List_Fragment extends Fragment implements IReflashListener
 {
-	private static String mediaStr;
-	private static String[] content_Media=new String[]{};
+	private String mediaStr;
+	private String[] content_Media=new String[]{};
 	ReFlashListView listView;
 	String screenStr;
 	static String[] screenList=new String[]{};
@@ -57,7 +58,6 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		MachineIp =StaticValue.getvMachineIp();
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,7 +66,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 		view=inflater.inflate(R.layout.media_list, container,false);
 		listView=(ReFlashListView) view.findViewById(R.id.listView1);
 		listView.setInterface(this);
-		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"file,"+"192.168.1.109");
+		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"file");
 		Thread thread =new Thread(sendMsgThread);
 		thread.start(); 
 		initDatas();//初始化数据mDatas
@@ -87,7 +87,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 						if(node.getId()==1)
 						{
 							nodeName="fileSystem";
-							Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(),nodeName+",192.168.1.109");
+							Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(),nodeName);
 							Thread thread =new Thread(send_FileSystem_MsgThread);
 							thread.start();
 						}
@@ -100,7 +100,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 								nodeName=pNode.getParent().getName()+"\\"+nodeName;
 								pNode=pNode.getParent();
 							}
-							Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(), "drive,"+nodeName+",192.168.1.109");
+							Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(), "drive,"+nodeName);
 							Thread thread =new Thread(send_FileSystem_MsgThread);
 							thread.start();
 						}
@@ -166,6 +166,14 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 					else
 					{
 						screenList=screenStr.split(",");
+						SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
+						for (int i = 0; i <screenList.length; i++)
+						{
+							if(sharedPreferences.contains(screenList[i]))
+							{
+								screenList[i]=sharedPreferences.getString(screenList[i], null);
+							}
+						}
 						showScreen(screenList);
 					}
 					break;
@@ -315,7 +323,6 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 		         mDialog.setMessage("正在进行投影，请稍等...");  
 		         mDialog.show();
 			     ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), info.id+",open,"+String.valueOf(which));
-			     System.out.println("----"+info.id+",open,"+String.valueOf(which));
 				 Thread thread=new Thread(msgAppScreen);
 				 thread.start();
 				}
@@ -343,21 +350,6 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 				Thread threadScreen =new Thread(sendMsgScreen);
 				threadScreen.start(); 	
 				break;
-			case R.id.close: //关闭
-				ScreenResponseMsg closeMsg=new ScreenResponseMsg(handler, getActivity(),info.position+",close");
-				Thread closeMsgThread =new Thread(closeMsg);
-				closeMsgThread.start();
-				break;
-			case R.id.max:  //最大化
-				ScreenResponseMsg maxMsg=new ScreenResponseMsg(handler, getActivity(),info.position+",max");
-				Thread maxMsgThread =new Thread(maxMsg);
-				maxMsgThread.start();
-				break;
-			case R.id.min: //最小化
-				ScreenResponseMsg minMsg=new ScreenResponseMsg(handler, getActivity(),info.position+",min");
-				Thread minMsgThread =new Thread(minMsg);
-				minMsgThread.start();
-				break;
 			default:
 				break;
 		}
@@ -372,7 +364,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 	}
 	private void setReflashData() 
 	{
-		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"file,"+"192.168.1.109");
+		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"file");
 		Thread thread =new Thread(sendMsgThread);
 		thread.start(); 
 	}

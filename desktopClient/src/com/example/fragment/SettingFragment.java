@@ -1,26 +1,73 @@
 package com.example.fragment;
 
+import java.util.ArrayList;
+import java.util.List;
 import android.app.AlertDialog;
-import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.example.Entity.HardDiskItem;
 import com.example.desktop.R;
+import com.example.touch.TouchFlag;
+import com.example.utilTool.AuthorityListAdapter;
+import com.example.utilTool.SendMsgAuthority;
+import com.example.utilTool.SendMsgThread;
+import com.example.utilTool.StringUtil;
+
 
 public class SettingFragment extends Fragment
 {
 	private TextView myInfo;
 	private TextView proxyServer;
 	private TextView homeService;
+	private TextView virtualMachine;
+	private TextView defaultConnectSetting;
+	List<HardDiskItem> hardDiskList =new ArrayList<HardDiskItem>();
+	LayoutInflater layoutInflater;
+	SharedPreferences sharedPreferences;
+	private String hardDiskStr;
+	private String[] content_hardDisk=new String[]{};
+	AuthorityListAdapter adapter;
+	ListView listView;
+	private SharedPreferences getRemotePreferences;
+	private String connectionIP;
+	private String connectionPwd;
+	
+	private SharedPreferences getVNCPreferences;
+	private SharedPreferences.Editor vncEditor;
+	
+	private RadioButton radioButtonRemote;
+	private RadioButton radioButtonFamily;
+	@SuppressWarnings("deprecation")
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		layoutInflater=LayoutInflater.from(getActivity());
+		sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
+		
+		getRemotePreferences = getActivity().getSharedPreferences("Remote", Context.MODE_PRIVATE);
+		getVNCPreferences = getActivity().getSharedPreferences("VNCConnect", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
+		vncEditor = getVNCPreferences.edit();
+
+	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) 
 	{
@@ -28,6 +75,8 @@ public class SettingFragment extends Fragment
 		myInfo=(TextView) settingView.findViewById(R.id.personInfo);
 		proxyServer=(TextView) settingView.findViewById(R.id.proxyServer);
 		homeService=(TextView) settingView.findViewById(R.id.homeService);
+		virtualMachine=(TextView) settingView.findViewById(R.id.virtualMachine);
+		defaultConnectSetting=(TextView) settingView.findViewById(R.id.defaultConnectSetting);
 		return settingView;
 	}
 	@Override
@@ -35,7 +84,7 @@ public class SettingFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 		
-		//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟矫帮拷钮锟斤拷应
+		//我的资料
 		myInfo.setOnClickListener(new OnClickListener()
 		{
 			
@@ -47,7 +96,7 @@ public class SettingFragment extends Fragment
 			}
 		});
 		
-		//锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟接�
+		//代理服务器设置
 		proxyServer.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -57,40 +106,227 @@ public class SettingFragment extends Fragment
 			}
 		});
 		
-		//锟斤拷庭锟秸讹拷锟借备锟斤拷锟矫帮拷钮锟斤拷应
+		//家庭服务终端设置
 		homeService.setOnClickListener(new OnClickListener()
 		{
-			
 			@Override
-			public void onClick(View arg0) 
+			public void onClick(View v) 
 			{
 				showHomeServiceSetting();
 			}
 		});
 		
+		virtualMachine.setOnClickListener(new OnClickListener()
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				showVirtualMachineSetting();
+				
+			}
+		});
+		
+		
+		defaultConnectSetting.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+				builder.setTitle("设置默认连接：");
+				final View view=layoutInflater.inflate(R.layout.defaultconnectsetting, null);
+				
+				RadioGroup conGroup = (RadioGroup) view.findViewById(R.id.defaultSetting);
+				radioButtonRemote = (RadioButton) view.findViewById(R.id.remoteCon);
+				radioButtonFamily = (RadioButton) view.findViewById(R.id.familyCon);
+				
+				radioButtonFamily.setChecked(true);
+				builder.setView(view);
+				
+				conGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() 
+				{
+					
+					@Override
+					public void onCheckedChanged(RadioGroup group, int checkedId)
+					{
+						// TODO Auto-generated method stub
+						if(checkedId == radioButtonRemote.getId())
+						{
+							connectionIP = getRemotePreferences.getString("remoteIP", "0000");
+							connectionPwd = getRemotePreferences.getString("remotePassword", "0000");
+							TouchFlag.getInstance().setIp(connectionIP);
+							TouchFlag.getInstance().setPwd(connectionPwd);
+							
+							vncEditor.putString("IP", connectionIP);
+							vncEditor.putString("password", connectionPwd);
+							vncEditor.commit();
+						}
+						if(checkedId == radioButtonFamily.getId())
+						{
+							connectionIP = sharedPreferences.getString("homeServiceIp", "0000");
+							connectionPwd = sharedPreferences.getString("homeServicePwd", "0000");
+							TouchFlag.getInstance().setIp(connectionIP);
+							TouchFlag.getInstance().setPwd(connectionPwd);
+
+							vncEditor.putString("IP", connectionIP);
+							vncEditor.putString("password", connectionPwd);
+							vncEditor.commit();
+						}
+					}
+				});
+				
+				
+				builder.setPositiveButton("保存", new DialogInterface.OnClickListener()
+				{ 
+		            public void onClick(DialogInterface dialog, int i) 
+		            { 
+		            	Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_SHORT).show();
+		            	dialog.dismiss();
+		            }
+				});
+				builder.show();
+			}
+		});
 	}
-	private void showProxyServerSetting()
+	public Handler handler=new Handler()
 	{
-		LayoutInflater layoutInflater=LayoutInflater.from(getActivity());
-		 View textEntryView=layoutInflater.inflate(R.layout.proxyserver_setting_dialog, null);
-		  final EditText mEtProxyServerIp=(EditText) textEntryView.findViewById(R.id.proxyServerIp);
-		 final EditText mEtproxyServerPort=(EditText) textEntryView.findViewById(R.id.proxyServerPort);
-		
-		AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
-		builder.setTitle("配置代理服务器：");
-		//builder.setIcon(R.drawable.feed);
-		
-		
-		SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
-		String proxyIpAdress=sharedPreferences.getString("proxyIpAdress",null);
-		int proxyPortNumber=sharedPreferences.getInt("proxyPortNumber",0);
-		if(proxyIpAdress!=null)
-		{	
-			mEtProxyServerIp.setText(proxyIpAdress);
-			mEtproxyServerPort.setText(String.valueOf(proxyPortNumber));
+		public void handleMessage(android.os.Message msg)
+		{
+				switch (msg.what)
+				{
+					case 0:
+						Toast.makeText(getActivity(), "对不起，家庭服务终端拒绝连接", Toast.LENGTH_SHORT).show();
+						binderInitListData();
+						break;
+					case 1:
+						Toast.makeText(getActivity(), "对不起，家庭服务终端已关闭", Toast.LENGTH_LONG).show();
+						binderInitListData();
+						break;
+					case 2:
+						hardDiskStr=msg.getData().getString("msg");
+						if("".equals(hardDiskStr)||hardDiskStr==null)
+						{
+							Toast.makeText(getActivity(), "没有硬盘可供操作!", Toast.LENGTH_LONG).show();
+						}
+						else if("error".equals(hardDiskStr))
+						{
+							Toast.makeText(getActivity(), "获取硬盘符失败", Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+							SharedPreferences.Editor editor=sharedPreferences.edit();
+			            	editor.putString("initHardDiskStr", hardDiskStr);
+			            	editor.commit();
+							content_hardDisk=hardDiskStr.split(",");
+							binderListData(content_hardDisk);
+						}
+						break;
+					case 3:
+						String str=msg.getData().getString("msg");
+						
+						if("successadd".equals(str))
+						{
+							Toast.makeText(getActivity(), "添加共享成功!", Toast.LENGTH_SHORT).show();
+						}
+						else if("successdelete".equals(str))
+						{
+							Toast.makeText(getActivity(), "删除共享成功!", Toast.LENGTH_SHORT).show();
+						}
+						else
+						{
+							Toast.makeText(getActivity(), "对不起，操作失败!", Toast.LENGTH_SHORT).show();
+						}
+						
+						break;
+					case 5:
+						Toast.makeText(getActivity(), "对不起，连接家庭服务终端发生错误", Toast.LENGTH_LONG).show();
+						binderInitListData();
+						break;
+					case 6:
+						Toast.makeText(getActivity(), "对不起，连接家庭服务终端发生错误,操作失败", Toast.LENGTH_LONG).show();
+						break;
+					default:
+						break;
+				}
 		}
+
 		
-		builder.setView(textEntryView);
+		
+	};
+	
+	private void binderListData(String[] content_hardDisk)
+	{
+		cleanListView();
+		HardDiskItem hardDiskItem;
+		boolean isHaveAuthority;
+		for (int i = 0; i < content_hardDisk.length; i++)
+		{
+			String[] temp=content_hardDisk[i].split("-");
+			String hardDiskName=temp[0];
+			
+			if(Integer.valueOf(temp[1])==0)
+				isHaveAuthority=true;
+			else
+				isHaveAuthority=false;
+			hardDiskItem=new HardDiskItem(hardDiskName, R.drawable.harddisk_item,isHaveAuthority);
+			hardDiskList.add(hardDiskItem);
+		}
+		adapter.notifyDataSetChanged();
+		listView.setVisibility(View.VISIBLE);
+	}
+	
+	//选择默认盘符进行显示
+	private void binderInitListData()
+	{
+		cleanListView();
+		HardDiskItem hardDiskItem;
+		String hardDiskStr=sharedPreferences.getString("initHardDiskStr", "默认盘1-0,默认盘2-0");
+		String[] content_hardDisk=hardDiskStr.split(",");
+		boolean isHaveAuthority;
+		for (int i = 0; i < content_hardDisk.length; i++)
+		{
+			String[] temp=content_hardDisk[i].split("-");
+			String hardDiskName=temp[0];
+			
+			if(Integer.valueOf(temp[1])==0)
+				isHaveAuthority=true;
+			else
+				isHaveAuthority=false;
+			hardDiskItem=new HardDiskItem(hardDiskName, R.drawable.harddisk_item,isHaveAuthority);
+			hardDiskList.add(hardDiskItem);
+		}
+		adapter.notifyDataSetChanged();
+		listView.setVisibility(View.VISIBLE);
+		
+	}
+
+	private void cleanListView() 
+	{
+		int size=hardDiskList.size();
+		if(size>0)
+		{
+			hardDiskList.removeAll(hardDiskList);
+			adapter.notifyDataSetChanged();
+			//listView.setAdapter(adapter);
+		}
+	}
+	
+	private void showVirtualMachineSetting()
+	{
+		View view=layoutInflater.inflate(R.layout.virtualmachine_setting_dialog, null);
+		final EditText mEtUserName=(EditText) view.findViewById(R.id.username);
+		final EditText mEtPassWord=(EditText) view.findViewById(R.id.password);	
+		AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+		builder.setTitle("配置用户名密码：");
+		String userName=sharedPreferences.getString("userName",null);
+		String passWord=sharedPreferences.getString("passWord",null);
+		if(userName!=null)
+		{
+			mEtUserName.setText(userName);
+			mEtPassWord.setText(passWord);
+		}
+		builder.setView(view);
 		builder.setPositiveButton("取消", new DialogInterface.OnClickListener() 
 		{ 
             public void onClick(DialogInterface dialog, int i)
@@ -102,19 +338,17 @@ public class SettingFragment extends Fragment
 		{ 
             public void onClick(DialogInterface dialog, int i) 
             { 
-                   
-               String proxyServerIp=mEtProxyServerIp.getText().toString();
-               String proxyServerPort=mEtproxyServerPort.getText().toString();
-               if(SettingFragment.isStringNull(proxyServerIp)||SettingFragment.isStringNull(proxyServerPort))
+               String username=mEtUserName.getText().toString();
+               String password=mEtPassWord.getText().toString();
+               if(StringUtil.isNullString(username)||StringUtil.isNullString(password))
                {
             	   Toast.makeText(getActivity(), "保存失败，输入不能为空", Toast.LENGTH_LONG).show();
                }
                else
                {
-            	   SharedPreferences sharedConfigInfo=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
-            	   SharedPreferences.Editor editor=sharedConfigInfo.edit();
-            	   editor.putString("proxyIpAdress", proxyServerIp);
-            	   editor.putInt("proxyPortNumber", Integer.valueOf(proxyServerPort));
+            	   SharedPreferences.Editor editor=sharedPreferences.edit();
+            	   editor.putString("userName", username);
+            	   editor.putString("passWord",password);
             	   if(editor.commit())
             	   {
             		   Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_LONG).show();
@@ -129,16 +363,119 @@ public class SettingFragment extends Fragment
 	
 		builder.show();
 	}
-	
+	private void showProxyServerSetting()
+	{
+		View textEntryView=layoutInflater.inflate(R.layout.proxyserver_setting_dialog, null);
+		final EditText mEtProxyServerIp=(EditText) textEntryView.findViewById(R.id.proxyServerIp);
+		final EditText mEtproxyServerPort=(EditText) textEntryView.findViewById(R.id.proxyServerPort);		
+		AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+		builder.setTitle("配置代理服务器：");
+		String proxyIpAdress=sharedPreferences.getString("proxyIpAdress",null);
+		int proxyPortNumber=sharedPreferences.getInt("proxyPortNumber",0);
+		if(proxyIpAdress!=null)
+		{	
+			mEtProxyServerIp.setText(proxyIpAdress);
+			mEtproxyServerPort.setText(String.valueOf(proxyPortNumber));
+		}
+		builder.setView(textEntryView);
+		builder.setPositiveButton("取消", new DialogInterface.OnClickListener() 
+		{ 
+            public void onClick(DialogInterface dialog, int i)
+            { 
+            	dialog.dismiss();	
+            } 
+        }); 
+		builder.setNegativeButton("保存", new DialogInterface.OnClickListener()
+		{ 
+            public void onClick(DialogInterface dialog, int i) 
+            {       
+               String proxyServerIp=mEtProxyServerIp.getText().toString();
+               String proxyServerPort=mEtproxyServerPort.getText().toString();
+               if(StringUtil.isNullString(proxyServerIp)||StringUtil.isNullString(proxyServerPort))
+               {
+            	   Toast.makeText(getActivity(), "保存失败，输入不能为空", Toast.LENGTH_LONG).show();
+               }
+               else if(!StringUtil.isIPAddress(proxyServerIp))
+               {
+            	   Toast.makeText(getActivity(), "对不起，你输入的IP地址格式不正确", Toast.LENGTH_LONG).show();
+               }
+               else
+               {
+            	   SharedPreferences.Editor editor=sharedPreferences.edit();
+            	   editor.putString("proxyIpAdress", proxyServerIp);
+            	   editor.putInt("proxyPortNumber", Integer.valueOf(proxyServerPort));
+            	   if(editor.commit())
+            	   {
+            		   Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_LONG).show();
+            	   }
+            	   else
+            	   {
+            		   Toast.makeText(getActivity(), "保存失败，请重新配置", Toast.LENGTH_LONG).show();
+            	   }
+               }
+            } 
+        }); 
+		builder.show();
+	}
+	//显示家庭服务终端设置界面
 	protected void showHomeServiceSetting() 
 	{
-		LayoutInflater layoutInflater=LayoutInflater.from(getActivity());
 		final View textEntryView=layoutInflater.inflate(R.layout.homeservice_setting_dialog, null);
 		final EditText mEtHomeServiceIp=(EditText) textEntryView.findViewById(R.id.homeServiceIp);
 		final EditText mEtHomeServicePwd=(EditText) textEntryView.findViewById(R.id.homeServicePwd);
 		final EditText mEtHomeServicePort=(EditText) textEntryView.findViewById(R.id.homeServicePort);
-
-		SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
+		final TextView showHardDisk=(TextView) textEntryView.findViewById(R.id.showListView);
+		final ImageView isShowListView =(ImageView) textEntryView.findViewById(R.id.is_showListView);
+		listView=(ListView) textEntryView.findViewById(R.id.authority_list);
+		adapter = new AuthorityListAdapter(getActivity(),hardDiskList);
+		listView.setAdapter(adapter);
+		
+		showHardDisk.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v)
+			{
+				if(listView.getVisibility()==View.VISIBLE)
+				{
+					isShowListView.setImageResource(R.drawable.list_right);
+					listView.setVisibility(View.INVISIBLE);
+				}
+				else
+				{
+					isShowListView.setImageResource(R.drawable.list_dowm);
+					SendMsgThread getHardDiskMsg=new SendMsgThread(handler, getActivity(), "harddrive");
+					Thread thread=new Thread(getHardDiskMsg);
+					thread.start();
+				}
+			}
+		});
+		
+		
+		
+		listView.setOnItemClickListener(new OnItemClickListener() {  
+			  
+            @Override  
+            public void onItemClick(AdapterView<?> parent, View view,  
+                    int position, long id) {  
+        
+                boolean checked = hardDiskList.get(position).isChecked();  
+                if (!checked)
+                {  
+                	hardDiskList.get(position).setChecked(true);  
+                	SendMsgAuthority sendMsgScreen = new SendMsgAuthority(handler,getActivity(), position+",yesroot");
+    				Thread threadScreen = new Thread(sendMsgScreen);
+    				threadScreen.start();
+                }
+                else 
+                {  
+                	hardDiskList.get(position).setChecked(false);
+                	SendMsgAuthority sendMsgScreen2 = new SendMsgAuthority(handler,getActivity(), position+",deleteroot");
+    				Thread threadScreen2 = new Thread(sendMsgScreen2);
+    				threadScreen2.start();
+                }  
+                adapter.notifyDataSetChanged();  
+            }  
+        });  
 		String homeIpAdress=sharedPreferences.getString("homeServiceIp",null);
 		int homePortNumber=sharedPreferences.getInt("homeServicePortNumber",0);
 		if(homeIpAdress!=null)
@@ -146,10 +483,8 @@ public class SettingFragment extends Fragment
 			mEtHomeServiceIp.setText(homeIpAdress);
 			mEtHomeServicePort.setText(String.valueOf(homePortNumber));
 		}
-		
 		AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
 		builder.setTitle("配置家庭终端：");
-		//builder.setIcon(R.drawable.feed);
 		builder.setView(textEntryView);
 		builder.setPositiveButton("取消", new DialogInterface.OnClickListener() 
 		{ 
@@ -166,37 +501,40 @@ public class SettingFragment extends Fragment
                String homeServiceIp=mEtHomeServiceIp.getText().toString();
                String homeServicePwd=mEtHomeServicePwd.getText().toString();
                String homeServicePort=mEtHomeServicePort.getText().toString();
-               if(SettingFragment.isStringNull(homeServiceIp)||SettingFragment.isStringNull(homeServicePort))
+               if(StringUtil.isNullString(homeServiceIp)||StringUtil.isNullString(homeServicePort))
                {
             	   Toast.makeText(getActivity(), "保存失败，输入不能为空", Toast.LENGTH_LONG).show();
                }
+               else if(!StringUtil.isIPAddress(homeServiceIp))
+               {
+            	   Toast.makeText(getActivity(), "对不起，你输入的IP地址格式不正确", Toast.LENGTH_LONG).show();
+               }
                else
                {
-            	   SharedPreferences sharedConfigInfo=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
-            	   SharedPreferences.Editor editor=sharedConfigInfo.edit();
+            	   SharedPreferences.Editor editor=sharedPreferences.edit();
             	   editor.putString("homeServiceIp", homeServiceIp);
             	   editor.putString("homeServicePwd", homeServicePwd);
             	   editor.putInt("homeServicePortNumber", Integer.valueOf(homeServicePort));
             	   if(editor.commit())
             	   {
             		   Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_LONG).show();
+            		   connectionIP = sharedPreferences.getString("homeServiceIp", "0000");
+       				   connectionPwd = sharedPreferences.getString("homeServicePwd", "0000");
+       				   TouchFlag.getInstance().setIp(connectionIP);
+       				   TouchFlag.getInstance().setPwd(connectionPwd);
+       				
+       				
+       				   vncEditor.putString("IP", connectionIP);
+       				   vncEditor.putString("password", connectionPwd);
+       				   vncEditor.commit();
             	   }
             	   else
             	   {
             		   Toast.makeText(getActivity(), "保存失败，请重新配置", Toast.LENGTH_LONG).show();
             	   }
-               }
-            } 
+               }            } 
         }); 
-	
 		builder.show();
-		
 	}
-	private static boolean isStringNull(String str)
-	{
-		if(str==null||"".equals(str))
-			return true;
-		else
-			return false;
-	}
+	
 }

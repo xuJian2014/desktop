@@ -3,6 +3,7 @@ package com.example.touch;
 
 
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -63,6 +64,7 @@ public class ScollListener implements OnTouchListener{
 		
 		if (wheelFinal != 0)
 		{
+			Log.d("debug", wheelFinal+"");
 			MouseWheelAction mouseWheel = new MouseWheelAction((byte)wheelFinal);
 			ConnectServer.getInstance().sendAction(mouseWheel);
 		}

@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.Entity.RequestMesg;
 import com.example.Entity.ResponseMesg;
 import com.example.desktop.R;
+import com.example.utilTool.StringUtil;
 
 public class RegisterFragment extends Fragment
 {
@@ -56,11 +57,13 @@ public class RegisterFragment extends Fragment
 			switch (msg.what)
 			{
 			case 0:
-				mDialog.cancel();
+				if(mDialog!=null)
+					mDialog.cancel();
 				Toast.makeText(getActivity(), "未知主机错误，重新配置服务器IP", Toast.LENGTH_LONG).show();
 				break;
 			case 1:
-				mDialog.cancel();
+				if(mDialog!=null)
+					mDialog.cancel();
 				Toast.makeText(getActivity(), "连接代理服务器超时", Toast.LENGTH_LONG).show();
 				break;
 			case 2:
@@ -70,19 +73,23 @@ public class RegisterFragment extends Fragment
 	             response_thread.start();
 	             break;
 			case 3:
-				mDialog.cancel();
+				if(mDialog!=null)
+					mDialog.cancel();
 				Toast.makeText(getActivity(), "对不起，不能重复注册", Toast.LENGTH_LONG).show();
 				break;
 			case 4:
-				mDialog.cancel();
+				if(mDialog!=null)
+					mDialog.cancel();
 				Toast.makeText(getActivity(), "恭喜您，注册成功", Toast.LENGTH_LONG).show();
 				break;
 			case 5:
-				mDialog.cancel();
+				if(mDialog!=null)
+					mDialog.cancel();
 				Toast.makeText(getActivity(), "对不起，注册失败,返回硬盘IP地址错误", Toast.LENGTH_LONG).show();
 				break;
 			case 6:
-				mDialog.cancel();
+				if(mDialog!=null)
+					mDialog.cancel();
 				Toast.makeText(getActivity(), "对不起，代理服务器返回信息出现未知错误", Toast.LENGTH_LONG).show();
 				break;
 			default:
@@ -99,18 +106,29 @@ public class RegisterFragment extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-				 mDialog = new ProgressDialog(getActivity());  
-	             mDialog.setTitle("注册");  
-	             mDialog.setMessage("正在注册，请稍后...");  
-	             mDialog.show(); 
 	             String userName=mEtUserName.getText().toString().trim();
 	             String passWord=mEtPassWord.getText().toString().trim();
 	             String vmName=mEtVmName.getText().toString().trim();
-	             String homeServiceIp=mEtHomeServiceIp.getText().toString().trim();
-	             requestMesg=new RequestMesg(userName, passWord, vmName, homeServiceIp, 1, 7000, 0);
-	             Client client=new Client(requestMesg);
-	             Thread request_thread=new Thread(client);
-	             request_thread.start();
+	             String homeServiceIp=mEtHomeServiceIp.getText().toString().trim(); 
+	             if(StringUtil.isNullString(userName)||StringUtil.isNullString(passWord)||StringUtil.isNullString(vmName)||StringUtil.isNullString(homeServiceIp))
+	             {
+	            	 Toast.makeText(getActivity(), "对不起，你输入的信息不完整", Toast.LENGTH_SHORT).show();
+	             }
+	             else if(!StringUtil.isIPAddress(homeServiceIp))
+	             {
+	            	 Toast.makeText(getActivity(), "对不起，你输入的IP地址格式不正确", Toast.LENGTH_SHORT).show();
+	             }
+	             else
+	             {
+	            	 mDialog = new ProgressDialog(getActivity());  
+		             mDialog.setTitle("注册");  
+		             mDialog.setMessage("正在注册，请稍后...");  
+		             mDialog.show(); 
+	            	  requestMesg=new RequestMesg(userName, passWord, vmName, homeServiceIp, 1, 7000, 0);
+	 	             Client client=new Client(requestMesg);
+	 	             Thread request_thread=new Thread(client);
+	 	             request_thread.start();
+	             }
 			}
 		});
 	}

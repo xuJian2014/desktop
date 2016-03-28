@@ -126,9 +126,9 @@
             android:keyLabel="0" />
 
         <Key
-            android:codes="32"
+            android:codes="-3"
             android:keyEdgeFlags="right"
-            android:keyLabel="Space" />
+            android:keyLabel="返回" />
     </Row>
 
     <Row>
@@ -151,13 +151,13 @@
             android:keyLabel="Enter" />
 
         <Key
-            android:codes="154"
-            android:keyLabel="退出" />
+            android:codes="32"
+            android:keyLabel="Space" />
 
         <Key
-            android:codes="-3"
+            android:codes="154"
             android:keyEdgeFlags="right"
-            android:keyLabel="返回" />
+            android:keyLabel="退出" />
     </Row>
 
 </Keyboard>

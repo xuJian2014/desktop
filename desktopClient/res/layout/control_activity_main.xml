@@ -4,13 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Control_MainActivity" >
+    tools:context=".Control_MainActivity" 
+    android:background="#ffF6F2ED">
 
     <GridView
         android:id="@+id/grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#EAEAEA"
+       
         android:gravity="center"
         android:horizontalSpacing="2dp"
         android:numColumns="2"

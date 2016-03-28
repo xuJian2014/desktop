@@ -18,7 +18,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.example.fragment.HomeControlFragment;
 import com.example.fragment.HomeFragment;
 import com.example.fragment.LoginFragment;
@@ -90,6 +89,16 @@ public class MainActivity extends FragmentActivity
 			editor.putString("homeServiceIp", "192.168.112");
 			editor.putInt("homeServicePortNumber", 8888);
 		}
+		if(!sharedConfigInfo.contains("userName"))
+		{
+			editor.putString("userName", "初始用户名，请重新配置");
+			editor.putString("passWord", "初始密码，请重新设置");
+		}
+		if(!sharedConfigInfo.contains("initHardDiskStr"))
+		{
+			editor.putString("initHardDiskStr", "默认盘1-0,默认盘2-0");
+		}
+		
 		if(editor.commit())  
 		{
 			Toast.makeText(MainActivity.this, "参数初始化成功", Toast.LENGTH_SHORT).show();

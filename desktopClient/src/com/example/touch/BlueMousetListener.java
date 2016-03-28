@@ -27,12 +27,12 @@ public class BlueMousetListener implements OnGenericMotionListener{
    	   {
    		   switch (event.getAction()) {
    		   
-   		   //婊氳疆鍙互鐢�
+   		   //滚轮可以用
    	        case MotionEvent.ACTION_SCROLL:
    	        	if( event.getAxisValue(MotionEvent.AXIS_VSCROLL) < 0.0f){	
    	        		MouseWheelAction mouseWheel = new MouseWheelAction((byte)1);
        				ConnectServer.getInstance().sendAction(mouseWheel);
-       				//event.setLocation(50f, 50f);
+       				event.setLocation(50f, 50f);
    	        	}
    	        	else if(event.getAxisValue(MotionEvent.AXIS_VSCROLL) > 0.0f)
    	        	{

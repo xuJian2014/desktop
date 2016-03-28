@@ -147,13 +147,13 @@ public class VncCanvas extends ImageView {
 		this.pendingColorModel = COLORMODEL.valueOf(bean.getColorModel());
 
 		// Startup the RFB thread with a nifty progess dialog
-		final ProgressDialog pd = ProgressDialog.show(getContext(), "Connecting...", "Establishing handshake.\nPlease wait...", true, true, new DialogInterface.OnCancelListener() {
+		final ProgressDialog pd = ProgressDialog.show(getContext(), "远程桌面连接中...", "正在建立....\n请等待...", true, true, new DialogInterface.OnCancelListener() {
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				closeConnection();
 				handler.post(new Runnable() {
 					public void run() {
-						Utils.showErrorMessage(getContext(), "VNC connection aborted!");
+						Utils.showErrorMessage(getContext(), "远程桌面连接终止!");
 					}
 				});
 			}
@@ -166,7 +166,7 @@ public class VncCanvas extends ImageView {
 					doProtocolInitialisation(display.getWidth(), display.getHeight());
 					handler.post(new Runnable() {
 						public void run() {
-							pd.setMessage("Downloading first frame.\nPlease wait...");
+							pd.setMessage("正在获取远程桌面.\n请等待...");
 						}
 					});
 					processNormalProtocol(getContext(), pd, setModes);
@@ -184,11 +184,11 @@ public class VncCanvas extends ImageView {
 							// Instantiating an alert dialog here doesn't work
 							// because we are out of memory. :(
 						} else {
-							String error = "VNC connection failed!";
+							String error = "远程桌面连接失败！"+"<br>"+"请确认服务端成功启动，以及客户端登录信息输入无误！";
 							if (e.getMessage() != null && (e.getMessage().indexOf("authentication") > -1)) {
-								error = "VNC authentication failed!";
+								error = "远程桌面连接认证失败！"+"<br>"+"请重新确认客户端登录信息！";
  							}
-							final String error_ = error + "<br>" + e.getLocalizedMessage();
+							final String error_ = error + "<br>";
 							handler.post(new Runnable() {
 								public void run() {
 									Utils.showFatalErrorMessage(getContext(), error_);
@@ -716,23 +716,33 @@ public class VncCanvas extends ImageView {
 	}
 
 	public void showConnectionInfo() {
+		
+		String mode= rfb.desktopName;
+		
 		String msg = rfb.desktopName;
 		int idx = rfb.desktopName.indexOf("(");
+		
+		int index =rfb.desktopName.indexOf("- ");
+		
 		if (idx > -1) {
 			// Breakup actual desktop name from IP addresses for improved
 			// readability
 			String dn = rfb.desktopName.substring(0, idx).trim();
 			String ip = rfb.desktopName.substring(idx).trim();
+			mode = rfb.desktopName.substring(index).trim();
 			msg = dn + "\n" + ip;
 		}
 		msg += "\n" + rfb.framebufferWidth + "x" + rfb.framebufferHeight;
 		String enc = getEncoding();
 		// Encoding might not be set when we display this message
 		if (enc != null && !enc.equals(""))
-			msg += ", " + getEncoding() + " encoding, " + colorModel.toString();
+			msg += ", " + getEncoding() + this.getResources().getString(R.string.bianma) +", " + colorModel.toString();
 		else
 			msg += ", " + colorModel.toString();
 		Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+		
+		Log.i("connect info:", msg);
+		Log.i("Remote Mode:", mode);
 	}
 
 	private String getEncoding() {

@@ -1,8 +1,10 @@
 package com.example.controller;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -11,7 +13,8 @@ import com.example.action.WindowControlAction;
 import com.example.connection.ConnectServer;
 import com.example.desktop.R;
 
-public class WindowActivity extends Activity {
+public class WindowActivity extends Activity
+{
 
 	private Button windowMax;
 	private Button windowMin;
@@ -21,10 +24,19 @@ public class WindowActivity extends Activity {
 	private Button windowDesktop;
 
 	private OnBtnClickListenerImpl listener;
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_window);
+		getActionBar().setDisplayUseLogoEnabled(true);
+		getActionBar().setIcon(null);
+		getActionBar().setDisplayOptions(
+				ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME
+						| ActionBar.DISPLAY_HOME_AS_UP);
+		getActionBar().setDisplayUseLogoEnabled(false);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		listener = new OnBtnClickListenerImpl();
 
@@ -47,52 +59,59 @@ public class WindowActivity extends Activity {
 		windowDesktop.setOnClickListener(listener);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.window, menu);
-		return true;
-	}
 
-	protected class OnBtnClickListenerImpl implements OnClickListener {
+	protected class OnBtnClickListenerImpl implements OnClickListener
+	{
 
 		@Override
-		public void onClick(View view) {
+		public void onClick(View view)
+		{
 			WindowControlAction action = null;
-			switch (view.getId()) {
-				case R.id.ButtonWindowMax :
-					action = new WindowControlAction(
-							WindowControlAction.WIN_MAX);
-					break;
-				case R.id.ButtonWindowMin :
-					action = new WindowControlAction(
-							WindowControlAction.WIN_MIN);
-					break;
-				case R.id.ButtonWindowSwitchRight :
-					action = new WindowControlAction(
-							WindowControlAction.WIN_SWITCH_RIGHT);
-					break;
-				case R.id.ButtonWindowSwitchLeft :
-					action = new WindowControlAction(
-							WindowControlAction.WIN_SWITCH_LEFT);
-					break;
-				case R.id.ButtonWindowClose :
-					action = new WindowControlAction(
-							WindowControlAction.WIN_CLOSE);
-					break;
-				case R.id.ButtonWindowDesktop :
-					action = new WindowControlAction(
-							WindowControlAction.WIN_DESKTOP);
-					break;
-				default :
-					break;
+			switch (view.getId())
+			{
+			case R.id.ButtonWindowMax:
+				action = new WindowControlAction(WindowControlAction.WIN_MAX);
+				break;
+			case R.id.ButtonWindowMin:
+				action = new WindowControlAction(WindowControlAction.WIN_MIN);
+				break;
+			case R.id.ButtonWindowSwitchRight:
+				action = new WindowControlAction(
+						WindowControlAction.WIN_SWITCH_RIGHT);
+				break;
+			case R.id.ButtonWindowSwitchLeft:
+				action = new WindowControlAction(
+						WindowControlAction.WIN_SWITCH_LEFT);
+				break;
+			case R.id.ButtonWindowClose:
+				action = new WindowControlAction(WindowControlAction.WIN_CLOSE);
+				break;
+			case R.id.ButtonWindowDesktop:
+				action = new WindowControlAction(
+						WindowControlAction.WIN_DESKTOP);
+				break;
+			default:
+				break;
 			}
-			if (action != null) {
-				if (ConnectServer.getInstance() != null) {
+			if (action != null)
+			{
+				if (ConnectServer.getInstance() != null)
+				{
 					ConnectServer.getInstance().sendAction(action);
 				}
 			}
 		}
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (item.getItemId() == android.R.id.home)
+		{
+			finish();
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
 }

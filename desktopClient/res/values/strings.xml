@@ -32,7 +32,7 @@
     <string name="show_setting_table_item_keymouse">桌面</string>
     <string name="show_setting_table_item_miracast">投影</string>
     <string name="show_setting_table_main_page">终端</string>
-    <string name="show_setting_table_item_setting">设置</string>
+    <string name="show_setting_table_item_setting">控制</string>
     <string name="show_setting_table_item_back">手柄</string>
     <string name="show_setting_table_item_home">主页</string>
     <string name="show_setting_table_item_exit_touch">退出</string>
@@ -219,10 +219,10 @@
     <string name="media_control">播放器控制</string>
     <string name="system_control">系统音量控制</string>
 
-    <drawable name="color_normal">#33B6EA</drawable>
-    <drawable name="color_pressed">#6CA6CD</drawable>
-    <drawable name="grid_item_normal">#FFFFFF</drawable>
-    <drawable name="grid_item_pressed">#CDC9C9</drawable>
+    <drawable name="color_normal">#ffffff</drawable>
+    <drawable name="color_pressed">#E8ECEF</drawable>
+    <drawable name="grid_item_normal">#ffffff</drawable>
+    <drawable name="grid_item_pressed">#E8ECEF</drawable>
 
     <string name="title_activity_window">WindowActivity</string>
     <string name="title_activity_power">PowerActivity</string>

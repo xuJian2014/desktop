@@ -4,18 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".WindowActivity" >
+    tools:context=".WindowActivity" 
+    android:background="#ffF6F2ED" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
 
         <Button
             android:id="@+id/ButtonWindowMax"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
             android:layout_weight="0.5"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/window_max" />
@@ -23,9 +25,9 @@
         <Button
             android:id="@+id/ButtonWindowMin"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
             android:layout_weight="0.5"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/window_min" />
@@ -33,14 +35,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
 
         <Button
             android:id="@+id/ButtonWindowSwitchLeft"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
             android:layout_weight="0.5"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/window_switch_left" />
@@ -48,9 +51,9 @@
         <Button
             android:id="@+id/ButtonWindowSwitchRight"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
             android:layout_weight="0.5"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/window_switch_right" />
@@ -58,14 +61,15 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
 
         <Button
             android:id="@+id/ButtonWindowClose"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
             android:layout_weight="0.5"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/window_close" />
@@ -73,9 +77,9 @@
         <Button
             android:id="@+id/ButtonWindowDesktop"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
-            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="1dp"
             android:layout_weight="0.5"
             android:background="@drawable/control_btn_click_normal"
             android:text="@string/window_desktop" />

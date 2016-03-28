@@ -40,6 +40,9 @@ import com.example.Entity.ResponseMesg;
 import com.example.controller.Control_MainActivity;
 import com.example.desktop.R;
 import com.example.touch.ChoiceActivity;
+import com.example.touch.GameActivity;
+import com.example.touch.KeyboardActivity;
+import com.example.touch.MouseActivity;
 import com.example.utilTool.HomeForScreenThread;
 import com.example.utilTool.MyGridAdapter;
 import com.example.utilTool.MyGridView;
@@ -145,16 +148,16 @@ public class HomeFragment extends Fragment
 						builder.create().show();*/
 						break;
 					case 4:
-						startChoiceRemoteFamilyActivity("game");
+						startActivity(new Intent(getActivity(), GameActivity.class));
 						break;
 					case 5:
 						startActivity(new Intent(getActivity(), Control_MainActivity.class));
 						break;
 					case 6:
-						startChoiceRemoteFamilyActivity("mouse");
+						startActivity(new Intent(getActivity(), MouseActivity.class));
 						break;
 					case 7:
-						startChoiceRemoteFamilyActivity("keyboard");
+						startActivity(new Intent(getActivity(), KeyboardActivity.class));
 						break;
 					default:
 						break;
@@ -309,7 +312,7 @@ public class HomeFragment extends Fragment
 					break;
 				case 11:
 					String screenStr=msg.getData().getString("msg");
-					if(screenStr.equals("error")||null==screenStr)
+					if(screenStr.equals("error")||null==screenStr||"".equals(screenStr))
 					{
 						Toast.makeText(getActivity(), "获取屏幕失败", Toast.LENGTH_LONG).show();
 					}
