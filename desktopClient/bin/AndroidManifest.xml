@@ -87,9 +87,8 @@
         
         <activity android:name="com.example.controller.BrowserActivity"></activity>
         <activity android:name="com.example.controller.Control_MainActivity"></activity>
-        <activity android:name="com.example.controller.SystemActivity"></activity>
         <activity android:name="com.example.controller.ProjectionActivity"></activity>
-        <activity android:name="com.example.controller.WindowActivity"></activity>
+        
         
     </application>
 

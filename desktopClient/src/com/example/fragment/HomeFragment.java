@@ -182,12 +182,13 @@ public class HomeFragment extends Fragment
 	/**
 	 * 启动"终端"选择页面
 	 */
-	private void startChoiceRemoteFamilyActivity(String chooseFlag){
+	/*private void startChoiceRemoteFamilyActivity(String chooseFlag){
     	Intent iChoice = new Intent();
 		iChoice.setClass(getActivity(), ChoiceActivity.class);
 		iChoice.putExtra("choiceFlag", chooseFlag);
 		startActivity(iChoice);
-    }
+    }*/
+	
 	/*
 	 * 检查代理服务器IP地址是否连通
 	 */

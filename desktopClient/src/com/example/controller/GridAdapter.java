@@ -22,12 +22,6 @@ public class GridAdapter extends BaseAdapter {
 	// private final Context mContext;
 	LinearLayout.LayoutParams params;
 	
-	public int[] imgs_init={
-			R.drawable.control_browse,
-			R.drawable.control_projection,
-			R.drawable.control_change,
-			R.drawable.control_setting,
-			};
 
 	public GridAdapter(Context context, ArrayList<String> nameList,
 			ArrayList<Integer> mDrawableList2) {

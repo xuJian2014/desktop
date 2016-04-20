@@ -25,23 +25,7 @@
         <requestFocus />
     </EditText>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="密码" />
-
-    <EditText
-        android:id="@+id/homeServicePwd"
-        android:hint="请输入密码"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="14dp" 
-        android:inputType="textPassword">
-    </EditText>
-
-    <TextView
+     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,9 +38,61 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="14dp"
         android:layout_marginRight="14dp"
-        android:hint="请输入数字!"
+        android:hint=""
         android:inputType="number" />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="监视密码" />
+
+    <EditText
+        android:id="@+id/homeServicePwd"
+        android:hint=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp" 
+        android:inputType="textPassword">
+    </EditText>
+	
+    
+    
+     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="用户名" />
+
+    <EditText
+        android:id="@+id/homeServiceUserName"
+        android:hint=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp">
+        </EditText>
+	
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="密码" />
+
+    <EditText
+        android:id="@+id/homeServicePassWord"
+        android:hint=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp" 
+        android:inputType="textPassword">
+        </EditText>    
+   
     </LinearLayout>
+    
+    
  	<View style="@style/bg_line"/>
 
     <LinearLayout

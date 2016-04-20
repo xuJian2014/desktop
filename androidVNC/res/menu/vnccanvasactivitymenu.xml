@@ -36,19 +36,23 @@
                 </item>
                 <item
                     android:id="@+id/itemInputFitToScreen"
-                    
+                    android:visible="false"
                     android:title="@string/input_mode_fit_to_screen"/>
                 <item
                     android:id="@+id/itemInputPan"
+                   android:visible="false"
                     android:title="@string/input_mode_panning"/>
                 <item
                     android:id="@+id/itemInputMouse"
+                    android:visible="false"
                     android:title="@string/input_mode_mouse"/>
                 <item
                     android:id="@+id/itemInputTouchPanTrackballMouse"
+                    android:visible="false"
                     android:title="@string/input_mode_touchpad_pan_trackball_mouse"/>
                 <item
                     android:id="@+id/itemInputDPadPanTouchMouse"
+                    android:visible="false"
                     android:title="@string/input_mode_dpad_pan_touchpad_mouse"/>
             </group>
         </menu>

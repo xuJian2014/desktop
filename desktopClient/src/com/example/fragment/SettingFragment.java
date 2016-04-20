@@ -29,6 +29,7 @@ import com.example.touch.TouchFlag;
 import com.example.utilTool.AuthorityListAdapter;
 import com.example.utilTool.SendMsgAuthority;
 import com.example.utilTool.SendMsgThread;
+import com.example.utilTool.Send_homeService_info;
 import com.example.utilTool.StringUtil;
 
 
@@ -55,6 +56,10 @@ public class SettingFragment extends Fragment
 	
 	private RadioButton radioButtonRemote;
 	private RadioButton radioButtonFamily;
+	
+	private SharedPreferences checkIDPreferences;
+	private SharedPreferences.Editor checkIDEditor;
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -67,6 +72,8 @@ public class SettingFragment extends Fragment
 		getVNCPreferences = getActivity().getSharedPreferences("VNCConnect", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
 		vncEditor = getVNCPreferences.edit();
 
+		checkIDPreferences=getActivity().getSharedPreferences("checkdID", Context.MODE_PRIVATE);
+		checkIDEditor =checkIDPreferences.edit();				
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) 
@@ -136,13 +143,23 @@ public class SettingFragment extends Fragment
 				AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
 				builder.setTitle("设置默认连接：");
 				final View view=layoutInflater.inflate(R.layout.defaultconnectsetting, null);
+				builder.setView(view);
 				
 				RadioGroup conGroup = (RadioGroup) view.findViewById(R.id.defaultSetting);
 				radioButtonRemote = (RadioButton) view.findViewById(R.id.remoteCon);
 				radioButtonFamily = (RadioButton) view.findViewById(R.id.familyCon);
 				
-				radioButtonFamily.setChecked(true);
-				builder.setView(view);
+				//radioButtonFamily.setChecked(true);
+				long checkID;
+				checkID = checkIDPreferences.getLong("checkID", 0000);
+				if(checkID == radioButtonRemote.getId())
+				{
+					radioButtonRemote.setChecked(true);
+				}
+				else
+				{
+					radioButtonFamily.setChecked(true);
+				}
 				
 				conGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() 
 				{
@@ -161,6 +178,9 @@ public class SettingFragment extends Fragment
 							vncEditor.putString("IP", connectionIP);
 							vncEditor.putString("password", connectionPwd);
 							vncEditor.commit();
+							
+							checkIDEditor.putLong("checkID", checkedId);
+							checkIDEditor.commit();
 						}
 						if(checkedId == radioButtonFamily.getId())
 						{
@@ -172,6 +192,9 @@ public class SettingFragment extends Fragment
 							vncEditor.putString("IP", connectionIP);
 							vncEditor.putString("password", connectionPwd);
 							vncEditor.commit();
+							
+							checkIDEditor.putLong("checkID", checkedId);
+							checkIDEditor.commit();
 						}
 					}
 				});
@@ -181,6 +204,7 @@ public class SettingFragment extends Fragment
 				{ 
 		            public void onClick(DialogInterface dialog, int i) 
 		            { 
+		            	//System.out.println("connectionIP:"+connectionIP+"   connectionPwd:"+connectionPwd);
 		            	Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_SHORT).show();
 		            	dialog.dismiss();
 		            }
@@ -225,9 +249,13 @@ public class SettingFragment extends Fragment
 					case 3:
 						String str=msg.getData().getString("msg");
 						
-						if("successadd".equals(str))
+						if("successaddno".equals(str))
 						{
-							Toast.makeText(getActivity(), "添加共享成功!", Toast.LENGTH_SHORT).show();
+							Toast.makeText(getActivity(), "添加共享成功，挂载失败!", Toast.LENGTH_SHORT).show();
+						}
+						else if("successaddyes".equals(str))
+						{
+							Toast.makeText(getActivity(), "添加共享成功，挂载成功!", Toast.LENGTH_SHORT).show();
 						}
 						else if("successdelete".equals(str))
 						{
@@ -238,6 +266,17 @@ public class SettingFragment extends Fragment
 							Toast.makeText(getActivity(), "对不起，操作失败!", Toast.LENGTH_SHORT).show();
 						}
 						
+						break;
+					case 4:
+						String responserStr=msg.getData().getString("msg");
+						if("savesuccess".equals(responserStr))
+						{
+							Toast.makeText(getActivity(), "保存成功!", Toast.LENGTH_SHORT).show();
+						}
+						else
+						{
+							Toast.makeText(getActivity(), "操作失败!", Toast.LENGTH_SHORT).show();
+						}
 						break;
 					case 5:
 						Toast.makeText(getActivity(), "对不起，连接家庭服务终端发生错误", Toast.LENGTH_LONG).show();
@@ -422,15 +461,30 @@ public class SettingFragment extends Fragment
 	{
 		final View textEntryView=layoutInflater.inflate(R.layout.homeservice_setting_dialog, null);
 		final EditText mEtHomeServiceIp=(EditText) textEntryView.findViewById(R.id.homeServiceIp);
-		final EditText mEtHomeServicePwd=(EditText) textEntryView.findViewById(R.id.homeServicePwd);
 		final EditText mEtHomeServicePort=(EditText) textEntryView.findViewById(R.id.homeServicePort);
+		
+		//VNC服务器密码，即监视密码
+		final EditText mEtHomeServicePwd=(EditText) textEntryView.findViewById(R.id.homeServicePwd);
+		
+		
+		//万能盒子用户名和密码
+		final EditText mEtHomeServiceUserName=(EditText) textEntryView.findViewById(R.id.homeServiceUserName);
+		final EditText mEtHomeServicePassWord=(EditText) textEntryView.findViewById(R.id.homeServicePassWord);
+		
+		
 		final TextView showHardDisk=(TextView) textEntryView.findViewById(R.id.showListView);
 		final ImageView isShowListView =(ImageView) textEntryView.findViewById(R.id.is_showListView);
+		
+		
+		final String remoteIp=getRemotePreferences.getString("remoteIP", "0000");  
 		listView=(ListView) textEntryView.findViewById(R.id.authority_list);
 		adapter = new AuthorityListAdapter(getActivity(),hardDiskList);
 		listView.setAdapter(adapter);
 		
-		showHardDisk.setOnClickListener(new OnClickListener() {
+		
+		
+		showHardDisk.setOnClickListener(new OnClickListener()
+		{
 			
 			@Override
 			public void onClick(View v)
@@ -452,26 +506,33 @@ public class SettingFragment extends Fragment
 		
 		
 		
-		listView.setOnItemClickListener(new OnItemClickListener() {  
-			  
+		listView.setOnItemClickListener(new OnItemClickListener()
+		{  
+			
             @Override  
             public void onItemClick(AdapterView<?> parent, View view,  
-                    int position, long id) {  
+                    int position, long id) 
+            {  
         
                 boolean checked = hardDiskList.get(position).isChecked();  
-                if (!checked)
+                if (!checked && !"0000".equals(remoteIp))
                 {  
                 	hardDiskList.get(position).setChecked(true);  
-                	SendMsgAuthority sendMsgScreen = new SendMsgAuthority(handler,getActivity(), position+",yesroot");
+                	SendMsgAuthority sendMsgScreen = new SendMsgAuthority(handler,getActivity(), position+",yesroot,"+remoteIp);
     				Thread threadScreen = new Thread(sendMsgScreen);
     				threadScreen.start();
                 }
-                else 
-                {  
+                
+                else if(checked && !"0000".equals(remoteIp))
+                {
                 	hardDiskList.get(position).setChecked(false);
-                	SendMsgAuthority sendMsgScreen2 = new SendMsgAuthority(handler,getActivity(), position+",deleteroot");
+                	SendMsgAuthority sendMsgScreen2 = new SendMsgAuthority(handler,getActivity(), position+",deleteroot,"+remoteIp);
     				Thread threadScreen2 = new Thread(sendMsgScreen2);
     				threadScreen2.start();
+                }
+                else 
+                {  
+                	Toast.makeText(getActivity(), "对不起，远程虚拟机IP地址错误，请重新获取!", Toast.LENGTH_SHORT).show();
                 }  
                 adapter.notifyDataSetChanged();  
             }  
@@ -501,6 +562,13 @@ public class SettingFragment extends Fragment
                String homeServiceIp=mEtHomeServiceIp.getText().toString();
                String homeServicePwd=mEtHomeServicePwd.getText().toString();
                String homeServicePort=mEtHomeServicePort.getText().toString();
+               
+               
+               //万能盒子用户名和密码
+               String homeServiceUserName=mEtHomeServiceUserName.getText().toString();
+               String homeServicePassWord=mEtHomeServicePassWord.getText().toString();
+               
+               
                if(StringUtil.isNullString(homeServiceIp)||StringUtil.isNullString(homeServicePort))
                {
             	   Toast.makeText(getActivity(), "保存失败，输入不能为空", Toast.LENGTH_LONG).show();
@@ -517,13 +585,11 @@ public class SettingFragment extends Fragment
             	   editor.putInt("homeServicePortNumber", Integer.valueOf(homeServicePort));
             	   if(editor.commit())
             	   {
-            		   Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_LONG).show();
+            		   //Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_LONG).show();
             		   connectionIP = sharedPreferences.getString("homeServiceIp", "0000");
        				   connectionPwd = sharedPreferences.getString("homeServicePwd", "0000");
        				   TouchFlag.getInstance().setIp(connectionIP);
        				   TouchFlag.getInstance().setPwd(connectionPwd);
-       				
-       				
        				   vncEditor.putString("IP", connectionIP);
        				   vncEditor.putString("password", connectionPwd);
        				   vncEditor.commit();
@@ -532,7 +598,15 @@ public class SettingFragment extends Fragment
             	   {
             		   Toast.makeText(getActivity(), "保存失败，请重新配置", Toast.LENGTH_LONG).show();
             	   }
-               }            } 
+               }
+               if(!StringUtil.isNullString(homeServiceUserName)&& !StringUtil.isNullString(homeServicePassWord))
+               {
+            	   Send_homeService_info homeService_info=new Send_homeService_info(handler, getActivity(), "user,"+homeServiceUserName+","+homeServicePassWord+","+remoteIp);
+            	   Thread thread=new Thread(homeService_info);
+            	   thread.start();
+               }
+               
+             } 
         }); 
 		builder.show();
 	}

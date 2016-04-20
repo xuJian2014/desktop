@@ -18,6 +18,7 @@ import com.example.action.AuthentificationResponseAction;
 import com.example.action.MouseClickAction;
 import com.example.connection.ConnectServer;
 import com.example.desktop.R;
+import com.example.utilTool.StringUtil;
 
 
 
@@ -49,13 +50,26 @@ public class MouseActivity extends Activity {
 			public void run() {
 				// TODO Auto-generated method stub
 					try {
+						if(StringUtil.isNullString(ip))
+						{
+							TouchFlag.getInstance().setAuthentificated(
+									false);
+							return;
+						}
 						ConnectServer.getInstance().connect(ip);
-						ConnectServer.getInstance().sendAction(new AuthentificationAction(password));
-						AuthentificationResponseAction response = (AuthentificationResponseAction) ConnectServer.getInstance().recvAction();
-						isValid = response.authentificated;
-						
-					} catch (Exception e) {
-						Thread.currentThread().interrupt();
+						ConnectServer.getInstance().sendAction(
+								new AuthentificationAction(password));
+						AuthentificationResponseAction response = (AuthentificationResponseAction) ConnectServer
+								.getInstance().recvAction();
+						TouchFlag.getInstance().setAuthentificated(
+								response.authentificated);
+						isValid = TouchFlag.getInstance().isValid();
+					} catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						TouchFlag.getInstance().setAuthentificated(
+								false);
 					}
 			}
 		});

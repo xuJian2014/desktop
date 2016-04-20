@@ -18,6 +18,7 @@ import com.example.action.AuthentificationResponseAction;
 import com.example.action.KeyboardAction;
 import com.example.connection.ConnectServer;
 import com.example.desktop.R;
+import com.example.utilTool.StringUtil;
 
 public class KeyboardActivity extends Activity 
 {
@@ -43,7 +44,12 @@ public class KeyboardActivity extends Activity
 			@Override
 			public void run() {
 				try {
-					ConnectServer.getInstance().close();
+					if(StringUtil.isNullString(ip))
+					{
+						TouchFlag.getInstance().setAuthentificated(
+								false);
+						return;
+					}
 					ConnectServer.getInstance().connect(ip);
 					ConnectServer.getInstance().sendAction(
 							new AuthentificationAction(password));
@@ -51,9 +57,12 @@ public class KeyboardActivity extends Activity
 							.getInstance().recvAction();
 					TouchFlag.getInstance().setAuthentificated(
 							response.authentificated);
-				} catch (Exception e) {
+				} catch (Exception e)
+				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+					TouchFlag.getInstance().setAuthentificated(
+							false);
 				}
 			}
 		});

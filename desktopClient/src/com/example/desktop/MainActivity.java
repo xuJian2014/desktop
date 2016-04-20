@@ -18,6 +18,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.fragment.ApplicationManagerFragment;
 import com.example.fragment.HomeControlFragment;
 import com.example.fragment.HomeFragment;
 import com.example.fragment.LoginFragment;
@@ -180,6 +182,10 @@ public class MainActivity extends FragmentActivity
 				fragmentManager.beginTransaction().replace(R.id.content_frame, settingFragment).commit();
 				break;
 			case 5:
+				ApplicationManagerFragment applicationManagerFragment=new ApplicationManagerFragment();
+				fragmentManager.beginTransaction().replace(R.id.content_frame, applicationManagerFragment).commit();
+				break;
+			case 6:
 				this.finish();
 				break;
 		default:
@@ -208,7 +214,8 @@ public class MainActivity extends FragmentActivity
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 	
-	public void startAuxiliaryService(View v) {
+	public void startAuxiliaryService(View v) 
+	{
 		startService(new Intent(MainActivity.this, AuxiliaryService.class));
 		finish();
 	}

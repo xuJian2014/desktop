@@ -25,7 +25,6 @@ public class ReFlashExpandableListView extends ExpandableListView implements OnS
 	int scrollState;// listview 当前滚动状态；
 	boolean isRemark;// 标记，当前是在listview最顶端摁下的；
 	int startY;// 摁下时的Y值；
-
 	int state;// 当前的状态；
 	final int NONE = 0;// 正常状态；
 	final int PULL = 1;// 提示下拉状态；

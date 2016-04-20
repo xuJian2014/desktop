@@ -28,7 +28,7 @@ import com.example.utilTool.SendMsgThread;
 
 public class Screen_List_Fragment extends Fragment implements IReflashListener
 {
-	private static String screenStr;
+	private String screenStr;
 	private String[] content_Screen=new String[]{};
 	ReFlashListView listView;
 	View view;

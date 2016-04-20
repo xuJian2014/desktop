@@ -18,7 +18,8 @@ public class MyGridAdapter extends BaseAdapter
 			R.drawable.homedevice, R.drawable.usb,R.drawable.game, R.drawable.control,
 			R.drawable.mouse, R.drawable.keybord};
 	
-	public int[] imgs_init={
+	public int[] imgs_init=
+		{
 			R.drawable.computer_failed,
 			R.drawable.vmachine_failed,
 			R.drawable.homedevice_failed,

@@ -51,11 +51,11 @@ public class Utils {
 	}
 
 	public static void showErrorMessage(Context _context, String message) {
-		showMessage(_context, "Error!", message, android.R.drawable.ic_dialog_alert, null);
+		showMessage(_context, "连接错误!", message, android.R.drawable.ic_dialog_alert, null);
 	}
 
 	public static void showFatalErrorMessage(final Context _context, String message) {
-		showMessage(_context, "Error!", message, android.R.drawable.ic_dialog_alert, new DialogInterface.OnClickListener() {
+		showMessage(_context, "连接错误!", message, android.R.drawable.ic_dialog_alert, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				((Activity) _context).finish();
@@ -68,7 +68,7 @@ public class Utils {
 		builder.setTitle(title);
 		builder.setMessage(Html.fromHtml(message));
 		builder.setCancelable(false);
-		builder.setPositiveButton("Acknowledged", ackHandler);
+		builder.setPositiveButton("知道了", ackHandler);
 		builder.setIcon(icon);
 		builder.show();
 	}

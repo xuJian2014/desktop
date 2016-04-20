@@ -7,13 +7,16 @@ import android.os.Handler;
 public class SplashActivity extends Activity {
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
-		new Handler().postDelayed(new Runnable() {
+		new Handler().postDelayed(new Runnable()
+		{
 
 			@Override
-			public void run() {
+			public void run() 
+			{
 				Intent intent = new Intent(SplashActivity.this, MainActivity.class);
 				startActivity(intent);
 				SplashActivity.this.finish();

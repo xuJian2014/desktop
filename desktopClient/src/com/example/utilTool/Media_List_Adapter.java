@@ -31,7 +31,6 @@ public class Media_List_Adapter  extends ArrayAdapter<MediaItem>
 		mediaImageView.setImageResource(mediaItem.getImageId());
 		mediaTextView.setText(mediaItem.getMediaName());
 		return view;
-	
 	}
 }
 

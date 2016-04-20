@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils.TruncateAt;
+import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
@@ -19,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -284,6 +287,9 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
                textView.setPadding(0, 20, 0, 20);
                textView.setBackgroundColor(android.graphics.Color.parseColor("#d9d9d9"));
                textView.setTextSize(20);
+               
+               textView.setWidth(parent.getWidth());
+               
                return textView;
            }
            
