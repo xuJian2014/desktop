@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false" >
+   
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading00" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading01" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading02" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading03" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading04" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading05" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading06" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading07" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading08" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading09" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading10" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading11" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading12" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading13" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading14" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading15" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading16" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading17" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading18" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading19" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading20" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading21" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading22" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading23" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading24" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading25" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading26" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading27" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading28" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading29" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading30" android:tileMode="disabled" android:gravity="top" />
+    </item>
+    <item android:duration="100">
+        <bitmap android:src="@drawable/loading31" android:tileMode="disabled" android:gravity="top" />
+    </item>
+</animation-list>

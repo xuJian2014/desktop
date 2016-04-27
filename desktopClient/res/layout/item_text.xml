@@ -1,18 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="match_parent"
+   android:layout_height="wrap_content" >
+
+	 <TextView	
+        android:id="@+id/tv_application"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text=""
+        android:textColor="#333333"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/tv_application"
+        android:layout_alignParentRight="true"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:text="未检测"
+        android:textColor="#CCCCCC"
+        android:textSize="12sp" />
+
+</RelativeLayout>
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <TextView 	
         android:id="@+id/tv_application"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-		android:paddingLeft="20dp"
-		android:paddingTop="10dp"
-		android:paddingBottom="10dp"
-		android:textColor="@color/commo_text_color"
+		android:paddingLeft="10dp"
         android:textSize="20sp"
+        android:layout_gravity="left"
+        android:textColor="#333333"
         android:text="" />
+    
+    <TextView 	
+        android:id="@+id/tv_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+		android:paddingRight="10dp"
+        android:textSize="12sp"
+        android:layout_gravity="right"
+        android:textColor="#CCCCCC"
+        android:text="未检测" />
 
-</LinearLayout>
+</LinearLayout> -->

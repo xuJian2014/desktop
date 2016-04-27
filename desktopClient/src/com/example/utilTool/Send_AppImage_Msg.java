@@ -101,8 +101,7 @@ public class Send_AppImage_Msg implements Runnable
 				{   
 					 
 					Bitmap[] bmp=new Bitmap[image_size_arr.length];
-					socketClient = new Socket();
-					System.out.println("state"+socketClient.isConnected());				
+					socketClient = new Socket();			
 					socketClient.connect(socAddress, TIME_OUT);					
 					PrintWriter out2 = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())),true);
 					out2.println("image");

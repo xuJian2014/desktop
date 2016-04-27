@@ -13,10 +13,10 @@ public class MyGridAdapter extends BaseAdapter
 {
 	private Context mContext;
 
-	public String[] img_text = { "代理服务器", "远程虚拟机", "家庭终端设备", "无线设备","游戏模式","控制模式","鼠标","键盘"};
+	public String[] img_text = { "小区服务中心", "远程桌面", "PC应用平台", "可选设备","游戏模式","监视模式","鼠标","键盘","个人设置","应用助手"};
 	public int[] imgs = { R.drawable.computer, R.drawable.vmachine,
 			R.drawable.homedevice, R.drawable.usb,R.drawable.game, R.drawable.control,
-			R.drawable.mouse, R.drawable.keybord};
+			R.drawable.mouse, R.drawable.keybord,R.drawable.applicationhelper,R.drawable.setting};
 	
 	public int[] imgs_init=
 		{

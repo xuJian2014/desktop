@@ -51,7 +51,7 @@ public class LoginFragment extends Fragment
 		mEtLogon = (EditText) logonView.findViewById(R.id.login_edit_account);
 		mEtPwd = (EditText) logonView.findViewById(R.id.login_edit_pwd);
 		mBtnLogon = (Button) logonView.findViewById(R.id.login_btn_login);
-		mBtnReset = (Button) logonView.findViewById(R.id.login_btn_reset);
+		mBtnReset = (Button) logonView.findViewById(R.id.login_btn_register);
 		textViewIp=(TextView) logonView.findViewById(R.id.textView2);
 		rememberPass = (CheckBox)logonView.findViewById(R.id.remember_pass);
 		pref = PreferenceManager.getDefaultSharedPreferences(getActivity());

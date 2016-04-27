@@ -1,8 +1,12 @@
 package com.example.desktop;
+import android.androidVNC.VncCanvasActivity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -26,6 +30,7 @@ import com.example.fragment.LoginFragment;
 import com.example.fragment.RegisterFragment;
 import com.example.fragment.SettingFragment;
 import com.example.touch.AuxiliaryService;
+import com.example.utilTool.StringUtil;
 
 public class MainActivity extends FragmentActivity
 {
@@ -36,6 +41,14 @@ public class MainActivity extends FragmentActivity
 	private CharSequence mTitle;
 	private String[] serviceTitles;
 	SharedPreferences sharedConfigInfo;
+	
+	String connectionIP;
+	String connectionPwd;
+	SharedPreferences getVNCPreferences;
+	Editor vncEditor;
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -78,37 +91,8 @@ public class MainActivity extends FragmentActivity
 		serviceTitles = getResources().getStringArray(R.array.service_array);
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
-		sharedConfigInfo=getSharedPreferences("configInfo",Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor=sharedConfigInfo.edit();
-		
-		if(!sharedConfigInfo.contains("proxyIpAdress"))
-		{
-			editor.putString("proxyIpAdress", "192.168.1.113");
-			editor.putInt("proxyPortNumber", 8000);
-		}
-		if(!sharedConfigInfo.contains("homeServiceIp"))
-		{
-			editor.putString("homeServiceIp", "192.168.112");
-			editor.putInt("homeServicePortNumber", 8888);
-		}
-		if(!sharedConfigInfo.contains("userName"))
-		{
-			editor.putString("userName", "初始用户名，请重新配置");
-			editor.putString("passWord", "初始密码，请重新设置");
-		}
-		if(!sharedConfigInfo.contains("initHardDiskStr"))
-		{
-			editor.putString("initHardDiskStr", "默认盘1-0,默认盘2-0");
-		}
-		
-		if(editor.commit())  
-		{
-			Toast.makeText(MainActivity.this, "参数初始化成功", Toast.LENGTH_SHORT).show();
-		}
-		else
-		{
-			Toast.makeText(MainActivity.this, "未进行参数初始化", Toast.LENGTH_SHORT).show();
-		}
+		getVNCPreferences = getSharedPreferences("VNCConnect", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
+		vncEditor = getVNCPreferences.edit();
 	}
 
 	@Override
@@ -166,27 +150,29 @@ public class MainActivity extends FragmentActivity
 				fragmentManager.beginTransaction().replace(R.id.content_frame, homeFragment).commit();
 				break;
 			case 1:
+				 SharedPreferences getRemotePreferences = getSharedPreferences("Remote", Context.MODE_PRIVATE);
+				 connectionIP = getRemotePreferences.getString("remoteIP", "0000");
+				 connectionPwd = getRemotePreferences.getString("remotePassword", "0000");
+				 
+				vncEditor.putString("IP", connectionIP);
+				vncEditor.putString("password", connectionPwd);
+				vncEditor.commit();
+				startActivity(new Intent(MainActivity.this, VncCanvasActivity.class));
+				break;
+			case 2:
 				HomeControlFragment controlFragment = new HomeControlFragment();
 				fragmentManager.beginTransaction().replace(R.id.content_frame, controlFragment).commit();
 				break;
-			case 2:
-				LoginFragment logonFragment = new LoginFragment();
-				fragmentManager.beginTransaction().replace(R.id.content_frame, logonFragment).commit();
-				break;
 			case 3:
-				RegisterFragment registerFragment=new RegisterFragment();
-				fragmentManager.beginTransaction().replace(R.id.content_frame, registerFragment).commit();
-				break;
-			case 4:
 				SettingFragment settingFragment = new SettingFragment();
 				fragmentManager.beginTransaction().replace(R.id.content_frame, settingFragment).commit();
 				break;
-			case 5:
+			case 4:
 				ApplicationManagerFragment applicationManagerFragment=new ApplicationManagerFragment();
 				fragmentManager.beginTransaction().replace(R.id.content_frame, applicationManagerFragment).commit();
 				break;
-			case 6:
-				this.finish();
+			case 5:
+				qiut(); //退出
 				break;
 		default:
 			break;
@@ -218,5 +204,34 @@ public class MainActivity extends FragmentActivity
 	{
 		startService(new Intent(MainActivity.this, AuxiliaryService.class));
 		finish();
+	}
+	
+	private void qiut()
+	{
+		AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+		builder.setTitle("是否清空当前账号？");
+		builder.setPositiveButton("否", new DialogInterface.OnClickListener() 
+		{ 
+            public void onClick(DialogInterface dialog, int i)
+            { 
+            	dialog.dismiss();
+            	MainActivity.this.finish();
+            } 
+        }); 
+		builder.setNegativeButton("是", new DialogInterface.OnClickListener()
+		{ 
+            public void onClick(DialogInterface dialog, int i) 
+            {       
+            	SharedPreferences sharedConfigInfo=getSharedPreferences("configInfo",Context.MODE_PRIVATE);;
+            	SharedPreferences.Editor editor=sharedConfigInfo.edit();
+            	editor.remove("proxyUserName");
+            	editor.remove("proxyPassWord");
+            	editor.commit();
+            	dialog.dismiss();
+            	MainActivity.this.finish();
+            }
+        }); 
+		builder.show();
+		
 	}
 }

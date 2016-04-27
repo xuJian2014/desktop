@@ -42,11 +42,17 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name="com.example.desktop.LoginRemoteActivity"
-            android:label="@string/title_activity_login_remote" >
+        
+         <activity 
+             android:name="com.example.desktop.LoginActivity" 
+             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-
+        
+          <activity 
+             android:name="com.example.desktop.RegisterActivity" 
+             android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+  
         <!-- Touch服务 -->
         <service android:name="com.example.touch.AuxiliaryService" >
         </service>

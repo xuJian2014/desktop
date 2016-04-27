@@ -19,7 +19,8 @@ import android.widget.TextView;
 
 import com.example.desktop.R;
 
-public class ReFlashListView extends ListView implements OnScrollListener {
+public class ReFlashListView extends ListView implements OnScrollListener
+{
 	View header;// 顶部布局文件；
 	int headerHeight;// 顶部布局文件的高度；
 	int firstVisibleItem;// 当前第一个可见的item的位置；
@@ -32,22 +33,22 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 	final int PULL = 1;// 提示下拉状态；
 	final int RELESE = 2;// 提示释放状态；
 	final int REFLASHING = 3;// 刷新状态；
-	IReflashListener iReflashListener;//刷新数据的接口
-	public ReFlashListView(Context context) {
+	IReflashListener iReflashListener;// 刷新数据的接口
+
+	//构造函数
+	public ReFlashListView(Context context)
+	{
 		super(context);
-		// TODO Auto-generated constructor stub
 		initView(context);
 	}
-
-	public ReFlashListView(Context context, AttributeSet attrs) {
+	public ReFlashListView(Context context, AttributeSet attrs)
+	{
 		super(context, attrs);
-		// TODO Auto-generated constructor stub
 		initView(context);
 	}
-
-	public ReFlashListView(Context context, AttributeSet attrs, int defStyle) {
+	public ReFlashListView(Context context, AttributeSet attrs, int defStyle)
+	{
 		super(context, attrs, defStyle);
-		// TODO Auto-generated constructor stub
 		initView(context);
 	}
 
@@ -56,7 +57,8 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 	 * 
 	 * @param context
 	 */
-	private void initView(Context context) {
+	private void initView(Context context)
+	{
 		LayoutInflater inflater = LayoutInflater.from(context);
 		header = inflater.inflate(R.layout.header_layout, null);
 		measureView(header);
@@ -71,19 +73,23 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 	 * 
 	 * @param view
 	 */
-	private void measureView(View view) {
+	private void measureView(View view)
+	{
 		ViewGroup.LayoutParams p = view.getLayoutParams();
-		if (p == null) {
+		if (p == null)
+		{
 			p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
 		}
 		int width = ViewGroup.getChildMeasureSpec(0, 0, p.width);
 		int height;
 		int tempHeight = p.height;
-		if (tempHeight > 0) {
+		if (tempHeight > 0)
+		{
 			height = MeasureSpec.makeMeasureSpec(tempHeight,
 					MeasureSpec.EXACTLY);
-		} else {
+		} else
+		{
 			height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
 		}
 		view.measure(width, height);
@@ -94,7 +100,8 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 	 * 
 	 * @param topPadding
 	 */
-	private void topPadding(int topPadding) {
+	private void topPadding(int topPadding)
+	{
 		header.setPadding(header.getPaddingLeft(), topPadding,
 				header.getPaddingRight(), header.getPaddingBottom());
 		header.invalidate();
@@ -102,23 +109,28 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 
 	@Override
 	public void onScroll(AbsListView view, int firstVisibleItem,
-			int visibleItemCount, int totalItemCount) {
+			int visibleItemCount, int totalItemCount)
+	{
 		// TODO Auto-generated method stub
 		this.firstVisibleItem = firstVisibleItem;
 	}
 
 	@Override
-	public void onScrollStateChanged(AbsListView view, int scrollState) {
+	public void onScrollStateChanged(AbsListView view, int scrollState)
+	{
 		// TODO Auto-generated method stub
 		this.scrollState = scrollState;
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
+	public boolean onTouchEvent(MotionEvent ev)
+	{
 		// TODO Auto-generated method stub
-		switch (ev.getAction()) {
+		switch (ev.getAction())
+		{
 		case MotionEvent.ACTION_DOWN:
-			if (firstVisibleItem == 0) {
+			if (firstVisibleItem == 0)
+			{
 				isRemark = true;
 				startY = (int) ev.getY();
 			}
@@ -128,12 +140,14 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 			onMove(ev);
 			break;
 		case MotionEvent.ACTION_UP:
-			if (state == RELESE) {
+			if (state == RELESE)
+			{
 				state = REFLASHING;
 				// 加载最新数据；
 				reflashViewByState();
 				iReflashListener.onReflash();
-			} else if (state == PULL) {
+			} else if (state == PULL)
+			{
 				state = NONE;
 				isRemark = false;
 				reflashViewByState();
@@ -148,16 +162,20 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 	 * 
 	 * @param ev
 	 */
-	private void onMove(MotionEvent ev) {
-		if (!isRemark) {
+	private void onMove(MotionEvent ev)
+	{
+		if (!isRemark)
+		{
 			return;
 		}
 		int tempY = (int) ev.getY();
 		int space = tempY - startY;
 		int topPadding = space - headerHeight;
-		switch (state) {
+		switch (state)
+		{
 		case NONE:
-			if (space > 0) {
+			if (space > 0)
+			{
 				state = PULL;
 				reflashViewByState();
 			}
@@ -165,17 +183,20 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 		case PULL:
 			topPadding(topPadding);
 			if (space > headerHeight + 30
-					&& scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+					&& scrollState == SCROLL_STATE_TOUCH_SCROLL)
+			{
 				state = RELESE;
 				reflashViewByState();
 			}
 			break;
 		case RELESE:
 			topPadding(topPadding);
-			if (space < headerHeight + 30) {
+			if (space < headerHeight + 30)
+			{
 				state = PULL;
 				reflashViewByState();
-			} else if (space <= 0) {
+			} else if (space <= 0)
+			{
 				state = NONE;
 				isRemark = false;
 				reflashViewByState();
@@ -187,7 +208,8 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 	/**
 	 * 根据当前状态，改变界面显示；
 	 */
-	private void reflashViewByState() {
+	private void reflashViewByState()
+	{
 		TextView tip = (TextView) header.findViewById(R.id.tip);
 		ImageView arrow = (ImageView) header.findViewById(R.id.arrow);
 		ProgressBar progress = (ProgressBar) header.findViewById(R.id.progress);
@@ -201,7 +223,8 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 				RotateAnimation.RELATIVE_TO_SELF, 0.5f);
 		anim1.setDuration(500);
 		anim1.setFillAfter(true);
-		switch (state) {
+		switch (state)
+		{
 		case NONE:
 			arrow.clearAnimation();
 			topPadding(-headerHeight);
@@ -233,7 +256,8 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 	/**
 	 * 获取完数据；
 	 */
-	public void reflashComplete() {
+	public void reflashComplete()
+	{
 		state = NONE;
 		isRemark = false;
 		reflashViewByState();
@@ -244,15 +268,19 @@ public class ReFlashListView extends ListView implements OnScrollListener {
 		String time = format.format(date);
 		lastupdatetime.setText(time);
 	}
-	
-	public void setInterface(IReflashListener iReflashListener){
+
+	public void setInterface(IReflashListener iReflashListener)
+	{
 		this.iReflashListener = iReflashListener;
 	}
+
 	/**
 	 * 刷新数据接口
+	 * 
 	 * @author Administrator
 	 */
-	public interface IReflashListener{
+	public interface IReflashListener
+	{
 		public void onReflash();
 	}
 }

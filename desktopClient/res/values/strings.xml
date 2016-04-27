@@ -5,9 +5,8 @@
 
     <string-array name="service_array">
         <item>首页</item>
-        <item>家庭控制中心</item>
-        <item>虚拟桌面服务中心</item>
-        <item>新用户注册</item>
+         <item>远程桌面</item>
+        <item>PC应用平台</item>
         <item>个人设置</item>
         <item>应用助手</item>
         <item>退出</item>

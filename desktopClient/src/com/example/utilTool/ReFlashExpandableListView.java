@@ -54,7 +54,8 @@ public class ReFlashExpandableListView extends ExpandableListView implements OnS
 	 * 
 	 * @param context
 	 */
-	private void initView(Context context) {
+	private void initView(Context context)
+	{
 		LayoutInflater inflater = LayoutInflater.from(context);
 		header = inflater.inflate(R.layout.header_layout, null);
 		measureView(header);
@@ -69,19 +70,24 @@ public class ReFlashExpandableListView extends ExpandableListView implements OnS
 	 * 
 	 * @param view
 	 */
-	private void measureView(View view) {
+	private void measureView(View view)
+	{
 		ViewGroup.LayoutParams p = view.getLayoutParams();
-		if (p == null) {
+		if (p == null)
+		{
 			p = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 					ViewGroup.LayoutParams.WRAP_CONTENT);
 		}
 		int width = ViewGroup.getChildMeasureSpec(0, 0, p.width);
 		int height;
 		int tempHeight = p.height;
-		if (tempHeight > 0) {
+		if (tempHeight > 0) 
+		{
 			height = MeasureSpec.makeMeasureSpec(tempHeight,
 					MeasureSpec.EXACTLY);
-		} else {
+		}
+		else 
+		{
 			height = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
 		}
 		view.measure(width, height);
@@ -92,46 +98,50 @@ public class ReFlashExpandableListView extends ExpandableListView implements OnS
 	 * 
 	 * @param topPadding
 	 */
-	private void topPadding(int topPadding) {
-		header.setPadding(header.getPaddingLeft(), topPadding,
-				header.getPaddingRight(), header.getPaddingBottom());
+	private void topPadding(int topPadding) 
+	{
+		header.setPadding(header.getPaddingLeft(), topPadding,header.getPaddingRight(), header.getPaddingBottom());
 		header.invalidate();
 	}
 
 	@Override
-	public void onScroll(AbsListView view, int firstVisibleItem,
-			int visibleItemCount, int totalItemCount) {
-		// TODO Auto-generated method stub
+	public void onScroll(AbsListView view, int firstVisibleItem,int visibleItemCount, int totalItemCount) 
+	{
 		this.firstVisibleItem = firstVisibleItem;
 	}
 
 	@Override
-	public void onScrollStateChanged(AbsListView view, int scrollState) {
-		// TODO Auto-generated method stub
+	public void onScrollStateChanged(AbsListView view, int scrollState) 
+	{
 		this.scrollState = scrollState;
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent ev) {
+	public boolean onTouchEvent(MotionEvent ev) 
+	{
 		// TODO Auto-generated method stub
-		switch (ev.getAction()) {
+		switch (ev.getAction()) 
+		{
 		case MotionEvent.ACTION_DOWN:
-			if (firstVisibleItem == 0) {
+			if (firstVisibleItem == 0) 
+			{
 				isRemark = true;
 				startY = (int) ev.getY();
 			}
 			break;
-
 		case MotionEvent.ACTION_MOVE:
 			onMove(ev);
 			break;
 		case MotionEvent.ACTION_UP:
-			if (state == RELESE) {
+			if (state == RELESE) 
+			{
 				state = REFLASHING;
 				// 加载最新数据；
 				reflashViewByState();
 				iReflashListener.onReflash();
-			} else if (state == PULL) {
+			} 
+			else if (state == PULL)
+			{
 				state = NONE;
 				isRemark = false;
 				reflashViewByState();
@@ -146,34 +156,41 @@ public class ReFlashExpandableListView extends ExpandableListView implements OnS
 	 * 
 	 * @param ev
 	 */
-	private void onMove(MotionEvent ev) {
-		if (!isRemark) {
+	private void onMove(MotionEvent ev) 
+	{
+		if (!isRemark) 
+		{
 			return;
 		}
 		int tempY = (int) ev.getY();
 		int space = tempY - startY;
 		int topPadding = space - headerHeight;
-		switch (state) {
+		switch (state) 
+		{
 		case NONE:
-			if (space > 0) {
+			if (space > 0)
+			{
 				state = PULL;
 				reflashViewByState();
 			}
 			break;
 		case PULL:
 			topPadding(topPadding);
-			if (space > headerHeight + 30
-					&& scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+			if (space > headerHeight + 30 && scrollState == SCROLL_STATE_TOUCH_SCROLL) 
+			{
 				state = RELESE;
 				reflashViewByState();
 			}
 			break;
 		case RELESE:
 			topPadding(topPadding);
-			if (space < headerHeight + 30) {
+			if (space < headerHeight + 30)
+			{
 				state = PULL;
 				reflashViewByState();
-			} else if (space <= 0) {
+			} 
+			else if (space <= 0) 
+			{
 				state = NONE;
 				isRemark = false;
 				reflashViewByState();
@@ -185,7 +202,8 @@ public class ReFlashExpandableListView extends ExpandableListView implements OnS
 	/**
 	 * 根据当前状态，改变界面显示；
 	 */
-	private void reflashViewByState() {
+	private void reflashViewByState()
+	{
 		TextView tip = (TextView) header.findViewById(R.id.tip);
 		ImageView arrow = (ImageView) header.findViewById(R.id.arrow);
 		ProgressBar progress = (ProgressBar) header.findViewById(R.id.progress);
@@ -231,26 +249,28 @@ public class ReFlashExpandableListView extends ExpandableListView implements OnS
 	/**
 	 * 获取完数据；
 	 */
-	public void reflashComplete() {
+	public void reflashComplete() 
+	{
 		state = NONE;
 		isRemark = false;
 		reflashViewByState();
-		TextView lastupdatetime = (TextView) header
-				.findViewById(R.id.lastupdate_time);
+		TextView lastupdatetime = (TextView) header.findViewById(R.id.lastupdate_time);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 hh:mm:ss");
 		Date date = new Date(System.currentTimeMillis());
 		String time = format.format(date);
 		lastupdatetime.setText(time);
 	}
 	
-	public void setInterface(IReflashListener iReflashListener){
+	public void setInterface(IReflashListener iReflashListener)
+	{
 		this.iReflashListener = iReflashListener;
 	}
 	/**
 	 * 刷新数据接口
 	 * @author Administrator
 	 */
-	public interface IReflashListener{
+	public interface IReflashListener
+	{
 		public void onReflash();
 	}
 }

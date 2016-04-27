@@ -39,14 +39,12 @@ import com.example.Entity.RequestMesg;
 import com.example.Entity.ResponseMesg;
 import com.example.controller.Control_MainActivity;
 import com.example.desktop.R;
-import com.example.touch.ChoiceActivity;
 import com.example.touch.GameActivity;
 import com.example.touch.KeyboardActivity;
 import com.example.touch.MouseActivity;
 import com.example.utilTool.HomeForScreenThread;
 import com.example.utilTool.MyGridAdapter;
 import com.example.utilTool.MyGridView;
-import com.example.utilTool.SendMsgThread;
 import com.example.utilTool.SendMultiUdpMessage;
 import com.example.utilTool.TcpReceive;
 public class HomeFragment extends Fragment 
@@ -60,6 +58,8 @@ public class HomeFragment extends Fragment
 	private Thread response_thread;
 	private boolean is_Scan_falg=false;  //当前操作是否为扫描操作
 	private ImageView image;
+	private TextView text_sync;
+	
 	
 	String connectionIP;
 	String connectionPwd;
@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
 	{
-		View logonView = inflater.inflate(R.layout.fragment_home_test, null);
+		View logonView = inflater.inflate(R.layout.fragment_home, null);
 		
 		getVNCPreferences = getActivity().getSharedPreferences("VNCConnect", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
 		vncEditor = getVNCPreferences.edit();
@@ -79,6 +79,8 @@ public class HomeFragment extends Fragment
 		gridview=(MyGridView)logonView.findViewById(R.id.gridview);
 	
 		image_sync=(ImageButton) logonView.findViewById(R.id.imageButton1);
+		text_sync=(TextView)logonView.findViewById(R.id.textView2);
+		
 		gridview.setAdapter(new MyGridAdapter(getActivity()));
 		
 		progressBar.setVisibility(View.GONE);
@@ -117,35 +119,21 @@ public class HomeFragment extends Fragment
 						startActivity(new Intent(getActivity(), VncCanvasActivity.class));
 						break;
 					case 2:
-						SharedPreferences getFamilyPreferences = getActivity().getSharedPreferences("configInfo", Context.MODE_PRIVATE);
+						/*SharedPreferences getFamilyPreferences = getActivity().getSharedPreferences("configInfo", Context.MODE_PRIVATE);
 						connectionIP = getFamilyPreferences.getString("homeServiceIp", "0000");
 						connectionPwd = getFamilyPreferences.getString("homeServicePwd", "0000");
 						vncEditor.putString("IP", connectionIP);
 						vncEditor.putString("password", connectionPwd);
 						vncEditor.commit();
-						startActivity(new Intent(getActivity(), VncCanvasActivity.class));
+						startActivity(new Intent(getActivity(), VncCanvasActivity.class));*/
+						
+						HomeControlFragment controlFragment = new HomeControlFragment();
+						getFragmentManager().beginTransaction().replace(R.id.content_frame, controlFragment).commit();
 						break;
 					case 3:
 						HomeForScreenThread sendMsgThread=new HomeForScreenThread(handler, getActivity(),"screen");
 						Thread thread =new Thread(sendMsgThread);
 						thread.start();
-						
-						
-						
-						
-						/*final String screenStr[]=new String[]{"小米TV","乐视TV","屏幕三"};
-						AlertDialog.Builder builder=new Builder(getActivity());
-						builder.setItems(screenStr, new DialogInterface.OnClickListener() 
-						{
-							
-							@Override
-							public void onClick(DialogInterface dialog, int which)
-							{
-								Toast.makeText(getActivity(), "您选择的是"+screenStr[which], Toast.LENGTH_SHORT).show();
-								
-							}
-						});
-						builder.create().show();*/
 						break;
 					case 4:
 						startActivity(new Intent(getActivity(), GameActivity.class));
@@ -159,6 +147,14 @@ public class HomeFragment extends Fragment
 					case 7:
 						startActivity(new Intent(getActivity(), KeyboardActivity.class));
 						break;
+					case 8:
+						SettingFragment settingFragment = new SettingFragment();
+						getFragmentManager().beginTransaction().replace(R.id.content_frame, settingFragment).commit();
+						break;
+					case 9:
+						ApplicationManagerFragment applicationManagerFragment = new ApplicationManagerFragment();
+						getFragmentManager().beginTransaction().replace(R.id.content_frame, applicationManagerFragment).commit();
+						break;
 					default:
 						break;
 				}
@@ -166,6 +162,20 @@ public class HomeFragment extends Fragment
 		});
 		image_sync.setOnClickListener(new OnClickListener() 
 		{
+			@Override
+			public void onClick(View v)
+			{
+				is_Scan_falg=true;
+				progressBar.setVisibility(View.VISIBLE);
+				textView.setText("正在检测代理服务器...");
+				//TextView textview2=(TextView)gridview.getChildAt(0).findViewById(R.id.tv_item);
+				textView.setVisibility(View.VISIBLE);
+				check_Proxy();
+			}
+		});
+		
+		text_sync.setOnClickListener(new OnClickListener() {
+			
 			@Override
 			public void onClick(View v)
 			{
@@ -262,7 +272,6 @@ public class HomeFragment extends Fragment
 					if(progressBar.getVisibility()==View.VISIBLE)
 					{
 						textView.setText("连接代理服务器成功");
-						
 						scan_HomeServiceIp();
 					}
 					break;
@@ -300,8 +309,8 @@ public class HomeFragment extends Fragment
 				case 8:
 					textView.setText("扫描家庭服务中心IP地址失败");
 					Toast.makeText(getActivity(), "扫描家庭服务中心IP地址失败", Toast.LENGTH_SHORT).show();
-					image=(ImageView)gridview.getChildAt(1).findViewById(R.id.iv_item);
-					image.setBackgroundResource(R.drawable.vmachine_failed);
+					image=(ImageView)gridview.getChildAt(2).findViewById(R.id.iv_item);
+					image.setBackgroundResource(R.drawable.homedevice_failed);
 					progressBar.setVisibility(View.GONE);
 					textView.setVisibility(View.GONE);
 					break;

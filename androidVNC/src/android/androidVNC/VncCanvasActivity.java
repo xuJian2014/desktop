@@ -694,17 +694,16 @@ public class VncCanvasActivity extends Activity {
 				String clientMode = vncCanvas.rfb.desktopName;
 				int index =vncCanvas.rfb.desktopName.indexOf("- ");
 				clientMode = vncCanvas.rfb.desktopName.substring(index).trim();
-				if(clientMode.contains("service"))
-				{
-					int dis = (int) Math.ceil(AndroidH/clientH);
-					System.out.println("BiLi: "+dis);
+				
+				int dis = (int) Math.ceil(AndroidH/clientH);
+				System.out.println("BiLi: "+dis);
 					
-					for(int i =0;i<=dis;i++)
-					{
-						vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
-					}
-
+				for(int i =0;i<=dis;i++)
+				{
+					vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
 				}
+
+				
 				
 			}
 		});

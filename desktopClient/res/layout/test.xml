@@ -8,7 +8,6 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="45dp"
-        android:layout_alignParentTop="true"
         android:background="#CD3700"
         android:gravity="center_vertical"
         android:orientation="horizontal" >
@@ -47,6 +46,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/register_edit_login"
+                android:singleLine="true"
                 android:paddingLeft="65sp"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -68,6 +68,7 @@
                 android:layout_below="@+id/login_edit_account"
                 android:background="@drawable/register_edit_login"
                 android:paddingLeft="65sp"
+                android:singleLine="true"
                 android:inputType="textPassword"/>
             <TextView
                 android:layout_width="wrap_content"
@@ -80,14 +81,42 @@
                 android:paddingLeft="7sp"
                 android:text="密    码："
                 android:textSize="16sp" />
+            
+            <EditText 
+                android:id="@+id/login_edit_ip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:layout_alignLeft="@+id/login_edit_pwd"
+                android:layout_alignRight="@+id/login_edit_pwd"
+                android:layout_below="@+id/login_edit_pwd"
+                 android:background="@drawable/register_edit_login"
+                 android:layout_marginTop="5dp"
+                 android:singleLine="true"
+                android:paddingLeft="110sp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/login_edit_ip"
+                android:layout_alignLeft="@+id/login_edit_ip"
+                android:layout_alignTop="@+id/login_edit_ip"
+                 android:layout_marginRight="15.0sp"
+                android:gravity="center_vertical"
+                android:paddingLeft="7sp"
+                android:text="代理服务器IP:"
+                android:textSize="16sp"
+                />
+            
+            
             <CheckBox
                 android:id="@+id/remember_pass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/login_edit_pwd"
                 android:layout_below="@+id/login_edit_pwd"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="60dp"
                 android:button="@drawable/qq_btn_check"
+                android:checked="true"
                 android:text="记住密码" />
         </RelativeLayout>
         
@@ -102,21 +131,21 @@
             	    android:layout_height="42dp"
             	    android:layout_marginLeft="15dp"
             	    android:layout_marginRight="10dp"
-            	    android:layout_marginTop="7dp"
+            	    android:layout_marginTop="9dp"
             	    android:layout_weight="1"
             	    android:background="#CD3700"
             	    android:text="登录"
             	    android:textColor="@android:color/white" />
 		        <Button
-		            android:id="@+id/login_btn_reset"
+		            android:id="@+id/login_btn_register"
 		            android:layout_width="wrap_content"
 		            android:layout_height="42dp"
 		            android:layout_marginLeft="10dp"
 		            android:layout_marginRight="15dp"
-		            android:layout_marginTop="7dp"
+		            android:layout_marginTop="9dp"
 		            android:layout_weight="1"
 		            android:background="#CD3700"
-		            android:text="重置"
+		            android:text="注册"
 		            android:textColor="@android:color/white" />
         </LinearLayout>
     </LinearLayout>
