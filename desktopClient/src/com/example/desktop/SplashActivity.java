@@ -131,7 +131,6 @@ public class SplashActivity extends Activity
 						mDialog.cancel();
 					Bundle bundle=msg.getData();
 					ResponseMesg responseMesg=(ResponseMesg) bundle.getSerializable("message");
-					
 					//Ð´ÈëÔ¶³ÌÁ¬½ÓËùÐèµÄIP
 					prefVNC = getSharedPreferences("Remote",Context.MODE_PRIVATE);
 					editorVNC=prefVNC.edit();
@@ -139,7 +138,6 @@ public class SplashActivity extends Activity
 					editorVNC.commit();
 					
 					//Toast.makeText(LoginActivity.this, "ÄúµÄµÇÂ¼IPµØÖ·Îª:"+responseMesg.getResponserMesg(), Toast.LENGTH_LONG).show();
-					
 					
 					Intent intent3 = new Intent(SplashActivity.this, MainActivity.class);
 					startActivity(intent3);
@@ -262,19 +260,19 @@ class ClientReceive implements Runnable
 				 }
 				 else if(command==1)
 				 {
-					 msg.what=5; //ï¿½ï¿½Â¼ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½
+					 msg.what=5; 
 					 flag=false;
 					 handler.sendMessage(msg);
 				 }
 				 else if(command==2)
 				 {
-					 msg.what=7; //ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Òª×¢ï¿½ï¿½
+					 msg.what=7; 
 					 flag=false;
 					 handler.sendMessage(msg);
 				 }
 				 else  //command=5
 				 {
-					 msg.what=6; //ï¿½ï¿½ï¿½ï¿½Ê§ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Ô­ï¿½ï¿½Î´Öª
+					 msg.what=6; 
 					 flag=false;
 					 handler.sendMessage(msg);
 				 }

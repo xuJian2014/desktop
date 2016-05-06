@@ -15,6 +15,12 @@ import java.net.SocketAddress;
 import java.net.SocketException;
 import java.util.Arrays;
 
+import com.example.util.jsonTransfer.JsonParse;
+import com.example.util.jsonTransfer.OptionEnum;
+import com.example.util.jsonTransfer.Parameter2Option;
+import com.example.util.jsonTransfer.ResponseMessage;
+import com.example.util.jsonTransfer.ResponseMessageEnum;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,7 +30,7 @@ import android.os.Handler;
 
 public class Send_AppImage_Msg implements Runnable
 {
-	private final int TIME_OUT = 20 * 1000;
+	private final int TIME_OUT = 10 * 1000;
 	Socket socketClient = null;
 	Handler handler = null;
 	Activity activity;
@@ -57,17 +63,19 @@ public class Send_AppImage_Msg implements Runnable
 				out.println(requestStr);
 				BufferedReader buffer=new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
 				String responseInfo=buffer.readLine();
-				System.out.println("应用列表"+responseInfo);
-				if("error".equals(responseInfo))
+				//System.out.println("应用列表"+responseInfo);	
+				ResponseMessage responseMessage=JsonParse.Json2Object(responseInfo);	
+				if(responseMessage.getErrNum()==ResponseMessageEnum.ERROR.ordinal())
 				{
 					handler.sendEmptyMessage(5);
 				}
 				else
 				{
-					String[] temp=responseInfo.split(":::");//截取响应字符串，temp[0]图片大小，temp[1]应用字符串
+					//String[] temp=responseInfo.split(":::");//截取响应字符串，temp[0]图片大小，temp[1]应用字符串
+					String[] temp=responseMessage.getResponseMessage().split(":::");
 					image_sizes=temp[0];
 					application_arrs=temp[1];
-					System.out.println("send_Thread:"+application_arrs);
+				   //System.out.println("send_Thread:"+application_arrs);
 					image_size_arr=image_sizes.split(",");
 				}
 			}
@@ -104,8 +112,8 @@ public class Send_AppImage_Msg implements Runnable
 					socketClient = new Socket();			
 					socketClient.connect(socAddress, TIME_OUT);					
 					PrintWriter out2 = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())),true);
-					out2.println("image");
-					//System.out.println("length=="+length);		
+					out2.println(JsonParse.Json2String(OptionEnum.APP_LIST.ordinal(), new Parameter2Option("image", "192.168.1.111")));
+							
 					byte[] imageByteArrs=read_images(socketClient.getInputStream(),length);//获取图片字节
 					/*System.out.println("图片字节长度:"+imageByteArrs.length);
 					System.out.println("图片字节数组长度:"+image_size_arr.length);*/

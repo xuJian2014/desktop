@@ -1,10 +1,7 @@
 package com.example.fragment;
 
 import com.example.desktop.R;
-import com.example.utilTool.GifView;
 import com.example.utilTool.SendMsgAppMagThread;
-import com.example.utilTool.SendMsgThread;
-
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -80,8 +77,7 @@ public class ApplicationManagerFragment extends Fragment
 			@Override
 			public void onClick(View arg0)
 			{
-				SendMsgAppMagThread sendMsgThread = new SendMsgAppMagThread(handler,
-						getActivity(), "repair");
+				SendMsgAppMagThread sendMsgThread = new SendMsgAppMagThread(handler,getActivity(), "repair");
 				Thread thread = new Thread(sendMsgThread);
 				thread.start();
 

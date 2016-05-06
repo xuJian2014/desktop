@@ -26,6 +26,12 @@ import android.widget.Toast;
 import com.example.Entity.HardDiskItem;
 import com.example.desktop.R;
 import com.example.touch.TouchFlag;
+import com.example.util.jsonTransfer.JsonParse;
+import com.example.util.jsonTransfer.OptionEnum;
+import com.example.util.jsonTransfer.Parameter2Option;
+import com.example.util.jsonTransfer.Parameter3Option;
+import com.example.util.jsonTransfer.ResponseMessage;
+import com.example.util.jsonTransfer.ResponseMessageEnum;
 import com.example.utilTool.AuthorityListAdapter;
 import com.example.utilTool.SendMsgAuthority;
 import com.example.utilTool.SendMsgThread;
@@ -229,7 +235,26 @@ public class SettingFragment extends Fragment
 						break;
 					case 2:
 						hardDiskStr=msg.getData().getString("msg");
-						if("".equals(hardDiskStr)||hardDiskStr==null)
+						ResponseMessage responseMessage=JsonParse.Json2Object(hardDiskStr);
+						
+						if(responseMessage==null)
+							Toast.makeText(getActivity(), "没有硬盘可供操作!", Toast.LENGTH_LONG).show();
+						else
+						{
+							int errNum=responseMessage.getErrNum();
+							if(errNum==ResponseMessageEnum.ERROR.ordinal())
+								Toast.makeText(getActivity(), "获取硬盘符失败!", Toast.LENGTH_LONG).show();
+							else
+							{
+								SharedPreferences.Editor editor=sharedPreferences.edit();
+				            	editor.putString("initHardDiskStr", responseMessage.getResponseMessage());
+				            	editor.commit();
+								content_hardDisk=responseMessage.getResponseMessage().split(",");
+								binderListData(content_hardDisk);
+							}
+						}
+						
+						/*if(StringUtil.isNullString(hardDiskStr))
 						{
 							Toast.makeText(getActivity(), "没有硬盘可供操作!", Toast.LENGTH_LONG).show();
 						}
@@ -244,12 +269,37 @@ public class SettingFragment extends Fragment
 			            	editor.commit();
 							content_hardDisk=hardDiskStr.split(",");
 							binderListData(content_hardDisk);
-						}
+						}*/
 						break;
 					case 3:
 						String str=msg.getData().getString("msg");
+						ResponseMessage responseMessage2=JsonParse.Json2Object(str);
+						if(responseMessage2==null)
+						{
+							Toast.makeText(getActivity(), "对不起，操作失败!", Toast.LENGTH_SHORT).show();
+						}
+						else
+						{
+							int errNum=responseMessage2.getErrNum();
+							if(errNum==ResponseMessageEnum.SUCCESSADDNO.ordinal())
+							{
+								Toast.makeText(getActivity(), "添加共享成功，挂载失败!", Toast.LENGTH_SHORT).show();
+							}
+							else if(errNum==ResponseMessageEnum.SUCCESSADDYES.ordinal())
+							{
+								Toast.makeText(getActivity(), "添加共享成功，挂载成功!", Toast.LENGTH_SHORT).show();
+							}
+							else if(errNum==ResponseMessageEnum.SUCCESSDELETE.ordinal())
+							{
+								Toast.makeText(getActivity(), "删除共享成功!", Toast.LENGTH_SHORT).show();
+							}
+							else
+							{
+								Toast.makeText(getActivity(), "对不起，操作失败!", Toast.LENGTH_SHORT).show();
+							}
+						}
 						
-						if("successaddno".equals(str))
+						/*if("successaddno".equals(str))
 						{
 							Toast.makeText(getActivity(), "添加共享成功，挂载失败!", Toast.LENGTH_SHORT).show();
 						}
@@ -265,18 +315,34 @@ public class SettingFragment extends Fragment
 						{
 							Toast.makeText(getActivity(), "对不起，操作失败!", Toast.LENGTH_SHORT).show();
 						}
-						
+						*/
 						break;
 					case 4:
 						String responserStr=msg.getData().getString("msg");
-						if("savesuccess".equals(responserStr))
+						ResponseMessage responseMessage3=JsonParse.Json2Object(responserStr);
+						if(responseMessage3==null)
+						{
+							Toast.makeText(getActivity(), "操作失败!", Toast.LENGTH_SHORT).show();
+						}
+						else
+						{
+							if(responseMessage3.getErrNum()==ResponseMessageEnum.SAVESUCCESS.ordinal())
+							{
+								Toast.makeText(getActivity(), "保存成功!", Toast.LENGTH_SHORT).show();
+							}
+							else
+							{
+								Toast.makeText(getActivity(), "操作失败!", Toast.LENGTH_SHORT).show();
+							}
+						}
+						/*if("savesuccess".equals(responserStr))
 						{
 							Toast.makeText(getActivity(), "保存成功!", Toast.LENGTH_SHORT).show();
 						}
 						else
 						{
 							Toast.makeText(getActivity(), "操作失败!", Toast.LENGTH_SHORT).show();
-						}
+						}*/
 						break;
 					case 5:
 						Toast.makeText(getActivity(), "对不起，连接家庭服务终端发生错误", Toast.LENGTH_LONG).show();
@@ -497,7 +563,7 @@ public class SettingFragment extends Fragment
 				else
 				{
 					isShowListView.setImageResource(R.drawable.list_dowm);
-					SendMsgThread getHardDiskMsg=new SendMsgThread(handler, getActivity(), "harddrive");
+					SendMsgThread getHardDiskMsg=new SendMsgThread(handler, getActivity(), JsonParse.Json2String(OptionEnum.HARD_DRIVE.ordinal(), null));
 					Thread thread=new Thread(getHardDiskMsg);
 					thread.start();
 				}
@@ -518,7 +584,9 @@ public class SettingFragment extends Fragment
                 if (!checked && !"0000".equals(remoteIp))
                 {  
                 	hardDiskList.get(position).setChecked(true);  
-                	SendMsgAuthority sendMsgScreen = new SendMsgAuthority(handler,getActivity(), position+",yesroot,"+remoteIp);
+                	
+                	//SendMsgAuthority sendMsgScreen = new SendMsgAuthority(handler,getActivity(), position+",yesroot,"+remoteIp);
+                	SendMsgAuthority sendMsgScreen=new SendMsgAuthority(handler, getActivity(), JsonParse.Json2String(OptionEnum.ADD_DRIVE.ordinal(), new Parameter2Option(String.valueOf(position), remoteIp)));
     				Thread threadScreen = new Thread(sendMsgScreen);
     				threadScreen.start();
                 }
@@ -526,7 +594,8 @@ public class SettingFragment extends Fragment
                 else if(checked && !"0000".equals(remoteIp))
                 {
                 	hardDiskList.get(position).setChecked(false);
-                	SendMsgAuthority sendMsgScreen2 = new SendMsgAuthority(handler,getActivity(), position+",deleteroot,"+remoteIp);
+                	//SendMsgAuthority sendMsgScreen2 = new SendMsgAuthority(handler,getActivity(), position+",deleteroot,"+remoteIp);
+                	SendMsgAuthority sendMsgScreen2=new SendMsgAuthority(handler, getActivity(), JsonParse.Json2String(OptionEnum.DELETE_DRIVE.ordinal(), new Parameter2Option(String.valueOf(position), remoteIp)));
     				Thread threadScreen2 = new Thread(sendMsgScreen2);
     				threadScreen2.start();
                 }
@@ -601,7 +670,9 @@ public class SettingFragment extends Fragment
                }
                if(!StringUtil.isNullString(homeServiceUserName)&& !StringUtil.isNullString(homeServicePassWord))
                {
-            	   Send_homeService_info homeService_info=new Send_homeService_info(handler, getActivity(), "user,"+homeServiceUserName+","+homeServicePassWord+","+remoteIp);
+            	  // Send_homeService_info homeService_info=new Send_homeService_info(handler, getActivity(), "user,"+homeServiceUserName+","+homeServicePassWord+","+remoteIp);
+            	  Send_homeService_info homeService_info=new Send_homeService_info(handler, getActivity(), JsonParse.Json2String(OptionEnum.USER.ordinal(), 
+            			 new Parameter3Option(homeServiceUserName, homeServicePassWord, remoteIp)));
             	   Thread thread=new Thread(homeService_info);
             	   thread.start();
                }

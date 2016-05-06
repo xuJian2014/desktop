@@ -4,22 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    
-
-        <com.example.utilTool.AppGridView
-            android:id="@+id/gridView1"
-             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:horizontalSpacing="0.0dip"
-            android:listSelector="@null"
-            android:numColumns="3"
-            android:scrollbars="none"
-            android:stretchMode="columnWidth"
-            android:visibility="gone"
-            android:verticalSpacing="0.0dip" >
-        </com.example.utilTool.AppGridView>
-   
-
     <com.example.utilTool.ReFlashExpandableListView
         android:id="@+id/listView1"
         android:layout_width="wrap_content"

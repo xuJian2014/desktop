@@ -42,7 +42,7 @@ public class LoginFragment extends Fragment
 	private SharedPreferences pref, prefVNC;
 	private SharedPreferences.Editor editor, editorVNC;
 	private CheckBox rememberPass;
-	private final int TIME_OUT=10*1000;
+	private final int TIME_OUT=5*1000;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) 

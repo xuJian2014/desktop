@@ -1,18 +1,17 @@
 package com.example.fragment;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils.TruncateAt;
-import android.util.AttributeSet;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
@@ -21,84 +20,81 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.desktop.R;
+import com.example.util.jsonTransfer.JsonParse;
+import com.example.util.jsonTransfer.OptionEnum;
+import com.example.util.jsonTransfer.Parameter2Option;
+import com.example.util.jsonTransfer.ResponseMessage;
+import com.example.util.jsonTransfer.ResponseMessageEnum;
 import com.example.utilTool.ReFlashExpandableListView;
 import com.example.utilTool.ReFlashExpandableListView.IReflashListener;
 import com.example.utilTool.ScreenResponseMsg;
 import com.example.utilTool.SendMsgAppScreen;
 import com.example.utilTool.Send_AppImage_Msg;
 import com.example.utilTool.Send_AppImage_Msg.MyCallBack;
+import com.example.utilTool.StringUtil;
 
 public class Application_List_Fragment extends Fragment implements IReflashListener
 {
-	private  String homeApplicationStr;//家庭服务中心应用字符串
-	private  String vmApplicationStr;//远端虚拟机应用字符串
-	private   String[] content_Application;//家庭服务中心应用列表
-	private  String[] content_VmApp;//远端虚拟机应用列表
-	private  String[] screenList=new String[]{};//屏幕列表
-	private String resultStr=null;;
-	private  String[] armTypes= new String[]{"正在运行","已安装"};
-	private  String[][] arms = new String[][]{};//二维数组，表示ExpandableListview数据
-	private int[] images = new int[]
-		     	{
-		     		R.drawable.application_explorer,
-		     		R.drawable.application_item,
-		     		R.drawable.application_visualstudio,
-		     		R.drawable.application_weixin,
-		     		R.drawable.application_xunlei,
-		     		R.drawable.application_baiduyun,
-		     		R.drawable.application_kankan,
-		     		R.drawable.application_youku
-		 		};
-	ReFlashExpandableListView listView;
-	GridView gridView;
-	View view;
-	String screenStr;
+	private String homeApplicationStr;//家庭服务中心应用字符串
+	private String vmApplicationStr;//远端虚拟机应用字符串
+	private String[] content_Application;//家庭服务中心应用列表
+	private String[] content_VmApp;//远端虚拟机应用列表
+	private String[] screenList=new String[]{};//屏幕列表
+	private String responseStr=null;;
+	private String[] armTypes= new String[]{"正在运行","已安装"};
+	private String[][] arms = new String[][]{};//二维数组，表示ExpandableListview数据
+	private ReFlashExpandableListView listView;
+	private View view;
+	private String screenStr;
 	private ProgressDialog mDialog; 
 	private String screenIsSuccess;
 	private ExpandableListContextMenuInfo info;
-	MyAdapter adapter;
-	
+	private MyAdapter adapter;
 	private LinearLayout childView;
-	
-	SharedPreferences remoteIpInfo;
-	String remoteIp;;
-	
+	private SharedPreferences remoteIpInfo;
+	private String remoteIp;;
+	private int[] images = new int[]
+	{
+		R.drawable.application_explorer,
+		R.drawable.application_item,
+		R.drawable.application_visualstudio,
+		R.drawable.application_weixin,
+		R.drawable.application_xunlei,
+		R.drawable.application_baiduyun,
+		R.drawable.application_kankan,
+		R.drawable.application_youku
+	};
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		
 		remoteIpInfo=getActivity().getSharedPreferences("Remote",Context.MODE_PRIVATE);
 	}
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
 	{
 		view=inflater.inflate(R.layout.application_list, container, false);
 		listView=(ReFlashExpandableListView) view.findViewById(R.id.listView1);
-		gridView=(GridView) view.findViewById(R.id.gridView1);
 		listView.setInterface(this);
-		
 		remoteIp=getRemoteIp();
-		if(remoteIp==null||"".equals(remoteIp))
+		if(StringUtil.isNullString(remoteIp))
 		{
 			Toast.makeText(getActivity(), "获取远程虚拟机应用失败，请登录代理服务器获取IP地址", Toast.LENGTH_SHORT).show();
 		}
 		else
 		{
-			
-			Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), "app," + remoteIp, new MyCallBack() 
+			//Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), "app," + remoteIp, new MyCallBack()
+			Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), 
+													JsonParse.Json2String(OptionEnum.APP_LIST.ordinal(),new Parameter2Option("app", remoteIp)), new MyCallBack()
 			{
 				@Override
 				public void getResult(String application_arrs,Bitmap[] bitmapArrs)
@@ -111,55 +107,61 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 					}
 					else
 					{
-						System.out.println("执行回调函数");
-						message.obj=bitmapArrs;
+						message.obj=bitmapArrs;//图片
 						Bundle bundle=new Bundle();
-						bundle.putString("appListMsg", application_arrs);
+						bundle.putString("appListMsg", application_arrs);//应用列表字符串
 						message.setData(bundle);
 						message.what=2;
 						handler.sendMessage(message);
 					}
 				}
 			});
-			Thread thread = new Thread(sendMsgThread);
+			Thread thread = new Thread(sendMsgThread);//请求应用列表字符串
 			thread.start();
 		}
 		return view;
 	}
-	
 	private String getRemoteIp()
 	{
-		String remoteIp=null;
-		
-		if(!remoteIpInfo.contains("remoteIP")) 
-		{
-			SharedPreferences.Editor editor=remoteIpInfo.edit();
-			editor.putString("remoteIP", "");
-			editor.commit();
-		}
 		remoteIp=remoteIpInfo.getString("remoteIP", "");
 		return remoteIp;
 	}
+	@SuppressLint("HandlerLeak")
 	public Handler handler=new Handler()
-	{
+	{ 
 		public void handleMessage(android.os.Message msg)
 		{
 			switch(msg.what)
 			{
 				case 0:
-					if(mDialog!=null)
-						mDialog.cancel();
-					Toast.makeText(getActivity(), "家庭服务端IP地址不正确", Toast.LENGTH_LONG).show();
-					break;
 				case 1:
 					if(mDialog!=null)
 						mDialog.cancel();
-					Toast.makeText(getActivity(), "家庭服务中心已关闭", Toast.LENGTH_LONG).show();
+					Toast.makeText(getActivity(), "连接家庭服务终端失败，请稍候重试", Toast.LENGTH_LONG).show();
 					break;
 				case 2: //获取应用字符串
-					resultStr=msg.getData().getString("appListMsg");
-					System.out.println(resultStr);
-					if(null!=resultStr && !("error".equals(resultStr)))
+					responseStr=msg.getData().getString("appListMsg");
+					if(responseStr==null)
+					{
+						Toast.makeText(getActivity(), "对不起，未能获取应用列表字符串", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						if(!"error".equals(responseStr))	
+						{
+							homeApplicationStr=responseStr.split(";;;")[0];
+							vmApplicationStr=responseStr.split(";;;")[1];
+							content_Application=homeApplicationStr.split("\\|\\*\\^");//以"\*^"为分割符
+							content_VmApp=vmApplicationStr.split("\\|\\*\\^");
+							Bitmap[] bitmapArrs=(Bitmap[]) msg.obj;
+							binderListData(content_Application,content_VmApp,bitmapArrs);
+						}
+						else
+						{
+							Toast.makeText(getActivity(), "对不起，获取应用列表字符串发生错误", Toast.LENGTH_LONG).show();
+						}
+					}
+					/*if(null!=resultStr && !("error".equals(resultStr)))
 					{
 						homeApplicationStr=resultStr.split(";;;")[0];
 						vmApplicationStr=resultStr.split(";;;")[1];
@@ -168,19 +170,43 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 						Bitmap[] bitmapArrs=(Bitmap[]) msg.obj;
 						//binderGridata(content_Application, bitmapArrs);
 						binderListData(content_Application,content_VmApp,bitmapArrs);
-						
 					}
 					else
 					{
 						Toast.makeText(getActivity(), "未获取应用列表字符串", Toast.LENGTH_LONG).show();
 					}
-					
+					*/
 					break;	
 				case 3: //获取屏幕字符串
 					if(mDialog!=null)
 						mDialog.cancel();
 					screenStr=msg.getData().getString("msg");
-					if("".equals(screenStr)||screenStr==null || "error".equals(screenStr))
+					ResponseMessage responseMessage=JsonParse.Json2Object(screenStr);
+					if(responseMessage==null)
+					{
+						Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						if(responseMessage.getErrNum()==ResponseMessageEnum.ERROR.ordinal())
+						{
+							Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+							screenList=responseMessage.getResponseMessage().split(",");
+							SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
+							for (int i = 0; i <screenList.length; i++)
+							{
+								if(sharedPreferences.contains(screenList[i]))
+								{
+									screenList[i]=sharedPreferences.getString(screenList[i], "...");
+								}
+							}
+							showScreen(screenList);
+						}
+					}
+					/*if(StringUtil.isNullString(screenStr) || "error".equals(screenStr))
 					{
 						 Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
 					}
@@ -196,13 +222,39 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 							}
 						}
 						showScreen(screenList);
-					}
+					}*/
 					break;
 				case 4:
 					if(mDialog!=null)
 						mDialog.cancel();
 					screenIsSuccess=msg.getData().getString("msg");
-					if("success".equals(screenIsSuccess))
+					ResponseMessage responseMessage2=JsonParse.Json2Object(screenIsSuccess);
+					if(responseMessage2==null)
+					{
+						Toast.makeText(getActivity(), "对不起，投影失败，请重试...", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						int errNum=responseMessage2.getErrNum();
+						if(errNum==ResponseMessageEnum.SUCCESS.ordinal())
+						{
+							Toast.makeText(getActivity(), "投影"+adapter.getTextView().getText().toString()+"成功！", Toast.LENGTH_LONG).show();
+						}
+						else if(errNum==ResponseMessageEnum.WAIT.ordinal())
+						{
+							Toast.makeText(getActivity(), "正在连接中，稍后请重试...", Toast.LENGTH_LONG).show();
+						}
+						else if(errNum==ResponseMessageEnum.UNCONNECTED.ordinal())
+						{
+							Toast.makeText(getActivity(), "对不起，未能成功连接，请重试...", Toast.LENGTH_LONG).show();
+						}
+						else //error
+						{
+							Toast.makeText(getActivity(), "投影"+adapter.getTextView().getText().toString()+"失败！", Toast.LENGTH_LONG).show();
+						}
+							
+					}
+					/*if("success".equals(screenIsSuccess))
 					{
 						Toast.makeText(getActivity(), adapter.getTextView().getText().toString()+"成功！", Toast.LENGTH_LONG).show();
 					}
@@ -210,19 +262,14 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 					{
 						Toast.makeText(getActivity(), "正在连接中，稍后请重试...", Toast.LENGTH_LONG).show();
 					}
-					else if("ignore".equals(screenIsSuccess))
-					{
-						Toast.makeText(getActivity(), screenIsSuccess, Toast.LENGTH_LONG).show();
-					}
 					else if("unconnected".equals(screenIsSuccess))
 					{
 						Toast.makeText(getActivity(), "对不起，未能成功连接，请重试...", Toast.LENGTH_LONG).show();
 					}
-					else
+					else //error
 					{
 						Toast.makeText(getActivity(), adapter.getTextView().getText().toString()+"失败！", Toast.LENGTH_LONG).show();
-					}
-					
+					}*/
 					break;
 				case 5:
 					if(mDialog!=null)
@@ -439,9 +486,18 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		         mDialog.setTitle("投影");  
 		         mDialog.setMessage("正在进行投影，请稍等...");  
 		         mDialog.show();
-		         ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
+		       /*  ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
 		        		 ExpandableListView.getPackedPositionGroup(info.packedPosition)+","+
-		        				 ExpandableListView.getPackedPositionChild(info.packedPosition)+",screen,"+String.valueOf(which));
+		        				 ExpandableListView.getPackedPositionChild(info.packedPosition)+",screen,"+String.valueOf(which));*/
+		         int optionId;
+		         if(ExpandableListView.getPackedPositionGroup(info.packedPosition)==0)
+		         {
+		        	 optionId=OptionEnum.PROJECTIONFILE_LOCAL.ordinal();
+		         }
+		         else
+		        	 optionId=OptionEnum.PROJECTION_VM.ordinal();
+		         ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), JsonParse.Json2String(optionId, 
+		        		 new Parameter2Option(String.valueOf(ExpandableListView.getPackedPositionChild(info.packedPosition)), String.valueOf(which))));
 		         Thread thread=new Thread(msgAppScreen);
 				 thread.start();
 			}
@@ -467,7 +523,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 	             mDialog.setTitle("屏幕");  
 	             mDialog.setMessage("正在获取屏幕，请稍等...");  
 	             mDialog.show();
-				SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),"display");
+				SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
 				Thread threadScreen =new Thread(sendMsgScreen);
 				threadScreen.start(); 	
 				break;
@@ -494,7 +550,8 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		}
 		else
 		{
-			Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), "app," +remoteIp, new MyCallBack() 
+			Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(),
+					JsonParse.Json2String(OptionEnum.APP_LIST.ordinal(), new Parameter2Option("app", remoteIp)), new MyCallBack() 
 			{
 				@Override
 				public void getResult(String application_arrs,Bitmap[] bitmapArrs)

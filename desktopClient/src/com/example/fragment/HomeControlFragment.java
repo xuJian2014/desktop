@@ -103,7 +103,6 @@ public class HomeControlFragment extends Fragment implements OnClickListener
 				mTextApplication.setTextColor(android.graphics.Color.parseColor("#ffffff"));
 				break;
 			case 1:
-				System.out.println("°´ÏÂÃ½Ìå¼ü");
 				if (mediaFragment == null)
 				{
 					mediaFragment = new Media_List_Fragment();

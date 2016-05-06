@@ -21,10 +21,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.Entity.ScreenItem;
 import com.example.desktop.R;
+import com.example.util.jsonTransfer.JsonParse;
+import com.example.util.jsonTransfer.OptionEnum;
+import com.example.util.jsonTransfer.ResponseMessage;
+import com.example.util.jsonTransfer.ResponseMessageEnum;
 import com.example.utilTool.ReFlashListView;
 import com.example.utilTool.ReFlashListView.IReflashListener;
 import com.example.utilTool.Screen_List_Adapter;
 import com.example.utilTool.SendMsgThread;
+import com.example.utilTool.StringUtil;
 
 public class Screen_List_Fragment extends Fragment implements IReflashListener
 {
@@ -41,7 +46,6 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		
 	}
@@ -49,7 +53,8 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
 	{
 		view=inflater.inflate(R.layout.screen_list, container, false);
-		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"screen");
+		//SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"screen");
+		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),JsonParse.Json2String(OptionEnum.SCREEN.ordinal(), null));
 		listView=(ReFlashListView) view.findViewById(R.id.listView1);
 		sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
 		listView.setInterface(this);
@@ -80,7 +85,24 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 					break;
 				case 2:
 					screenStr=msg.getData().getString("msg");
-					if(null==screenStr||"".equals(screenStr)||"error".equals(screenStr))
+					ResponseMessage responseMessage=JsonParse.Json2Object(screenStr);
+					if(responseMessage==null)
+					{
+						Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						if(responseMessage.getErrNum()==ResponseMessageEnum.ERROR.ordinal())
+						{
+							Toast.makeText(getActivity(), "获取屏幕失败", Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+							content_Screen=responseMessage.getResponseMessage().split(",");
+							binderListData(content_Screen);
+						}
+					}
+					/*if(StringUtil.isNullString(screenStr) || "error".equals(screenStr))
 					{
 						Toast.makeText(getActivity(), "获取屏幕失败", Toast.LENGTH_LONG).show();
 					}
@@ -88,7 +110,7 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 					{
 						content_Screen=screenStr.split(",");
 						binderListData(content_Screen);
-					}
+					}*/
 					break;
 				case 5:
 					cleanListView();
@@ -151,7 +173,7 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 					public void onClick(DialogInterface dialog, int which)
 					{
 						String alterScreenName = alterScreenNameEdit.getText().toString();
-						if (alterScreenName == null || "".equals(alterScreenName))
+						if (StringUtil.isNullString(alterScreenName))
 						{
 							Toast.makeText(getActivity(), "保存失败，输入不能为空",Toast.LENGTH_LONG).show();
 						}
@@ -187,7 +209,7 @@ public class Screen_List_Fragment extends Fragment implements IReflashListener
 	}
 	private void setReflashData() 
 	{
-		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"screen");
+		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),JsonParse.Json2String(OptionEnum.SCREEN.ordinal(), null));
 		Thread thread =new Thread(sendMsgThread);
 		thread.start(); 
 	}

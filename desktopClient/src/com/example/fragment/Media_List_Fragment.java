@@ -26,6 +26,12 @@ import com.example.tree_view.FileBean;
 import com.example.tree_view.Node;
 import com.example.tree_view.SimpleTreeAdapter;
 import com.example.tree_view.TreeListViewAdapter.OnTreeNodeClickListener;
+import com.example.util.jsonTransfer.JsonParse;
+import com.example.util.jsonTransfer.OptionEnum;
+import com.example.util.jsonTransfer.Parameter1Option;
+import com.example.util.jsonTransfer.Parameter2Option;
+import com.example.util.jsonTransfer.ResponseMessage;
+import com.example.util.jsonTransfer.ResponseMessageEnum;
 import com.example.utilTool.Media_List_Adapter;
 import com.example.utilTool.ReFlashListView;
 import com.example.utilTool.ReFlashListView.IReflashListener;
@@ -33,6 +39,7 @@ import com.example.utilTool.ScreenResponseMsg;
 import com.example.utilTool.SendMsgAppScreen;
 import com.example.utilTool.SendMsgThread;
 import com.example.utilTool.Send_FileSystem_MsgThread;
+import com.example.utilTool.StringUtil;
 public class Media_List_Fragment extends Fragment implements IReflashListener
 {
 	private String mediaStr;
@@ -46,7 +53,6 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 	private List<MediaItem> mediaList=new ArrayList<MediaItem>();
 	Media_List_Adapter adapter;
 	private ProgressDialog mDialog; 
-	private String MachineIp;
 	private List<FileBean> mDatas = new ArrayList<FileBean>();
 	private ListView mTree;
 	private SimpleTreeAdapter<FileBean> mAdapter;
@@ -66,7 +72,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 		view=inflater.inflate(R.layout.media_list, container,false);
 		listView=(ReFlashListView) view.findViewById(R.id.listView1);
 		listView.setInterface(this);
-		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"file");
+		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),JsonParse.Json2String(OptionEnum.FILE.ordinal(), null));
 		Thread thread =new Thread(sendMsgThread);
 		thread.start(); 
 		initDatas();//初始化数据mDatas
@@ -80,14 +86,13 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 				public void onClick(Node node, int position)
 				{
 					String nodeName;
-					
 					if(node.getChildren().size()==0)
 					{
 						currentId=position;//使用当前目录id作为父ID
 						if(node.getId()==1)
 						{
 							nodeName="fileSystem";
-							Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(),nodeName);
+							Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(),JsonParse.Json2String(OptionEnum.FILE_SYSTEM.ordinal(), null));
 							Thread thread =new Thread(send_FileSystem_MsgThread);
 							thread.start();
 						}
@@ -100,7 +105,9 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 								nodeName=pNode.getParent().getName()+"\\"+nodeName;
 								pNode=pNode.getParent();
 							}
-							Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(), "drive,"+nodeName);
+							//Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(), "drive,"+nodeName);		
+							Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(), 
+									JsonParse.Json2String(OptionEnum.DRIVE.ordinal(), new Parameter1Option(nodeName)));
 							Thread thread =new Thread(send_FileSystem_MsgThread);
 							thread.start();
 						}
@@ -143,9 +150,26 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 					cleanListView();
 					Toast.makeText(getActivity(), "家庭服务中心已关闭", Toast.LENGTH_LONG).show();
 					break;
-				case 2://获取文件字符串
+				case 2://获取媒体库文件字符串
 					mediaStr=msg.getData().getString("msg");
-					if("error".equals(mediaStr)||null==mediaStr)
+					ResponseMessage responseMessage=JsonParse.Json2Object(mediaStr);
+					if(responseMessage==null)
+					{
+						Toast.makeText(getActivity(), "获取媒体库文件失败", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						if(responseMessage.getErrNum()==ResponseMessageEnum.ERROR.ordinal())
+						{
+							Toast.makeText(getActivity(), "获取媒体库文件失败", Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+							content_Media=responseMessage.getResponseMessage().split(",");
+							binderListData(content_Media);
+						}
+					}
+					/*if("error".equals(mediaStr)||StringUtil.isNullString(mediaStr))
 					{
 						Toast.makeText(getActivity(), "获取媒体库文件失败", Toast.LENGTH_LONG).show();
 					}
@@ -153,13 +177,40 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 					{
 						content_Media=mediaStr.split(",");
 						binderListData(content_Media);
-					}
+					}*/
 					break;
 				case 3: //获取屏幕字符串
 					if(mDialog!=null)
 						mDialog.cancel();
 					screenStr=msg.getData().getString("msg");
-					if("".equals(screenStr)||screenStr==null || "error".equals(screenStr))
+					
+					ResponseMessage responseMessage2=JsonParse.Json2Object(screenStr);
+					
+					if(responseMessage2==null)
+					{
+						Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						if(responseMessage2.getErrNum()==ResponseMessageEnum.ERROR.ordinal())
+						{
+							Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+							screenList=responseMessage2.getResponseMessage().split(",");
+							SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
+							for (int i = 0; i <screenList.length; i++)
+							{
+								if(sharedPreferences.contains(screenList[i]))
+								{
+									screenList[i]=sharedPreferences.getString(screenList[i], null);
+								}
+							}
+							showScreen(screenList);
+						}
+					}
+					/*if(StringUtil.isNullString(screenStr) || "error".equals(screenStr))
 					{
 						 Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
 					}
@@ -175,13 +226,38 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 							}
 						}
 						showScreen(screenList);
-					}
+					}*/
 					break;
 				case 4:
-					screenIsSuccess=msg.getData().getString("msg");
 					if(mDialog!=null)
 						mDialog.cancel();
-					if("success".equals(screenIsSuccess))
+					screenIsSuccess=msg.getData().getString("msg");
+					ResponseMessage responseMessage3=JsonParse.Json2Object(screenIsSuccess);
+					if(responseMessage3==null)
+					{
+						Toast.makeText(getActivity(), "对不起，投影失败，请重试...", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						int errNum=responseMessage3.getErrNum();
+						if(errNum==ResponseMessageEnum.SUCCESS.ordinal())
+						{
+							Toast.makeText(getActivity(), "投影"+adapter.getItem(info.position-1).getMediaName()+"成功！", Toast.LENGTH_LONG).show();
+						}
+						else if(errNum==ResponseMessageEnum.WAIT.ordinal())
+						{
+							Toast.makeText(getActivity(), "正在连接中，稍后请重试...", Toast.LENGTH_LONG).show();
+						}
+						else if(errNum==ResponseMessageEnum.UNCONNECTED.ordinal())
+						{
+							Toast.makeText(getActivity(), "对不起，未能成功连接，请重试...", Toast.LENGTH_LONG).show();
+						}
+						else //error
+						{
+							Toast.makeText(getActivity(), "投影"+adapter.getItem(info.position-1).getMediaName()+"失败！", Toast.LENGTH_LONG).show();
+						}
+					}
+					/*if("success".equals(screenIsSuccess))
 					{
 						Toast.makeText(getActivity(), adapter.getItem(info.position-1).getMediaName()+"成功！", Toast.LENGTH_LONG).show();
 					}
@@ -189,14 +265,14 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 					{
 						Toast.makeText(getActivity(), "正在连接中，稍后请重试...", Toast.LENGTH_LONG).show();
 					}
-					else if("ignore".equals(screenIsSuccess))
+					else if("unconnected".equals(screenIsSuccess))
 					{
-						Toast.makeText(getActivity(), screenIsSuccess, Toast.LENGTH_LONG).show();
+						Toast.makeText(getActivity(), "对不起，未能成功连接，请重试...", Toast.LENGTH_LONG).show();
 					}
 					else
 					{
 						Toast.makeText(getActivity(), adapter.getItem(info.position-1).getMediaName()+"失败！", Toast.LENGTH_LONG).show();
-					}
+					}*/
 					break;
 				case 5:
 					if(mDialog!=null)
@@ -206,8 +282,30 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 					break;
 				case 6:
 					file_drc=msg.getData().getString("msg");
+					
+					ResponseMessage responseMessage4=JsonParse.Json2Object(file_drc);
+					if(responseMessage4==null)
+					{
+						Toast.makeText(getActivity(), "获取文件路径失败", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						if(responseMessage4.getErrNum()==ResponseMessageEnum.ERROR.ordinal())
+						{
+							Toast.makeText(getActivity(), "对不起，您没有权限访问该文件！", Toast.LENGTH_LONG).show();
+						}
+						else if("".equals(responseMessage4.getResponseMessage()))
+						{
+							Toast.makeText(getActivity(), "这是一个文件或空文件夹，不能展开！", Toast.LENGTH_SHORT).show();
+						}
+						else
+						{
+							setFileDir(responseMessage4.getResponseMessage());
+						}
+					}
+					
 					//Toast.makeText(getActivity(), file_drc, Toast.LENGTH_SHORT).show();
-					if(null==file_drc)
+				/*	if(null==file_drc)
 						Toast.makeText(getActivity(), "获取文件路径失败", Toast.LENGTH_SHORT).show();
 					else if("".equals(file_drc))
 					{
@@ -220,7 +318,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 					else
 					{
 						setFileDir(file_drc);
-					}
+					}*/
 					break;
 				case 7:
 					Toast.makeText(getActivity(), "获取文件路径错误", Toast.LENGTH_SHORT).show();
@@ -322,7 +420,10 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 		         mDialog.setTitle("投影");  
 		         mDialog.setMessage("正在进行投影，请稍等...");  
 		         mDialog.show();
-			     ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), info.id+",open,"+String.valueOf(which));
+			     //ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), info.id+",open,"+String.valueOf(which));
+			     
+			     ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
+			    		 JsonParse.Json2String(OptionEnum.PROJECTION_FILE.ordinal(), new Parameter2Option(String.valueOf(info.id), String.valueOf(which))));
 				 Thread thread=new Thread(msgAppScreen);
 				 thread.start();
 				}
@@ -346,7 +447,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 	             mDialog.setTitle("屏幕");  
 	             mDialog.setMessage("正在获取屏幕，请稍等...");  
 	             mDialog.show();
-				SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),"display");
+				SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
 				Thread threadScreen =new Thread(sendMsgScreen);
 				threadScreen.start(); 	
 				break;
@@ -364,7 +465,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 	}
 	private void setReflashData() 
 	{
-		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),"file");
+		SendMsgThread sendMsgThread=new SendMsgThread(handler, getActivity(),JsonParse.Json2String(OptionEnum.FILE.ordinal(), null));
 		Thread thread =new Thread(sendMsgThread);
 		thread.start(); 
 	}

@@ -42,10 +42,13 @@ import com.example.desktop.R;
 import com.example.touch.GameActivity;
 import com.example.touch.KeyboardActivity;
 import com.example.touch.MouseActivity;
+import com.example.util.jsonTransfer.JsonParse;
+import com.example.util.jsonTransfer.OptionEnum;
 import com.example.utilTool.HomeForScreenThread;
 import com.example.utilTool.MyGridAdapter;
 import com.example.utilTool.MyGridView;
 import com.example.utilTool.SendMultiUdpMessage;
+import com.example.utilTool.StringUtil;
 import com.example.utilTool.TcpReceive;
 public class HomeFragment extends Fragment 
 {
@@ -131,7 +134,7 @@ public class HomeFragment extends Fragment
 						getFragmentManager().beginTransaction().replace(R.id.content_frame, controlFragment).commit();
 						break;
 					case 3:
-						HomeForScreenThread sendMsgThread=new HomeForScreenThread(handler, getActivity(),"screen");
+						HomeForScreenThread sendMsgThread=new HomeForScreenThread(handler, getActivity(),JsonParse.Json2String(OptionEnum.SCREEN.ordinal(), null));
 						Thread thread =new Thread(sendMsgThread);
 						thread.start();
 						break;
@@ -322,7 +325,7 @@ public class HomeFragment extends Fragment
 					break;
 				case 11:
 					String screenStr=msg.getData().getString("msg");
-					if(screenStr.equals("error")||null==screenStr||"".equals(screenStr))
+					if(screenStr.equals("error")||StringUtil.isNullString(screenStr))
 					{
 						Toast.makeText(getActivity(), "获取屏幕失败", Toast.LENGTH_LONG).show();
 					}
@@ -332,7 +335,6 @@ public class HomeFragment extends Fragment
 						AlertDialog.Builder builder=new Builder(getActivity());
 						builder.setItems(content_Screen, new DialogInterface.OnClickListener() 
 						{
-							
 							@Override
 							public void onClick(DialogInterface dialog, int which)
 							{
