@@ -21,16 +21,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
 import com.example.fragment.ApplicationManagerFragment;
 import com.example.fragment.HomeControlFragment;
 import com.example.fragment.HomeFragment;
-import com.example.fragment.LoginFragment;
-import com.example.fragment.RegisterFragment;
 import com.example.fragment.SettingFragment;
 import com.example.touch.AuxiliaryService;
-import com.example.utilTool.StringUtil;
 
 public class MainActivity extends FragmentActivity
 {

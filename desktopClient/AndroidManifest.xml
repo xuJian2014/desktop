@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="com.android.setting.permission.ALLSHARE_CAST_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -42,17 +42,15 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
-        
-         <activity 
-             android:name="com.example.desktop.LoginActivity" 
-             android:theme="@android:style/Theme.Light.NoTitleBar" >
+        <activity
+            android:name="com.example.desktop.LoginActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-        
-          <activity 
-             android:name="com.example.desktop.RegisterActivity" 
-             android:theme="@android:style/Theme.Light.NoTitleBar" >
+        <activity
+            android:name="com.example.desktop.RegisterActivity"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-  
+
         <!-- Touch服务 -->
         <service android:name="com.example.touch.AuxiliaryService" >
         </service>
@@ -66,7 +64,7 @@
             android:name="com.example.touch.ChoiceActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
-        
+
         <!-- 远程连接"画布"界面 -->
         <activity
             android:name="android.androidVNC.VncCanvasActivity"
@@ -75,27 +73,34 @@
         </activity>
 
         <!-- 虚拟鼠标 -->
-        <activity
-            android:name="com.example.touch.MouseActivity">
+        <activity android:name="com.example.touch.MouseActivity" >
         </activity>
 
         <!-- 虚拟键盘 -->
         <activity
             android:name="com.example.touch.KeyboardActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
         </activity>
-        
+
         <!-- 游戏手柄 -->
-        <activity android:name="com.example.touch.GameActivity"
-            android:screenOrientation="landscape">
+        <activity
+            android:name="com.example.touch.GameActivity"
+            android:screenOrientation="landscape" >
         </activity>
-        <activity android:name="com.example.touch.SetActivity"></activity>
+        <activity android:name="com.example.touch.SetActivity" >
+        </activity>
+        <activity android:name="com.example.controller.BrowserActivity" >
+        </activity>
+        <activity android:name="com.example.controller.Control_MainActivity" >
+        </activity>
+        <activity android:name="com.example.controller.ProjectionActivity" >
+        </activity>
         
-        <activity android:name="com.example.controller.BrowserActivity"></activity>
-        <activity android:name="com.example.controller.Control_MainActivity"></activity>
-        <activity android:name="com.example.controller.ProjectionActivity"></activity>
-        
-        
+        <activity
+            android:name="com.example.desktop.LoginAndRegisterActivity"
+            android:label="登录"
+           >
+        </activity>
     </application>
 
 </manifest>

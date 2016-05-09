@@ -9,9 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
-import com.example.Entity.RequestMesg;
-import com.example.Entity.ResponseMesg;
-import com.example.utilTool.StringUtil;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,30 +19,107 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.Entity.RequestMesg;
+import com.example.Entity.ResponseMesg;
+import com.example.utilTool.StringUtil;
 
 public class RegisterActivity extends Activity
 {
 	private EditText mEtUserName;
 	private EditText mEtPassWord;
 	private EditText mEtVmName;
-	private EditText mEtHomeServiceIp;
 	private Button mBtnRegister;
+	private TextView showSystemSetting;
+	private LinearLayout settingLayout;
+	private ImageView is_showView;
+	private Spinner cpuNumSpinner;
+	private Spinner memorySizeSpinner;
 	private RequestMesg requestMesg;
 	private ProgressDialog mDialog; 
+	private String[] cpuNumDatas;
+	private String[] memorySizeDatas;
+	String cpuNum="2";
+	String memorySize="4G";
 	private final int TIME_OUT=10*1000;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_register);
-		mEtUserName=(EditText) findViewById(R.id.register_edit_account);
-		mEtPassWord=(EditText)findViewById(R.id.register_edit_pwd);
-		mEtVmName=(EditText) findViewById(R.id.register_edit_vName);
-		mEtHomeServiceIp=(EditText) findViewById(R.id.register_edit_homeIpAdress);
-		mBtnRegister=(Button) findViewById(R.id.btn_register);
+		initData();
+		
+		//声明一个ArrayAdapter，并将数据源与之关联起来
+		ArrayAdapter<String> cpuNumAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,cpuNumDatas);
+		ArrayAdapter<String> memorySizeAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,memorySizeDatas);
+		//设置弹出下拉列表的风格
+		cpuNumAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		memorySizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	
+		//将arrayAdapter对象添加进Spinner去
+		cpuNumSpinner.setAdapter(cpuNumAdapter);
+		memorySizeSpinner.setAdapter(memorySizeAdapter);
+		
+		cpuNumSpinner.setSelection(1, true);
+		memorySizeSpinner.setSelection(1, true);
+		//添加监听器
+		cpuNumSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,int position, long id)
+			{
+				cpuNum=cpuNumDatas[position];
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+			}
+		});
+		
+				//添加监听器
+		memorySizeSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,int position, long id)
+			{
+				memorySize=memorySizeDatas[position];
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+			}
+		});
+		showSystemSetting.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if(settingLayout.getVisibility()==View.VISIBLE)
+				{
+					is_showView.setImageResource(R.drawable.list_right);
+					settingLayout.setVisibility(View.GONE);
+				}
+				else
+				{
+					is_showView.setImageResource(R.drawable.list_dowm);
+					settingLayout.setVisibility(View.VISIBLE);
+				}
+				
+			}
+		});
+		
 		
 		mBtnRegister.setOnClickListener(new OnClickListener()
 		{	
@@ -54,14 +129,13 @@ public class RegisterActivity extends Activity
 	             String userName=mEtUserName.getText().toString().trim();
 	             String passWord=mEtPassWord.getText().toString().trim();
 	             String vmName=mEtVmName.getText().toString().trim();
-	             String homeServiceIp=mEtHomeServiceIp.getText().toString().trim(); 
-	             if(StringUtil.isNullString(userName)||StringUtil.isNullString(passWord)||StringUtil.isNullString(vmName)||StringUtil.isNullString(homeServiceIp))
+	             if(StringUtil.isNullString(userName)||StringUtil.isNullString(passWord)||StringUtil.isNullString(vmName))
 	             {
 	            	 Toast.makeText(RegisterActivity.this, "对不起，你输入的信息不完整", Toast.LENGTH_SHORT).show();
 	             }
-	             else if(!StringUtil.isIPAddress(homeServiceIp))
+	             else if(StringUtil.isContainsChinese(userName))
 	             {
-	            	 Toast.makeText(RegisterActivity.this, "对不起，你输入的IP地址格式不正确", Toast.LENGTH_SHORT).show();
+	            	 Toast.makeText(RegisterActivity.this, "用户名不能为中文字符", Toast.LENGTH_SHORT).show();
 	             }
 	             else
 	             {
@@ -69,13 +143,27 @@ public class RegisterActivity extends Activity
 		             mDialog.setTitle("注册");  
 		             mDialog.setMessage("正在注册，请稍后...");  
 		             mDialog.show(); 
-	            	  requestMesg=new RequestMesg(userName, passWord, vmName, homeServiceIp, 1, 7000, 0);
+	            	 requestMesg=new RequestMesg(userName, passWord, vmName, 1, 7000, cpuNum,memorySize);
 	 	             Client client=new Client(requestMesg);
 	 	             Thread request_thread=new Thread(client);
 	 	             request_thread.start();
 	             }
 			}
 		});
+	}
+	private void initData()
+	{
+		mEtUserName=(EditText) findViewById(R.id.register_edit_account);
+		mEtPassWord=(EditText)findViewById(R.id.register_edit_pwd);
+		mEtVmName=(EditText) findViewById(R.id.register_edit_vName);
+		mBtnRegister=(Button) findViewById(R.id.btn_register);	
+		showSystemSetting=(TextView) findViewById(R.id.systemSettingView);
+		settingLayout=(LinearLayout) findViewById(R.id.spinnerLayout);
+		is_showView=(ImageView) findViewById(R.id.is_showView);
+		cpuNumSpinner=(Spinner) findViewById(R.id.spinner1);
+		memorySizeSpinner=(Spinner) findViewById(R.id.spinner2);
+		cpuNumDatas=new String[]{"1","2","4","6","8"};
+		memorySizeDatas=new String[]{"2G","4G","6G","8G"};
 	}
 	
 	private Handler handler=new Handler()
@@ -85,14 +173,10 @@ public class RegisterActivity extends Activity
 			switch (msg.what)
 			{
 			case 0:
-				if(mDialog!=null)
-					mDialog.cancel();
-				Toast.makeText(RegisterActivity.this, "未知主机错误，重新配置服务器IP", Toast.LENGTH_LONG).show();
-				break;
 			case 1:
 				if(mDialog!=null)
 					mDialog.cancel();
-				Toast.makeText(RegisterActivity.this, "连接代理服务器超时", Toast.LENGTH_LONG).show();
+				Toast.makeText(RegisterActivity.this, "对不起，连接代理服务器失败，请稍候重试", Toast.LENGTH_LONG).show();	
 				break;
 			case 2:
 				 //启动接收返回信息线程
@@ -113,7 +197,7 @@ public class RegisterActivity extends Activity
 			case 5:
 				if(mDialog!=null)
 					mDialog.cancel();
-				Toast.makeText(RegisterActivity.this, "对不起，注册失败,返回硬盘IP地址错误", Toast.LENGTH_LONG).show();
+				Toast.makeText(RegisterActivity.this, "对不起，注册失败", Toast.LENGTH_LONG).show();
 				break;
 			case 6:
 				if(mDialog!=null)

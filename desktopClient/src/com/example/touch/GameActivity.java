@@ -43,7 +43,7 @@ public class GameActivity extends Activity {
         preferences = this.getApplicationContext().getSharedPreferences("configInfo", Context.MODE_PRIVATE);
         if(!preferences.getBoolean("flag", false))
         {
-        	//绗竴娆¤鍙� 璁剧疆鍒濊瘯閰嶇疆
+        	
         	editor = preferences.edit();
         	editor.putBoolean("flag", true);
         	editor.putInt("button1",KeyEvent.VK_W);

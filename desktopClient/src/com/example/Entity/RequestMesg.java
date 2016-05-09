@@ -12,6 +12,21 @@ public class RequestMesg implements Serializable
 	private int command;
 	private int portNumber; //手机端监听端口号
 	private int location; //0代表本地，1代表非本地
+	private String cpuNum;  //cpu核数
+	private String memorySize; //内存大小
+	
+	public RequestMesg(String userName, String passWord, String vmname,
+			int command, int portNumber, String cpuNum, String memorySize)
+	{
+		super();
+		this.userName = userName;
+		this.passWord = passWord;
+		this.vmname = vmname;
+		this.command = command;
+		this.portNumber = portNumber;
+		this.cpuNum = cpuNum;
+		this.memorySize = memorySize;
+	}
 	
 	public RequestMesg(String userName, String passWord, String vmname,
 			String ip, int command, int portNumber, int location)
@@ -75,6 +90,23 @@ public class RequestMesg implements Serializable
 	}
 	public void setPortNumber(int portNumber) {
 		this.portNumber = portNumber;
+	}
+	
+	public String getCpuNum()
+	{
+		return cpuNum;
+	}
+	public void setCpuNum(String cpuNum)
+	{
+		this.cpuNum = cpuNum;
+	}
+	public String getMemorySize()
+	{
+		return memorySize;
+	}
+	public void setMemorySize(String memorySize)
+	{
+		this.memorySize = memorySize;
 	}
 	public RequestMesg(String userName, String passWord, String ip,
 			int command, int portNumber) {

@@ -33,7 +33,7 @@ public class LoginActivity extends Activity
 	private EditText mEtPwd;
 	private EditText mEtIp;
 	private Button mBtnLogon;
-	private Button mBtnRegister;
+	private Button mBtnReset;
 	private ProgressDialog mDialog;   
 	private RequestMesg requestMesg;
 	private SharedPreferences pref, prefVNC;
@@ -50,7 +50,7 @@ public class LoginActivity extends Activity
 		mEtPwd = (EditText) findViewById(R.id.login_edit_pwd);
 		mEtIp=(EditText) findViewById(R.id.login_edit_ip); 
 		mBtnLogon = (Button) findViewById(R.id.login_btn_login);
-		mBtnRegister = (Button) findViewById(R.id.login_btn_register);
+		mBtnReset = (Button) findViewById(R.id.login_btn_reset);
 		rememberPass = (CheckBox)findViewById(R.id.remember_pass);
 		pref = getSharedPreferences("configInfo",Context.MODE_PRIVATE);
 		
@@ -70,6 +70,10 @@ public class LoginActivity extends Activity
 	             else if(!StringUtil.isIPAddress(ip))
 	             {
 	            	 Toast.makeText(LoginActivity.this, "IP地址不正确，请重新输入！", Toast.LENGTH_SHORT).show();
+	             }
+	             else if(StringUtil.isContainsChinese(userName))
+	             {
+	            	 Toast.makeText(LoginActivity.this, "用户名不能为中文字符", Toast.LENGTH_SHORT).show();
 	             }
 	             else
 	             {
@@ -102,13 +106,14 @@ public class LoginActivity extends Activity
 	             }
 			}
 		});
-		mBtnRegister.setOnClickListener(new OnClickListener()
+		mBtnReset.setOnClickListener(new OnClickListener()
 	        {	
 				@Override
 				public void onClick(View v)
 				{
-					Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-					startActivity(intent);
+					mEtLogon.setText("");
+					mEtPwd.setText("");
+					mEtIp.setText("");
 				}
 			});
 	}
@@ -125,14 +130,10 @@ public class LoginActivity extends Activity
 			switch (msg.what) 
 			{
 				case 0:
-					if(mDialog!=null)
-						mDialog.cancel();
-					Toast.makeText(LoginActivity.this, "未知主机错误，重新配置服务器IP", Toast.LENGTH_LONG).show();
-					break;
 				case 1:
 					if(mDialog!=null)
 						mDialog.cancel();
-					Toast.makeText(LoginActivity.this, "连接代理服务器发生错误，请检查IP地址是否正确或代理服务是否开启！", Toast.LENGTH_LONG).show();
+					Toast.makeText(LoginActivity.this, "对不起，连接代理服务器失败，请稍候重试", Toast.LENGTH_LONG).show();
 					break;
 				case 2:
 		             ClientReceive clientReceive=new ClientReceive();
@@ -146,38 +147,28 @@ public class LoginActivity extends Activity
 					if(mDialog!=null)
 						mDialog.cancel();
 					Bundle bundle=msg.getData();
-					ResponseMesg responseMesg=(ResponseMesg) bundle.getSerializable("message");
-					
+					ResponseMesg responseMesg=(ResponseMesg) bundle.getSerializable("message");	
 					//写入远程连接所需的IP
 					prefVNC = getSharedPreferences("Remote",Context.MODE_PRIVATE);
 					editorVNC=prefVNC.edit();
 					editorVNC.putString("remoteIP", responseMesg.getResponserMesg());
-					editorVNC.commit();
-					
-					//Toast.makeText(LoginActivity.this, "您的登录IP地址为:"+responseMesg.getResponserMesg(), Toast.LENGTH_LONG).show();
-					Toast.makeText(LoginActivity.this, "登录成功!"+responseMesg.getResponserMesg(), Toast.LENGTH_LONG).show();
-					
+					editorVNC.commit();	
+					Toast.makeText(LoginActivity.this, "登录成功!"+responseMesg.getResponserMesg(), Toast.LENGTH_LONG).show();	
 					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 					startActivity(intent);
 					LoginActivity.this.finish();
-					
 					break;
 				case 5:
 					if(mDialog!=null)
 						mDialog.cancel();
-					Toast.makeText(LoginActivity.this, "对不起，您的登录信息有误，请确认后重新登录", Toast.LENGTH_LONG).show(); 
-					break;
-				case 6:
-					if(mDialog!=null)
-						mDialog.cancel();
-					Toast.makeText(LoginActivity.this, "对不起，代理服务器返回信息出现未知错误", Toast.LENGTH_LONG).show(); 
+					Toast.makeText(LoginActivity.this, "登录失败，请检查用户名或密码是否输入正确", Toast.LENGTH_LONG).show(); 
 					break;
 				case 7:
 					if(mDialog!=null)
 						mDialog.cancel();
 					Toast.makeText(LoginActivity.this, "对不起，您是新用户，请注册后再登录", Toast.LENGTH_LONG).show(); 
-					
-					
+					Intent intent2=new Intent(LoginActivity.this, LoginAndRegisterActivity.class);
+					startActivity(intent2);
 					break;
 				case 8:
 					if(mDialog!=null)
@@ -199,8 +190,6 @@ public class LoginActivity extends Activity
 		int dstPort=sharedPreferences.getInt("proxyPortNumber",8001);*/
 		String dstAddress;
 		int dstPort;
-		
-		
 		public Client(RequestMesg mesg,String dstAddress,int dstPort)
 		{
 			this.mesg=mesg;
@@ -258,12 +247,12 @@ class ClientReceive implements Runnable
 				 ObjectInputStream objectInStream=getInObjectStream(socket);
 				 responseMesg=(ResponseMesg) objectInStream.readObject();
 				 int command=responseMesg.getMesgType();
-				 if(command==3)
+				 if(command==3)  //等待虚拟机开机
 				 {
 					 msg.what=3; 
 					 handler.sendMessage(msg);
 				 }
-				 else if(command==4)
+				 else if(command==4) //正确返回IP
 				 {
 					 Bundle bundle=new Bundle();
 					 bundle.putSerializable("message", responseMesg);
@@ -273,21 +262,15 @@ class ClientReceive implements Runnable
 					 flag=false;
 					 handler.sendMessage(message); 
 				 }
-				 else if(command==1)
+				 else if(command==1) //用户名密码错误
 				 {
-					 msg.what=5; //锟斤拷录锟斤拷息锟斤拷锟斤拷
+					 msg.what=5; 
 					 flag=false;
 					 handler.sendMessage(msg);
 				 }
-				 else if(command==2)
+				 else if(command==2) //新用户，请注册
 				 {
-					 msg.what=7; //锟斤拷锟矫伙拷锟斤拷锟斤拷要注锟斤拷
-					 flag=false;
-					 handler.sendMessage(msg);
-				 }
-				 else  //command=5
-				 {
-					 msg.what=6; //锟斤拷锟斤拷失锟杰ｏ拷锟斤拷锟斤拷原锟斤拷未知
+					 msg.what=7;
 					 flag=false;
 					 handler.sendMessage(msg);
 				 }
@@ -296,8 +279,9 @@ class ClientReceive implements Runnable
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
-			System.out.println("登录出现异常！");
+			 msg.what=8;
+			 flag=false;
+			 handler.sendMessage(msg);
 		}
 		finally
 		{

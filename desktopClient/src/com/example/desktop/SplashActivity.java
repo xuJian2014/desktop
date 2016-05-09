@@ -48,15 +48,15 @@ public class SplashActivity extends Activity
 				String passWord = sharedConfigInfo.getString("proxyPassWord", "");
 				if(StringUtil.isNullString(userName)||StringUtil.isNullString(passWord))
 				{
-					Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+					Intent intent = new Intent(SplashActivity.this, LoginAndRegisterActivity.class);
 					startActivity(intent);
 					SplashActivity.this.finish();
 				}
 				else
 				{
 					 mDialog = new ProgressDialog(SplashActivity.this);  
-		             mDialog.setTitle("登陆");  
-		             mDialog.setMessage("正在登陆服务器，请稍后...");  
+		             mDialog.setTitle("登录");  
+		             mDialog.setMessage("正在登录服务器，请稍候...");  
 		             mDialog.show();  
 					
 		             String homeServiceIp=sharedConfigInfo.getString("homeServiceIp", "192.168.1.103");
@@ -108,13 +108,14 @@ public class SplashActivity extends Activity
 	{
 		public void handleMessage(Message msg) 
 		{
+			Intent intent=null;
 			switch (msg.what) 
 			{
 				case 0:
 				case 1:  //返回0、1，说明未成功发送请求信息，直接转向登录界面
 					if(mDialog!=null)
 						mDialog.cancel();
-					Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+					intent = new Intent(SplashActivity.this, LoginAndRegisterActivity.class);
 					startActivity(intent);
 					SplashActivity.this.finish();
 					break;
@@ -126,7 +127,7 @@ public class SplashActivity extends Activity
 				case 3:
 					 Toast.makeText(SplashActivity.this, "正在开机，请耐心等待...", Toast.LENGTH_LONG).show(); 
 					 break;
-				case 4:
+				case 4://登录成功
 					if(mDialog!=null)
 						mDialog.cancel();
 					Bundle bundle=msg.getData();
@@ -136,43 +137,40 @@ public class SplashActivity extends Activity
 					editorVNC=prefVNC.edit();
 					editorVNC.putString("remoteIP", responseMesg.getResponserMesg());
 					editorVNC.commit();
-					
-					//Toast.makeText(LoginActivity.this, "您的登录IP地址为:"+responseMesg.getResponserMesg(), Toast.LENGTH_LONG).show();
-					
-					Intent intent3 = new Intent(SplashActivity.this, MainActivity.class);
-					startActivity(intent3);
+					intent = new Intent(SplashActivity.this, MainActivity.class);
+					startActivity(intent);
 					SplashActivity.this.finish();
-					
 					break;
-				case 5:
+				case 5://登录信息有误
 					if(mDialog!=null)
 						mDialog.cancel();
-					
 					Toast.makeText(SplashActivity.this, "对不起，您的登录信息有误，请确认后重新登录", Toast.LENGTH_LONG).show(); 
-					Intent intent4 = new Intent(SplashActivity.this, LoginActivity.class);
-					startActivity(intent4);
+					intent = new Intent(SplashActivity.this, LoginActivity.class);
+					startActivity(intent);
 					SplashActivity.this.finish();
 					break;
-				case 6:
+				case 6://代理服务返回信息出错
 					if(mDialog!=null)
 						mDialog.cancel();
-					
-					Toast.makeText(SplashActivity.this, "对不起，代理服务器返回信息出现未知错误", Toast.LENGTH_LONG).show(); 
-					Intent intent5 = new Intent(SplashActivity.this, LoginActivity.class);
-					startActivity(intent5);
+					//Toast.makeText(SplashActivity.this, "对不起，代理服务器返回信息出现未知错误", Toast.LENGTH_LONG).show(); 
+					intent = new Intent(SplashActivity.this, LoginAndRegisterActivity.class);
+					startActivity(intent);
 					SplashActivity.this.finish();
 					break;
 				case 7:
 					if(mDialog!=null)
 						mDialog.cancel();
 					Toast.makeText(SplashActivity.this, "对不起，您是新用户，请注册后再登陆", Toast.LENGTH_LONG).show(); 
+					intent = new Intent(SplashActivity.this, LoginAndRegisterActivity.class);
+					startActivity(intent);
+					SplashActivity.this.finish();
 					break;
 				case 8:
 					if(mDialog!=null)
 						mDialog.cancel();
 					Toast.makeText(SplashActivity.this, "对不起，代理服务器返回信息出现未知错误", Toast.LENGTH_LONG).show(); 
-					Intent intent6 = new Intent(SplashActivity.this, LoginActivity.class);
-					startActivity(intent6);
+					intent = new Intent(SplashActivity.this, LoginActivity.class);
+					startActivity(intent);
 					SplashActivity.this.finish();
 				default:
 					break;
@@ -293,7 +291,6 @@ class ClientReceive implements Runnable
 				}
 				catch (IOException e) 
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 		}

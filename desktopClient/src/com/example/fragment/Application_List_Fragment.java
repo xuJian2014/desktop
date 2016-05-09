@@ -92,9 +92,8 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		}
 		else
 		{
-			//Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), "app," + remoteIp, new MyCallBack()
 			Send_AppImage_Msg sendMsgThread = new Send_AppImage_Msg(handler,getActivity(), 
-													JsonParse.Json2String(OptionEnum.APP_LIST.ordinal(),new Parameter2Option("app", remoteIp)), new MyCallBack()
+										JsonParse.Json2String(OptionEnum.APP_LIST.ordinal(),new Parameter2Option("app", remoteIp)), new MyCallBack()
 			{
 				@Override
 				public void getResult(String application_arrs,Bitmap[] bitmapArrs)
@@ -135,9 +134,10 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 			{
 				case 0:
 				case 1:
+				case 5:
 					if(mDialog!=null)
 						mDialog.cancel();
-					Toast.makeText(getActivity(), "连接家庭服务终端失败，请稍候重试", Toast.LENGTH_LONG).show();
+					Toast.makeText(getActivity(), "对不起，连接家庭服务终端失败，请稍候重试", Toast.LENGTH_LONG).show();
 					break;
 				case 2: //获取应用字符串
 					responseStr=msg.getData().getString("appListMsg");
@@ -161,21 +161,6 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 							Toast.makeText(getActivity(), "对不起，获取应用列表字符串发生错误", Toast.LENGTH_LONG).show();
 						}
 					}
-					/*if(null!=resultStr && !("error".equals(resultStr)))
-					{
-						homeApplicationStr=resultStr.split(";;;")[0];
-						vmApplicationStr=resultStr.split(";;;")[1];
-						content_Application=homeApplicationStr.split("\\|\\*\\^");//以"\*^"为分割符
-						content_VmApp=vmApplicationStr.split("\\|\\*\\^");
-						Bitmap[] bitmapArrs=(Bitmap[]) msg.obj;
-						//binderGridata(content_Application, bitmapArrs);
-						binderListData(content_Application,content_VmApp,bitmapArrs);
-					}
-					else
-					{
-						Toast.makeText(getActivity(), "未获取应用列表字符串", Toast.LENGTH_LONG).show();
-					}
-					*/
 					break;	
 				case 3: //获取屏幕字符串
 					if(mDialog!=null)
@@ -206,23 +191,6 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 							showScreen(screenList);
 						}
 					}
-					/*if(StringUtil.isNullString(screenStr) || "error".equals(screenStr))
-					{
-						 Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
-					}
-					else
-					{
-						screenList=screenStr.split(",");
-						SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
-						for (int i = 0; i <screenList.length; i++)
-						{
-							if(sharedPreferences.contains(screenList[i]))
-							{
-								screenList[i]=sharedPreferences.getString(screenList[i], "...");
-							}
-						}
-						showScreen(screenList);
-					}*/
 					break;
 				case 4:
 					if(mDialog!=null)
@@ -254,27 +222,6 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 						}
 							
 					}
-					/*if("success".equals(screenIsSuccess))
-					{
-						Toast.makeText(getActivity(), adapter.getTextView().getText().toString()+"成功！", Toast.LENGTH_LONG).show();
-					}
-					else if("wait".equals(screenIsSuccess))
-					{
-						Toast.makeText(getActivity(), "正在连接中，稍后请重试...", Toast.LENGTH_LONG).show();
-					}
-					else if("unconnected".equals(screenIsSuccess))
-					{
-						Toast.makeText(getActivity(), "对不起，未能成功连接，请重试...", Toast.LENGTH_LONG).show();
-					}
-					else //error
-					{
-						Toast.makeText(getActivity(), adapter.getTextView().getText().toString()+"失败！", Toast.LENGTH_LONG).show();
-					}*/
-					break;
-				case 5:
-					if(mDialog!=null)
-						mDialog.cancel();
-					Toast.makeText(getActivity(), "连接家庭服务中心发生错误", Toast.LENGTH_LONG).show();
 					break;
 				default:
 					Toast.makeText(getActivity(), "未获取应用列表字符串", Toast.LENGTH_LONG).show();
@@ -486,9 +433,6 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		         mDialog.setTitle("投影");  
 		         mDialog.setMessage("正在进行投影，请稍等...");  
 		         mDialog.show();
-		       /*  ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
-		        		 ExpandableListView.getPackedPositionGroup(info.packedPosition)+","+
-		        				 ExpandableListView.getPackedPositionChild(info.packedPosition)+",screen,"+String.valueOf(which));*/
 		         int optionId;
 		         if(ExpandableListView.getPackedPositionGroup(info.packedPosition)==0)
 		         {
@@ -544,7 +488,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		
 		String remoteIp=null;
 		remoteIp=getRemoteIp();
-		if(remoteIp==null||"".equals(remoteIp))
+		if(StringUtil.isNullString(remoteIp))
 		{
 			Toast.makeText(getActivity(), "获取远程虚拟机应用失败，请登录代理服务器获取IP地址", Toast.LENGTH_LONG).show();
 		}

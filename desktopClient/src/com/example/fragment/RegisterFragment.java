@@ -1,4 +1,4 @@
-package com.example.fragment;
+/*package com.example.fragment;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -246,3 +246,4 @@ public class RegisterFragment extends Fragment
 	}
 	
 }
+*/
