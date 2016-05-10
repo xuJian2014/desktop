@@ -62,6 +62,7 @@ public class Send_AppImage_Msg implements Runnable
 				PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())),true);
 				out.println(requestStr);
 				BufferedReader buffer=new BufferedReader(new InputStreamReader(socketClient.getInputStream()));
+				
 				String responseInfo=buffer.readLine();
 				//System.out.println("应用列表"+responseInfo);	
 				ResponseMessage responseMessage=JsonParse.Json2Object(responseInfo);	

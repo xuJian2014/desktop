@@ -351,28 +351,27 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo)
 	{
-		 MenuInflater inflater = getActivity().getMenuInflater();
-		 inflater.inflate(R.menu.application_menu, menu);
-		 super.onCreateContextMenu(menu, v, menuInfo);
+			 MenuInflater inflater = getActivity().getMenuInflater();
+			 inflater.inflate(R.menu.application_menu, menu);
+			 super.onCreateContextMenu(menu, v, menuInfo);
 	}
 	public boolean onContextItemSelected(MenuItem item) 
 	{ 
-		info = (AdapterContextMenuInfo) item.getMenuInfo();
-		switch (item.getItemId()) 
-		{
-			case R.id.screen: //投影屏幕
-				 mDialog = new ProgressDialog(getActivity());  
-	             mDialog.setTitle("屏幕");  
-	             mDialog.setMessage("正在获取屏幕，请稍等...");  
-	             mDialog.show();
-				SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
-				Thread threadScreen =new Thread(sendMsgScreen);
-				threadScreen.start(); 	
-				break;
-			default:
-				break;
-		}
-        return super.onContextItemSelected(item);  
+			info = (AdapterContextMenuInfo) item.getMenuInfo();
+			switch (item.getItemId()) 
+			{
+				case R.id.screen: //投影屏幕
+					 mDialog = new ProgressDialog(getActivity());  
+		             mDialog.setTitle("屏幕");  
+		             mDialog.setMessage("正在获取屏幕，请稍等...");  
+		             mDialog.show();
+					SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
+					Thread threadScreen =new Thread(sendMsgScreen);
+					threadScreen.start(); 	
+					break;
+			}
+        //return super.onContextItemSelected(item); 
+			return true;
     } 
 	
 	@Override

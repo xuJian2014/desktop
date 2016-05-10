@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.desktop.R;
 import com.example.util.jsonTransfer.JsonParse;
 import com.example.util.jsonTransfer.OptionEnum;
@@ -219,8 +220,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 						else //error
 						{
 							Toast.makeText(getActivity(), "投影"+adapter.getTextView().getText().toString()+"失败！", Toast.LENGTH_LONG).show();
-						}
-							
+						}	
 					}
 					break;
 				default:
@@ -411,7 +411,6 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 			homeAppList=new String[]{"没有数据"};
 		if(("").equals(vmAppList)||vmAppList==null)
 			vmAppList=new String[]{"没有数据"};
-		
 		arms = new String[][]{homeAppList,vmAppList};
 		adapter=new MyAdapter(bitmapArrs);
 		listView.setAdapter(adapter);
@@ -471,10 +470,8 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 				Thread threadScreen =new Thread(sendMsgScreen);
 				threadScreen.start(); 	
 				break;
-			default:
-				break;
 		}
-        return super.onContextItemSelected(item);  
+        return true;  
     } 
 	@Override
 	public void onDestroy()

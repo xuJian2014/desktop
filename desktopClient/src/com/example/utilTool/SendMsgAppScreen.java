@@ -45,8 +45,10 @@ public class SendMsgAppScreen implements Runnable
 			try
 			{
 				socketClient.connect(socAddress, TIME_OUT);
+				System.out.println("----socket连接成功");
 				PrintWriter out=new PrintWriter(new BufferedWriter(new OutputStreamWriter(socketClient.getOutputStream())),true);
 				out.println(requestStr);
+				System.out.println("----socket发送命令");
 				InputStream inputStream=socketClient.getInputStream();
 				socketClient.setSoTimeout(TIME_OUT);
 				BufferedReader buffer=new BufferedReader(new InputStreamReader(inputStream));
@@ -79,6 +81,7 @@ public class SendMsgAppScreen implements Runnable
 					try
 					{
 						socketClient.close();
+						System.out.println("----关闭socket");
 					} 
 					catch (IOException e)
 					{

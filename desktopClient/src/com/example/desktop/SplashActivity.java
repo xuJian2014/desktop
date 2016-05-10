@@ -144,8 +144,7 @@ public class SplashActivity extends Activity
 				case 5://登录信息有误
 					if(mDialog!=null)
 						mDialog.cancel();
-					Toast.makeText(SplashActivity.this, "对不起，您的登录信息有误，请确认后重新登录", Toast.LENGTH_LONG).show(); 
-					intent = new Intent(SplashActivity.this, LoginActivity.class);
+					intent = new Intent(SplashActivity.this, LoginAndRegisterActivity.class);
 					startActivity(intent);
 					SplashActivity.this.finish();
 					break;
@@ -160,7 +159,7 @@ public class SplashActivity extends Activity
 				case 7:
 					if(mDialog!=null)
 						mDialog.cancel();
-					Toast.makeText(SplashActivity.this, "对不起，您是新用户，请注册后再登陆", Toast.LENGTH_LONG).show(); 
+					//Toast.makeText(SplashActivity.this, "对不起，您是新用户，请注册后再登陆", Toast.LENGTH_LONG).show(); 
 					intent = new Intent(SplashActivity.this, LoginAndRegisterActivity.class);
 					startActivity(intent);
 					SplashActivity.this.finish();
@@ -168,8 +167,8 @@ public class SplashActivity extends Activity
 				case 8:
 					if(mDialog!=null)
 						mDialog.cancel();
-					Toast.makeText(SplashActivity.this, "对不起，代理服务器返回信息出现未知错误", Toast.LENGTH_LONG).show(); 
-					intent = new Intent(SplashActivity.this, LoginActivity.class);
+					//Toast.makeText(SplashActivity.this, "对不起，代理服务器返回信息出现未知错误", Toast.LENGTH_LONG).show(); 
+					intent = new Intent(SplashActivity.this, LoginAndRegisterActivity.class);
 					startActivity(intent);
 					SplashActivity.this.finish();
 				default:
