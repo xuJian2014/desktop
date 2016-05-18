@@ -89,8 +89,6 @@ public class ChoiceActivity extends Activity implements OnClickListener {
 			getRemotePreferences = ChoiceActivity.this.getSharedPreferences("Remote", Context.MODE_PRIVATE);
 			connectionIP = getRemotePreferences.getString("remoteIP", "0000");
 			connectionPwd = getRemotePreferences.getString("remotePassword", "0000");
-			TouchFlag.getInstance().setIp(connectionIP);
-			TouchFlag.getInstance().setPwd(connectionPwd);
 			
 			//鍐欏叆VNC杩炴帴鎵�闇�淇℃伅
 			vncEditor.putString("IP", connectionIP);
@@ -130,8 +128,6 @@ public class ChoiceActivity extends Activity implements OnClickListener {
 			getFamilyPreferences = ChoiceActivity.this.getSharedPreferences("configInfo", Context.MODE_PRIVATE);
 			connectionIP = getFamilyPreferences.getString("homeServiceIp", "0000");
 			connectionPwd = getFamilyPreferences.getString("homeServicePwd", "0000");
-			TouchFlag.getInstance().setIp(connectionIP);
-			TouchFlag.getInstance().setPwd(connectionPwd);
 			
 			//鍐欏叆VNC杩炴帴鎵�闇�淇℃伅
 			vncEditor.putString("IP", connectionIP);

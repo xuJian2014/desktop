@@ -2,6 +2,7 @@ package com.example.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -39,6 +40,7 @@ import com.example.utilTool.ScreenResponseMsg;
 import com.example.utilTool.SendMsgAppScreen;
 import com.example.utilTool.SendMsgThread;
 import com.example.utilTool.Send_FileSystem_MsgThread;
+import com.example.utilTool.StringUtil;
 public class Media_List_Fragment extends Fragment implements IReflashListener
 {
 	private String[] content_Media=new String[]{};
@@ -53,7 +55,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 	private ListView mTree;
 	private SimpleTreeAdapter<FileBean> mAdapter;
 	private int currentId=1;
-		
+	private static String selectedFileDir=null;
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -99,6 +101,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 								nodeName=pNode.getParent().getName()+"\\"+nodeName;
 								pNode=pNode.getParent();
 							}
+							selectedFileDir=nodeName;
 							Send_FileSystem_MsgThread send_FileSystem_MsgThread=new Send_FileSystem_MsgThread(handler, getActivity(), 
 									JsonParse.Json2String(OptionEnum.DRIVE.ordinal(), new Parameter1Option(nodeName)));
 							Thread thread =new Thread(send_FileSystem_MsgThread);
@@ -125,6 +128,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 		super.onPause();
 		handler.removeCallbacks(null);
 	}
+	@SuppressLint("HandlerLeak") 
 	Handler handler=new Handler()
 	{
 		public void handleMessage(android.os.Message msg) 
@@ -203,7 +207,8 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 						int errNum=responseMessage3.getErrNum();
 						if(errNum==ResponseMessageEnum.SUCCESS.ordinal())
 						{
-							Toast.makeText(getActivity(), "投影"+adapter.getItem(info.position-1).getMediaName()+"成功！", Toast.LENGTH_LONG).show();
+							//Toast.makeText(getActivity(), "投影"+adapter.getItem(info.position-1).getMediaName()+"成功！", Toast.LENGTH_LONG).show();
+							Toast.makeText(getActivity(), "投影成功！", Toast.LENGTH_LONG).show();
 						}
 						else if(errNum==ResponseMessageEnum.WAIT.ordinal())
 						{
@@ -215,7 +220,8 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 						}
 						else //error
 						{
-							Toast.makeText(getActivity(), "投影"+adapter.getItem(info.position-1).getMediaName()+"失败！", Toast.LENGTH_LONG).show();
+							//Toast.makeText(getActivity(), "投影"+adapter.getItem(info.position-1).getMediaName()+"失败！", Toast.LENGTH_LONG).show();
+							Toast.makeText(getActivity(), "对不起，投影失败！", Toast.LENGTH_LONG).show();
 						}
 					}
 					break;
@@ -234,7 +240,24 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 						}
 						else if("".equals(responseMessage4.getResponseMessage()))
 						{
-							Toast.makeText(getActivity(), "这是一个文件或空文件夹，不能展开！", Toast.LENGTH_SHORT).show();
+							Toast.makeText(getActivity(), "这是一个空文件夹，不能展开！", Toast.LENGTH_SHORT).show();
+						}
+						else if("projectionFile".equals(responseMessage4.getResponseMessage()))
+						{
+							if(StringUtil.isFileForProjection(StringUtil.getExtensionName(selectedFileDir)))
+							{
+								mDialog = new ProgressDialog(getActivity());  
+					            mDialog.setTitle("屏幕");  
+					            mDialog.setMessage("正在获取屏幕，请稍等...");  
+					            mDialog.show();
+								SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
+								Thread threadScreen =new Thread(sendMsgScreen);
+								threadScreen.start(); 	
+							}
+							else
+							{
+								Toast.makeText(getActivity(), "这是一个文件，并不能投影！", Toast.LENGTH_SHORT).show();
+							}
 						}
 						else
 						{
@@ -245,9 +268,62 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 				case 7:
 					Toast.makeText(getActivity(), "获取文件路径错误", Toast.LENGTH_SHORT).show();
 					break;
+					
+				case 8:
+					if(mDialog!=null)
+						mDialog.cancel();
+					String screenStr2=msg.getData().getString("msg");
+					ResponseMessage responseMessage5=JsonParse.Json2Object(screenStr2);
+					if(responseMessage5==null)
+					{
+						Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						if(responseMessage5.getErrNum()==ResponseMessageEnum.ERROR.ordinal())
+						{
+							Toast.makeText(getActivity(), "对不起,没有找到屏幕", Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+							screenList=responseMessage5.getResponseMessage().split(",");
+							SharedPreferences sharedPreferences=getActivity().getSharedPreferences("configInfo",Context.MODE_PRIVATE);
+							for (int i = 0; i <screenList.length; i++)
+							{
+								if(sharedPreferences.contains(screenList[i]))
+								{
+									screenList[i]=sharedPreferences.getString(screenList[i], null);
+								}
+							}
+							showScreenforFileSystem(screenList);
+						}
+					}
+					break;
 				default:
 					break;
 			}
+		}
+		private void showScreenforFileSystem(String[] screenList)
+		{
+			AlertDialog.Builder builder=new AlertDialog.Builder(getActivity());
+			builder.setTitle("屏幕列表");
+			builder.setItems(screenList,new DialogInterface.OnClickListener()
+			{
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					 mDialog = new ProgressDialog(getActivity());  
+			         mDialog.setTitle("投影");  
+			         mDialog.setMessage("正在进行投影，请稍等...");  
+			         mDialog.show();
+			         ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
+				    		 JsonParse.Json2String(OptionEnum.PROJECTION_FILE_SYSTEM.ordinal(), new Parameter2Option(selectedFileDir, String.valueOf(which))));
+					 Thread thread=new Thread(msgAppScreen);
+					 thread.start();
+					}
+				});
+			builder.create().show();
+			
 		}
 		private void setFileDir(String file_drc)
 		{
@@ -325,7 +401,6 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 			adapter.notifyDataSetChanged();
 			listView.setAdapter(adapter);
 		}
-		
 	}
 	private void showScreen(String[] str)
 	{
@@ -340,7 +415,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 		         mDialog.setTitle("投影");  
 		         mDialog.setMessage("正在进行投影，请稍等...");  
 		         mDialog.show();
-			     ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
+		         ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
 			    		 JsonParse.Json2String(OptionEnum.PROJECTION_FILE.ordinal(), new Parameter2Option(String.valueOf(info.id), String.valueOf(which))));
 				 Thread thread=new Thread(msgAppScreen);
 				 thread.start();
@@ -351,27 +426,31 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo)
 	{
-			 MenuInflater inflater = getActivity().getMenuInflater();
-			 inflater.inflate(R.menu.application_menu, menu);
-			 super.onCreateContextMenu(menu, v, menuInfo);
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getActivity().getMenuInflater();
+		inflater.inflate(R.menu.application_menu, menu);	 
+		
 	}
 	public boolean onContextItemSelected(MenuItem item) 
 	{ 
-			info = (AdapterContextMenuInfo) item.getMenuInfo();
-			switch (item.getItemId()) 
-			{
-				case R.id.screen: //投影屏幕
-					 mDialog = new ProgressDialog(getActivity());  
-		             mDialog.setTitle("屏幕");  
-		             mDialog.setMessage("正在获取屏幕，请稍等...");  
-		             mDialog.show();
-					SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
-					Thread threadScreen =new Thread(sendMsgScreen);
-					threadScreen.start(); 	
-					break;
-			}
-        //return super.onContextItemSelected(item); 
-			return true;
+			if (getUserVisibleHint())
+		 	{  
+				info = (AdapterContextMenuInfo)item.getMenuInfo();
+				switch (item.getItemId()) 
+				{
+					case R.id.screen: //投影屏幕
+						 mDialog = new ProgressDialog(getActivity());  
+			             mDialog.setTitle("屏幕");  
+			             mDialog.setMessage("正在获取屏幕，请稍等...");  
+			             mDialog.show();
+						SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
+						Thread threadScreen =new Thread(sendMsgScreen);
+						threadScreen.start(); 	
+						break;
+				}
+		        return true;  
+		    }
+			return false;
     } 
 	
 	@Override

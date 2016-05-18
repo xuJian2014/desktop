@@ -1,5 +1,7 @@
 package com.example.touch;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.app.Service;
 import android.content.SharedPreferences;
@@ -12,13 +14,11 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast; 
-import com.example.action.AuthentificationAction;
-import com.example.action.AuthentificationResponseAction;
+import android.widget.Toast;
+
 import com.example.action.MouseClickAction;
-import com.example.connection.ConnectServer;
+import com.example.connection.DeviceConnection;
 import com.example.desktop.R;
-import com.example.utilTool.StringUtil;
 
 
 
@@ -27,10 +27,7 @@ public class MouseActivity extends Activity {
 	private ImageView clickMove;
 	private float screenDensity;
 	private Vibrator vibrator;
-	private boolean isValid = false;
 	
-	private String ip = TouchFlag.getInstance().getIp();
-	private String password = TouchFlag.getInstance().getPwd();
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,39 +42,15 @@ public class MouseActivity extends Activity {
 		vibrator = (Vibrator)getSystemService(Service.VIBRATOR_SERVICE);
 	
 		 //开启线程连接服务器
-		Thread thread = new Thread(new Runnable() {		
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-					try {
-						if(StringUtil.isNullString(ip))
-						{
-							TouchFlag.getInstance().setAuthentificated(
-									false);
-							return;
-						}
-						ConnectServer.getInstance().connect(ip);
-						ConnectServer.getInstance().sendAction(
-								new AuthentificationAction(password));
-						AuthentificationResponseAction response = (AuthentificationResponseAction) ConnectServer
-								.getInstance().recvAction();
-						TouchFlag.getInstance().setAuthentificated(
-								response.authentificated);
-						isValid = TouchFlag.getInstance().isValid();
-					} catch (Exception e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						TouchFlag.getInstance().setAuthentificated(
-								false);
-					}
+			try
+			{
+				DeviceConnection.getInstance().changeDestination();
+			} catch (IOException e1)
+			{
+				e1.printStackTrace();
 			}
-		});
-		thread.start();
-		try
-		{
-			thread.join();
-			if(isValid)
+			
+			if(DeviceConnection.getInstance().isAuthentificated())
 			{
 				Toast.makeText(MouseActivity.this, "服务器连接成功", Toast.LENGTH_SHORT).show();
 				Button clickLeft = (Button) findViewById(R.id.button1);
@@ -93,15 +66,9 @@ public class MouseActivity extends Activity {
 			    
 			}else
 			{
-				this.finish();
 				Toast.makeText(MouseActivity.this, "服务器连接失败", Toast.LENGTH_SHORT).show();
+				this.finish();
 			}
-		}catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		
-		
     }
 
 
@@ -132,7 +99,7 @@ public class MouseActivity extends Activity {
     	
     	//获得输入源
     	
-    	   if( isValid && (InputDevice.SOURCE_MOUSE == event.getSource()))
+    	   if( DeviceConnection.getInstance().isAuthentificated() && (InputDevice.SOURCE_MOUSE == event.getSource()))
     	   {
     		   switch (event.getAction()) {
     	     	            
@@ -153,13 +120,13 @@ public class MouseActivity extends Activity {
     protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-		ConnectServer.getInstance().setSocket(null);
+		DeviceConnection.getInstance().close();
 	}
     
     @Override
     protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		ConnectServer.getInstance().close();
+		DeviceConnection.getInstance().close();
 	}
 }

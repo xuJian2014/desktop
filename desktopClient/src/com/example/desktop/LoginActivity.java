@@ -9,9 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
-import com.example.Entity.RequestMesg;
-import com.example.Entity.ResponseMesg;
-import com.example.utilTool.StringUtil;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -26,6 +24,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.Entity.RequestMesg;
+import com.example.Entity.ResponseMesg;
+import com.example.connection.DeviceConnection;
+import com.example.utilTool.StringUtil;
 
 public class LoginActivity extends Activity
 {
@@ -78,11 +81,16 @@ public class LoginActivity extends Activity
 	             else
 	             {
 		             //写入远程连接所需的Password
-					 prefVNC = getSharedPreferences("Remote",Context.MODE_PRIVATE);
+					 prefVNC = getSharedPreferences("Remote",Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
 					 editorVNC = prefVNC.edit();
 					 editorVNC.putString("remotePassword", passWord);
 					 editorVNC.commit();       
 		         
+					 
+					 String connectionPwd = prefVNC.getString("remotePassword", "0000");
+					 DeviceConnection.getInstance().setPassword(connectionPwd);
+					 
+						
 					 editor = pref.edit();
 		             if(rememberPass.isChecked())
 		             {
@@ -153,6 +161,10 @@ public class LoginActivity extends Activity
 					editorVNC=prefVNC.edit();
 					editorVNC.putString("remoteIP", responseMesg.getResponserMesg());
 					editorVNC.commit();	
+					
+					String connectionIP = prefVNC.getString("remoteIP", "0000");
+					DeviceConnection.getInstance().setIp(connectionIP);
+					 
 					Toast.makeText(LoginActivity.this, "登录成功!"+responseMesg.getResponserMesg(), Toast.LENGTH_LONG).show();	
 					Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 					startActivity(intent);

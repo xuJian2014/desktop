@@ -112,16 +112,14 @@ public class ApplicationManagerFragment extends Fragment
 				{// 检测到系统应用正常运行
 					Toast.makeText(getActivity(), "应用正常运行中", Toast.LENGTH_LONG)
 							.show();
+					anim.stop();
 					
 				} else if ("restored".equals(resultStr))
 				{// 系统异常应用被修复
 					Toast.makeText(getActivity(), "应用已修复，请继续使用",
 							Toast.LENGTH_LONG).show();
 					repair.setEnabled(false);
-					/*if (gifImage != null)
-					{
-						gifImage.setPaused(true);
-					}*/
+					anim.stop();
 				} else if ("error".equals(resultStr))
 				{// 出现异常错误
 					Toast.makeText(getActivity(), "出错了，请继续...",

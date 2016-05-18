@@ -126,8 +126,8 @@ containing a value of this type.
         public static final int checkbox_selector=0x7f020034;
         /**  李志的String 
          */
-        public static final int color_normal=0x7f020102;
-        public static final int color_pressed=0x7f020103;
+        public static final int color_normal=0x7f020103;
+        public static final int color_pressed=0x7f020104;
         public static final int computer=0x7f020035;
         public static final int computer_failed=0x7f020036;
         public static final int control=0x7f020037;
@@ -158,15 +158,15 @@ containing a value of this type.
         public static final int editsharp=0x7f020050;
         public static final int edittext_focused=0x7f020051;
         public static final int file_icon=0x7f020052;
-        public static final int file_list_item_normal=0x7f0200fe;
-        public static final int file_list_item_press=0x7f0200fd;
+        public static final int file_list_item_normal=0x7f0200ff;
+        public static final int file_list_item_press=0x7f0200fe;
         public static final int forward=0x7f020053;
         public static final int frame=0x7f020054;
         public static final int game=0x7f020055;
         public static final int game_failed=0x7f020056;
         public static final int green=0x7f020057;
-        public static final int grid_item_normal=0x7f020104;
-        public static final int grid_item_pressed=0x7f020105;
+        public static final int grid_item_normal=0x7f020105;
+        public static final int grid_item_pressed=0x7f020106;
         public static final int group_arrow_right=0x7f020058;
         public static final int harddisk_item=0x7f020059;
         public static final int helper=0x7f02005a;
@@ -180,9 +180,9 @@ containing a value of this type.
         public static final int index_icon1=0x7f020062;
         public static final int input_over=0x7f020063;
         public static final int key_background=0x7f020064;
-        public static final int key_normal=0x7f020100;
-        public static final int key_pressed=0x7f0200ff;
-        public static final int key_sticky=0x7f020101;
+        public static final int key_normal=0x7f020101;
+        public static final int key_pressed=0x7f020100;
+        public static final int key_sticky=0x7f020102;
         public static final int keybord=0x7f020065;
         public static final int keybord_failed=0x7f020066;
         public static final int left=0x7f020067;
@@ -322,19 +322,20 @@ containing a value of this type.
         public static final int usb=0x7f0200ed;
         public static final int usb_failed=0x7f0200ee;
         public static final int vmachine=0x7f0200ef;
-        public static final int vmachine_failed=0x7f0200f0;
-        public static final int yellow=0x7f0200f1;
-        public static final int z0=0x7f0200f2;
-        public static final int z1=0x7f0200f3;
-        public static final int z2=0x7f0200f4;
-        public static final int z3=0x7f0200f5;
-        public static final int z4=0x7f0200f6;
-        public static final int z5=0x7f0200f7;
-        public static final int z6=0x7f0200f8;
-        public static final int z7=0x7f0200f9;
-        public static final int z8=0x7f0200fa;
-        public static final int z9=0x7f0200fb;
-        public static final int zz=0x7f0200fc;
+        public static final int vmachine_48=0x7f0200f0;
+        public static final int vmachine_failed=0x7f0200f1;
+        public static final int yellow=0x7f0200f2;
+        public static final int z0=0x7f0200f3;
+        public static final int z1=0x7f0200f4;
+        public static final int z2=0x7f0200f5;
+        public static final int z3=0x7f0200f6;
+        public static final int z4=0x7f0200f7;
+        public static final int z5=0x7f0200f8;
+        public static final int z6=0x7f0200f9;
+        public static final int z7=0x7f0200fa;
+        public static final int z8=0x7f0200fb;
+        public static final int z9=0x7f0200fc;
+        public static final int zz=0x7f0200fd;
     }
     public static final class id {
         public static final int ButtonBrowserBookmark=0x7f0c0002;

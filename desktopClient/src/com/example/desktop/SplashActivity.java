@@ -11,6 +11,7 @@ import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import com.example.Entity.RequestMesg;
 import com.example.Entity.ResponseMesg;
+import com.example.connection.DeviceConnection;
 import com.example.utilTool.StringUtil;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -46,6 +47,9 @@ public class SplashActivity extends Activity
 			{
 				String userName = sharedConfigInfo.getString("proxyUserName", "");
 				String passWord = sharedConfigInfo.getString("proxyPassWord", "");
+				
+				DeviceConnection.getInstance().setPassword(passWord);
+				
 				if(StringUtil.isNullString(userName)||StringUtil.isNullString(passWord))
 				{
 					Intent intent = new Intent(SplashActivity.this, LoginAndRegisterActivity.class);
@@ -93,7 +97,11 @@ public class SplashActivity extends Activity
 		{
 			editor.putString("initHardDiskStr", "默认盘1-0,默认盘2-0");
 		}
-		
+		if(sharedConfigInfo.contains("checkID"))
+		{
+			editor.putLong("checkID", 0000);
+		}
+				
 		if(editor.commit())  
 		{
 			Toast.makeText(SplashActivity.this, "参数初始化成功", Toast.LENGTH_SHORT).show();
@@ -102,6 +110,9 @@ public class SplashActivity extends Activity
 		{
 			Toast.makeText(SplashActivity.this, "未进行参数初始化",Toast.LENGTH_SHORT).show();
 		}
+		
+		
+		
 		
 	}
 	public Handler handler= new Handler()
@@ -137,6 +148,8 @@ public class SplashActivity extends Activity
 					editorVNC=prefVNC.edit();
 					editorVNC.putString("remoteIP", responseMesg.getResponserMesg());
 					editorVNC.commit();
+					DeviceConnection.getInstance().setIp(responseMesg.getResponserMesg());
+					
 					intent = new Intent(SplashActivity.this, MainActivity.class);
 					startActivity(intent);
 					SplashActivity.this.finish();

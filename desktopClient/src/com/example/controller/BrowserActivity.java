@@ -1,5 +1,7 @@
 package com.example.controller;
 
+import java.io.IOException;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,7 +13,7 @@ import android.view.View.OnTouchListener;
 import android.widget.Button;
 
 import com.example.action.BrowserControlAction;
-import com.example.connection.ConnectServer;
+import com.example.connection.DeviceConnection;
 import com.example.desktop.R;
 
 public class BrowserActivity extends Activity
@@ -155,7 +157,21 @@ public class BrowserActivity extends Activity
 			}
 			if (action != null)
 			{
-				ConnectServer.getInstance().sendAction(action);
+				try
+				{
+					DeviceConnection.getInstance().sendAction(action);
+				} catch (IOException e)
+				{
+					DeviceConnection.getInstance().close();
+					try
+					{
+						DeviceConnection.getInstance().connect();
+					} catch (IOException e1)
+					{
+						e1.printStackTrace();
+					}
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -200,7 +216,21 @@ public class BrowserActivity extends Activity
 								e.printStackTrace();
 							}
 							if (longPress) {
-								ConnectServer.getInstance().sendAction(action);
+								try
+								{
+									DeviceConnection.getInstance().sendAction(action);
+								} catch (IOException e)
+								{
+									DeviceConnection.getInstance().close();
+									try
+									{
+										DeviceConnection.getInstance().connect();
+									} catch (IOException e1)
+									{
+										e1.printStackTrace();
+									}
+									e.printStackTrace();
+								}
 							}
 						}
 					}

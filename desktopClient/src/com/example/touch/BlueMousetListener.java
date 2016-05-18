@@ -1,13 +1,15 @@
 package com.example.touch;
 
-import com.example.action.MouseMoveAction;
-import com.example.action.MouseWheelAction;
-import com.example.connection.ConnectServer;
+import java.io.IOException;
 
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnGenericMotionListener;
+
+import com.example.action.MouseMoveAction;
+import com.example.action.MouseWheelAction;
+import com.example.connection.DeviceConnection;
 
 public class BlueMousetListener implements OnGenericMotionListener{
 
@@ -31,13 +33,25 @@ public class BlueMousetListener implements OnGenericMotionListener{
    	        case MotionEvent.ACTION_SCROLL:
    	        	if( event.getAxisValue(MotionEvent.AXIS_VSCROLL) < 0.0f){	
    	        		MouseWheelAction mouseWheel = new MouseWheelAction((byte)1);
-       				ConnectServer.getInstance().sendAction(mouseWheel);
+   	        		try
+   					{
+   						DeviceConnection.getInstance().sendAction(mouseWheel);
+   					} catch (IOException e)
+   					{
+   						e.printStackTrace();
+   					}
        				event.setLocation(50f, 50f);
    	        	}
    	        	else if(event.getAxisValue(MotionEvent.AXIS_VSCROLL) > 0.0f)
    	        	{
    	        		MouseWheelAction mouseWheel = new MouseWheelAction((byte)-1);
-       				ConnectServer.getInstance().sendAction(mouseWheel);
+   	        		try
+   					{
+   						DeviceConnection.getInstance().sendAction(mouseWheel);
+   					} catch (IOException e)
+   					{
+   						e.printStackTrace();
+   					}
    	        	}		    	        		    	        	
    	            return true;
    	            
@@ -66,7 +80,21 @@ public class BlueMousetListener implements OnGenericMotionListener{
    				if (moveXFinal != 0 || moveYFinal != 0)
    				{
    					MouseMoveAction mouseMoveAction = new MouseMoveAction((short) moveXFinal, (short) moveYFinal);
-   					ConnectServer.getInstance().sendAction(mouseMoveAction);
+   					try
+   					{
+   						DeviceConnection.getInstance().sendAction(mouseMoveAction);
+   					} catch (IOException e)
+   					{
+   						DeviceConnection.getInstance().close();
+   						try
+   						{
+   							DeviceConnection.getInstance().connect();
+   						} catch (IOException e1)
+   						{
+   							e1.printStackTrace();
+   						}
+   						e.printStackTrace();
+   					}
    					this.moveResultX = moveRawX - moveXFinal;
    					this.moveResultY = moveRawY - moveYFinal;  					
    					this.movePreviousX = event.getX();

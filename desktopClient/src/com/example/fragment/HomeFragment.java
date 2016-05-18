@@ -44,6 +44,8 @@ import com.example.touch.KeyboardActivity;
 import com.example.touch.MouseActivity;
 import com.example.util.jsonTransfer.JsonParse;
 import com.example.util.jsonTransfer.OptionEnum;
+import com.example.util.jsonTransfer.ResponseMessage;
+import com.example.util.jsonTransfer.ResponseMessageEnum;
 import com.example.utilTool.HomeForScreenThread;
 import com.example.utilTool.MyGridAdapter;
 import com.example.utilTool.MyGridView;
@@ -325,12 +327,40 @@ public class HomeFragment extends Fragment
 					break;
 				case 11:
 					String screenStr=msg.getData().getString("msg");
-					if(screenStr.equals("error")||StringUtil.isNullString(screenStr))
+					ResponseMessage responseMessage=JsonParse.Json2Object(screenStr);
+					if(responseMessage==null)
+					{
+						Toast.makeText(getActivity(), "对不起,没有找到可用外设", Toast.LENGTH_LONG).show();
+					}
+					else
+					{
+						if(responseMessage.getErrNum()==ResponseMessageEnum.ERROR.ordinal())
+						{
+							Toast.makeText(getActivity(), "获取可用外设失败", Toast.LENGTH_LONG).show();
+						}
+						else
+						{
+							content_Screen=responseMessage.getResponseMessage().split(",");
+							AlertDialog.Builder builder=new Builder(getActivity());
+							builder.setItems(content_Screen, new DialogInterface.OnClickListener() 
+							{
+								@Override
+								public void onClick(DialogInterface dialog, int which)
+								{
+									Toast.makeText(getActivity(), "您选择的是"+content_Screen[which], Toast.LENGTH_SHORT).show();
+									
+								}
+							});
+							builder.create().show();
+						}
+					}
+					/*if(screenStr.equals("error")||StringUtil.isNullString(screenStr))
 					{
 						Toast.makeText(getActivity(), "获取屏幕失败", Toast.LENGTH_LONG).show();
 					}
 					else
 					{
+						
 						content_Screen=screenStr.split(",");
 						AlertDialog.Builder builder=new Builder(getActivity());
 						builder.setItems(content_Screen, new DialogInterface.OnClickListener() 
@@ -343,7 +373,7 @@ public class HomeFragment extends Fragment
 							}
 						});
 						builder.create().show();
-					}
+					}*/
 					break;
 				case 12:
 					Toast.makeText(getActivity(), "连接家庭服务中心发生错误", Toast.LENGTH_LONG).show();

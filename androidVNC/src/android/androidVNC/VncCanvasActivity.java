@@ -53,6 +53,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -569,9 +570,12 @@ public class VncCanvasActivity extends Activity {
 		// 获取远程虚拟连接信息
 		try {
 			Context context = createPackageContext("com.example.desktop", Context.CONTEXT_IGNORE_SECURITY);
-			getPreferences = context.getSharedPreferences("VNCConnect", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
-			IP = getPreferences.getString("IP", "0000");
-			password = getPreferences.getString("password", "0000");
+			//getPreferences = context.getSharedPreferences("VNCConnect", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
+			//IP = getPreferences.getString("IP", "0000");
+			//password = getPreferences.getString("password", "0000");
+			getPreferences = context.getSharedPreferences("Remote", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
+			IP = getPreferences.getString("remoteIP", "0000");
+			password = getPreferences.getString("remotePassword", "0000");
 			//Toast.makeText(VncCanvasActivity.this, "远程桌面信息如下：IP地址：" + IP + "; 密码：" + password, Toast.LENGTH_LONG).show();
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -695,11 +699,19 @@ public class VncCanvasActivity extends Activity {
 				int index =vncCanvas.rfb.desktopName.indexOf("- ");
 				clientMode = vncCanvas.rfb.desktopName.substring(index).trim();
 				
-				int dis = (int) Math.ceil(AndroidH/clientH);
-				System.out.println("BiLi: "+dis);
-					
-				for(int i =0;i<=dis;i++)
+				if(clientH!=0)
 				{
+					int dis = (int) Math.ceil(AndroidH/clientH);
+					System.out.println("BiLi: "+dis);
+						
+					for(int i =0;i<=dis;i++)
+					{
+						vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
+					}
+				}
+				else
+				{
+					vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
 					vncCanvas.scaling.zoomIn(VncCanvasActivity.this);
 				}
 

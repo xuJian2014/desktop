@@ -33,6 +33,7 @@ public class LoginAndRegisterActivity extends Activity
 			{
 				Intent intent=new Intent(LoginAndRegisterActivity.this, LoginActivity.class);
 				startActivity(intent);
+				LoginAndRegisterActivity.this.finish();
 			}
 		});
 		

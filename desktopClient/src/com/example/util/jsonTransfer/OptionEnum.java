@@ -14,6 +14,7 @@ public enum OptionEnum
      DELETE_DRIVE,	//删除磁盘共享（磁盘下标，deleteroot，虚拟机IP）：（字符串）
      PROJECTION_FILE,  //打开并投影虚拟机中指定媒体库文件（文件下标，open，屏幕下标）：（字符串）
      PROJECTION_VM,   //获取VM应用程序名称并投影（1，虚拟机程序下标，screen，屏幕下标）：（字符串）
-     PROJECTIONFILE_LOCAL //获取本地应用并投影（0，本地应用下标，screen，屏幕下标）：（字符串）
-
+     PROJECTIONFILE_LOCAL, //获取本地应用并投影（0，本地应用下标，screen，屏幕下标）：（字符串）
+     PROJECTION_FILE_SYSTEM  //打开并投影文件系统中指定媒体库文件
+     
 }

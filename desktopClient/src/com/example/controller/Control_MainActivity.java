@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.ActionBar;
@@ -19,14 +20,10 @@ import android.widget.GridView;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
-import com.example.action.AuthentificationAction;
-import com.example.action.AuthentificationResponseAction;
 import com.example.action.SystemControlAction;
 import com.example.action.WindowControlAction;
-import com.example.connection.ConnectServer;
+import com.example.connection.DeviceConnection;
 import com.example.desktop.R;
-import com.example.touch.TouchFlag;
-import com.example.utilTool.StringUtil;
 
 public class Control_MainActivity extends Activity
 {
@@ -48,13 +45,8 @@ public class Control_MainActivity extends Activity
 	private ArrayList<String> mNameList;
 
 	
-	protected boolean authentificated;
 	protected boolean longPress;
 	
-
-	private String ip = TouchFlag.getInstance().getIp();
-	private String password = TouchFlag.getInstance().getPwd();
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -80,42 +72,24 @@ public class Control_MainActivity extends Activity
 		initGridViewWindows();
 		setGrideViewHeightBasedOnChildren(gridViewWindows, 2);
 		
-		Thread thread = new Thread(new Runnable() {
-
-			@Override
-			public void run()
-			{
-				try
-				{
-					ConnectServer.getInstance().close();
-					if(StringUtil.isNullString(ip))
-					{
-						TouchFlag.getInstance().setAuthentificated(
-								false);
-						return;
-					}
-					ConnectServer.getInstance().connect(ip);
-					ConnectServer.getInstance().sendAction(
-							new AuthentificationAction(password));
-					AuthentificationResponseAction response = (AuthentificationResponseAction) ConnectServer
-							.getInstance().recvAction();
-					TouchFlag.getInstance().setAuthentificated(
-							response.authentificated);
-				} catch (Exception e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					TouchFlag.getInstance().setAuthentificated(
-							false);
-				}
-			}
-		});
-		thread.start();
-
 		try
 		{
-			thread.join();
-			if (TouchFlag.getInstance().isAuthentificated())
+			DeviceConnection.getInstance().changeDestination();
+		} catch (IOException e)
+		{
+			DeviceConnection.getInstance().close();
+			try
+			{
+				DeviceConnection.getInstance().connect();
+			} catch (IOException e1)
+			{
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+			
+		}
+
+			if (DeviceConnection.getInstance().isAuthentificated())
 			{
 				Toast.makeText(Control_MainActivity.this, "服务器连接成功",
 						Toast.LENGTH_LONG).show();
@@ -124,11 +98,6 @@ public class Control_MainActivity extends Activity
 				Toast.makeText(Control_MainActivity.this, "服务器连接失败",
 						Toast.LENGTH_SHORT).show();
 			}
-		} catch (InterruptedException e)
-		{
-			e.printStackTrace();
-			
-		}
 
 	}
 	private void initGridViewVolumn() {
@@ -171,8 +140,21 @@ public class Control_MainActivity extends Activity
 				}
 
 				if (action != null) {
-					ConnectServer.getInstance().sendAction(action);
-				}
+					try
+					{
+						DeviceConnection.getInstance().sendAction(action);
+					} catch (IOException e)
+					{
+						DeviceConnection.getInstance().close();
+						try
+						{
+							DeviceConnection.getInstance().connect();
+						} catch (IOException e1)
+						{
+							e1.printStackTrace();
+						}
+						e.printStackTrace();
+					}				}
 			}
 		});
 	}
@@ -232,8 +214,20 @@ public class Control_MainActivity extends Activity
 						break;
 				}
 				if (action != null) {
-					if (ConnectServer.getInstance() != null) {
-						ConnectServer.getInstance().sendAction(action);
+					try
+					{
+						DeviceConnection.getInstance().sendAction(action);
+					} catch (IOException e)
+					{
+						DeviceConnection.getInstance().close();
+						try
+						{
+							DeviceConnection.getInstance().connect();
+						} catch (IOException e1)
+						{
+							e1.printStackTrace();
+						}
+						e.printStackTrace();
 					}
 				}
 			}
@@ -291,8 +285,21 @@ public class Control_MainActivity extends Activity
 												SystemControlAction action = new SystemControlAction(
 														SystemControlAction.POWER_SLEEP);
 												if (action != null) {
-													ConnectServer.getInstance()
-															.sendAction(action);
+													try
+													{
+														DeviceConnection.getInstance().sendAction(action);
+													} catch (IOException e)
+													{
+														DeviceConnection.getInstance().close();
+														try
+														{
+															DeviceConnection.getInstance().connect();
+														} catch (IOException e1)
+														{
+															e1.printStackTrace();
+														}
+														e.printStackTrace();
+													}
 												}
 
 											}
@@ -315,8 +322,21 @@ public class Control_MainActivity extends Activity
 												SystemControlAction action = new SystemControlAction(
 														SystemControlAction.POWER_SLEPP_OFF);
 												if (action != null) {
-													ConnectServer.getInstance()
-															.sendAction(action);
+													try
+													{
+														DeviceConnection.getInstance().sendAction(action);
+													} catch (IOException e)
+													{
+														DeviceConnection.getInstance().close();
+														try
+														{
+															DeviceConnection.getInstance().connect();
+														} catch (IOException e1)
+														{
+															e1.printStackTrace();
+														}
+														e.printStackTrace();
+													}
 												}
 											}
 
@@ -338,8 +358,21 @@ public class Control_MainActivity extends Activity
 												SystemControlAction action = new SystemControlAction(
 														SystemControlAction.POWER_LOCK);
 												if (action != null) {
-													ConnectServer.getInstance()
-															.sendAction(action);
+													try
+													{
+														DeviceConnection.getInstance().sendAction(action);
+													} catch (IOException e)
+													{
+														DeviceConnection.getInstance().close();
+														try
+														{
+															DeviceConnection.getInstance().connect();
+														} catch (IOException e1)
+														{
+															e1.printStackTrace();
+														}
+														e.printStackTrace();
+													}
 												}
 											}
 
@@ -355,7 +388,21 @@ public class Control_MainActivity extends Activity
 						break;
 				}
 				if (action != null) {
-					ConnectServer.getInstance().sendAction(action);
+					try
+					{
+						DeviceConnection.getInstance().sendAction(action);
+					} catch (IOException e)
+					{
+						DeviceConnection.getInstance().close();
+						try
+						{
+							DeviceConnection.getInstance().connect();
+						} catch (IOException e1)
+						{
+							e1.printStackTrace();
+						}
+						e.printStackTrace();
+					}
 				}
 			}
 		});
@@ -443,8 +490,7 @@ public class Control_MainActivity extends Activity
 
 	@Override
 	protected void onDestroy() {
-		ConnectServer.getInstance().close();
-		ConnectServer.getInstance().setSocket(null);
+		DeviceConnection.getInstance().close();
 		super.onDestroy();
 	}
 }

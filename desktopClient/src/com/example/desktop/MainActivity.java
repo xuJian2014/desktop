@@ -21,11 +21,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.example.connection.DeviceConnection;
 import com.example.fragment.ApplicationManagerFragment;
 import com.example.fragment.HomeControlFragment;
 import com.example.fragment.HomeFragment;
 import com.example.fragment.SettingFragment;
 import com.example.touch.AuxiliaryService;
+import com.example.utilTool.StringUtil;
 
 public class MainActivity extends FragmentActivity
 {
@@ -88,6 +92,17 @@ public class MainActivity extends FragmentActivity
 		mDrawerList = (ListView) findViewById(R.id.left_drawer);
 		getVNCPreferences = getSharedPreferences("VNCConnect", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
 		vncEditor = getVNCPreferences.edit();
+		sharedConfigInfo=getSharedPreferences("configInfo",Context.MODE_PRIVATE);;
+		String homeServiceIp=sharedConfigInfo.getString("homeServiceIp", "");
+		String homeServicePwd=sharedConfigInfo.getString("homeServicePwd", "");
+		if(StringUtil.isNullString(homeServicePwd))
+		{
+			Toast.makeText(this, "家庭服务终端密码未设置", Toast.LENGTH_SHORT).show();
+		}
+		else
+		{
+			DeviceConnection.getInstance().init(homeServiceIp, 64788, homeServicePwd);
+		}
 	}
 
 	@Override
@@ -217,7 +232,7 @@ public class MainActivity extends FragmentActivity
 		{ 
             public void onClick(DialogInterface dialog, int i) 
             {       
-            	SharedPreferences sharedConfigInfo=getSharedPreferences("configInfo",Context.MODE_PRIVATE);;
+            	
             	SharedPreferences.Editor editor=sharedConfigInfo.edit();
             	editor.remove("proxyUserName");
             	editor.remove("proxyPassWord");

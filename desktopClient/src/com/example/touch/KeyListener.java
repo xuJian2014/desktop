@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.example.action.KeyboardAction;
-import com.example.connection.ConnectServer;
 import com.example.desktop.R;
 
 public class KeyListener implements OnTouchListener {
@@ -105,7 +104,8 @@ public class KeyListener implements OnTouchListener {
 		final KeyboardAction action = new KeyboardAction(code, true);
 		lock.lock();
 		isPressing = true;
-		ConnectServer.getInstance().sendAction(action);
+		ConnectServer.getInstance().sendAction(
+				action);
 		lock.unlock();
 		lastcode = code;
 
@@ -118,7 +118,8 @@ public class KeyListener implements OnTouchListener {
 						Thread.sleep(800);
 					}
 					while (isPressing && lastcode == code) {
-						ConnectServer.getInstance().sendAction(action);
+						ConnectServer.getInstance().sendAction(
+								action);
 						Thread.sleep(80);
 					}
 				} catch (InterruptedException e) {
@@ -132,7 +133,8 @@ public class KeyListener implements OnTouchListener {
 		KeyboardAction keyboardAction = new KeyboardAction(code, false);
 		lock.lock();
 		isPressing = false;
-		ConnectServer.getInstance().sendAction(keyboardAction);
+		ConnectServer.getInstance().sendAction(
+				keyboardAction);
 		lock.unlock();
 	}
 

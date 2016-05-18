@@ -3,6 +3,8 @@ package com.example.touch;
 
 
 
+import java.io.IOException;
+
 import android.content.SharedPreferences;
 import android.os.Vibrator;
 import android.view.MotionEvent;
@@ -11,7 +13,7 @@ import android.view.View.OnTouchListener;
 
 import com.example.action.MouseClickAction;
 import com.example.action.MouseMoveAction;
-import com.example.connection.ConnectServer;
+import com.example.connection.DeviceConnection;
 
 public class ToucherTouchListener implements OnTouchListener{
 
@@ -110,7 +112,22 @@ public class ToucherTouchListener implements OnTouchListener{
 			if (moveXFinal != 0 || moveYFinal != 0)
 			{
 				MouseMoveAction mouseMoveAction = new MouseMoveAction((short) moveXFinal, (short) moveYFinal);
-				ConnectServer.getInstance().sendAction(mouseMoveAction);
+				try
+				{
+					DeviceConnection.getInstance().sendAction(
+							mouseMoveAction);
+				} catch (IOException e)
+				{
+					DeviceConnection.getInstance().close();
+					try
+					{
+						DeviceConnection.getInstance().connect();
+					} catch (IOException e1)
+					{
+						e1.printStackTrace();
+					}
+					e.printStackTrace();
+				}
 				this.moveResultX = moveRawX - moveXFinal;
 				this.moveResultY = moveRawY - moveYFinal;		
 				this.movePreviousX = event.getRawX();
@@ -125,9 +142,39 @@ public class ToucherTouchListener implements OnTouchListener{
 		{
 			vibrator.vibrate(new long[]{0,100}, -1);
 			MouseClickAction mouseDown = new MouseClickAction(MouseClickAction.BUTTON_LEFT, MouseClickAction.STATE_DOWN);
-			ConnectServer.getInstance().sendAction(mouseDown);
+			try
+			{
+				DeviceConnection.getInstance().sendAction(
+						mouseDown);
+			} catch (IOException e)
+			{
+				DeviceConnection.getInstance().close();
+				try
+				{
+					DeviceConnection.getInstance().connect();
+				} catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			}
 			MouseClickAction mouseUp = new MouseClickAction(MouseClickAction.BUTTON_LEFT, MouseClickAction.STATE_UP);
-			ConnectServer.getInstance().sendAction(mouseUp);
+			try
+			{
+				DeviceConnection.getInstance().sendAction(
+						mouseUp);
+			} catch (IOException e)
+			{
+				DeviceConnection.getInstance().close();
+				try
+				{
+					DeviceConnection.getInstance().connect();
+				} catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			}
 		}	
 	}
 	private double getDistanceFromDown(MotionEvent event)

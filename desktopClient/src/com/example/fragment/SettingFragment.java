@@ -2,6 +2,8 @@ package com.example.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import android.androidVNC.tools.GetSharedPreferences;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,9 +25,10 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.Entity.HardDiskItem;
+import com.example.connection.DeviceConnection;
 import com.example.desktop.R;
-import com.example.touch.TouchFlag;
 import com.example.util.jsonTransfer.JsonParse;
 import com.example.util.jsonTransfer.OptionEnum;
 import com.example.util.jsonTransfer.Parameter2Option;
@@ -63,7 +66,6 @@ public class SettingFragment extends Fragment
 	private RadioButton radioButtonRemote;
 	private RadioButton radioButtonFamily;
 	
-	private SharedPreferences checkIDPreferences;
 	private SharedPreferences.Editor checkIDEditor;
 	
 	@SuppressWarnings("deprecation")
@@ -78,8 +80,7 @@ public class SettingFragment extends Fragment
 		getVNCPreferences = getActivity().getSharedPreferences("VNCConnect", Context.MODE_WORLD_READABLE + Context.MODE_WORLD_WRITEABLE);
 		vncEditor = getVNCPreferences.edit();
 
-		checkIDPreferences=getActivity().getSharedPreferences("checkdID", Context.MODE_PRIVATE);
-		checkIDEditor =checkIDPreferences.edit();				
+		checkIDEditor =sharedPreferences.edit();				
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) 
@@ -157,14 +158,15 @@ public class SettingFragment extends Fragment
 				
 				//radioButtonFamily.setChecked(true);
 				long checkID;
-				checkID = checkIDPreferences.getLong("checkID", 0000);
-				if(checkID == radioButtonRemote.getId())
+				checkID = sharedPreferences.getLong("checkID", 0000);
+				
+				if(checkID == radioButtonFamily.getId())
 				{
-					radioButtonRemote.setChecked(true);
+					radioButtonFamily.setChecked(true);
 				}
 				else
 				{
-					radioButtonFamily.setChecked(true);
+					radioButtonRemote.setChecked(true);
 				}
 				
 				conGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() 
@@ -178,8 +180,8 @@ public class SettingFragment extends Fragment
 						{
 							connectionIP = getRemotePreferences.getString("remoteIP", "0000");
 							connectionPwd = getRemotePreferences.getString("remotePassword", "0000");
-							TouchFlag.getInstance().setIp(connectionIP);
-							TouchFlag.getInstance().setPwd(connectionPwd);
+							
+							DeviceConnection.getInstance().init(connectionIP, 64788, connectionPwd);
 							
 							vncEditor.putString("IP", connectionIP);
 							vncEditor.putString("password", connectionPwd);
@@ -192,8 +194,9 @@ public class SettingFragment extends Fragment
 						{
 							connectionIP = sharedPreferences.getString("homeServiceIp", "0000");
 							connectionPwd = sharedPreferences.getString("homeServicePwd", "0000");
-							TouchFlag.getInstance().setIp(connectionIP);
-							TouchFlag.getInstance().setPwd(connectionPwd);
+							Toast.makeText(getActivity(), "对不起，连接家庭服务终端发生错误++"+connectionPwd, Toast.LENGTH_LONG).show();
+							
+							DeviceConnection.getInstance().init(connectionIP, 64788, connectionPwd);
 
 							vncEditor.putString("IP", connectionIP);
 							vncEditor.putString("password", connectionPwd);
@@ -203,9 +206,8 @@ public class SettingFragment extends Fragment
 							checkIDEditor.commit();
 						}
 					}
+				
 				});
-				
-				
 				builder.setPositiveButton("保存", new DialogInterface.OnClickListener()
 				{ 
 		            public void onClick(DialogInterface dialog, int i) 
@@ -283,15 +285,15 @@ public class SettingFragment extends Fragment
 							int errNum=responseMessage2.getErrNum();
 							if(errNum==ResponseMessageEnum.SUCCESSADDNO.ordinal())
 							{
-								Toast.makeText(getActivity(), "添加共享成功，挂载失败!", Toast.LENGTH_SHORT).show();
+								Toast.makeText(getActivity(), "请输入家庭服务终端用户名和密码!", Toast.LENGTH_SHORT).show();
 							}
 							else if(errNum==ResponseMessageEnum.SUCCESSADDYES.ordinal())
 							{
-								Toast.makeText(getActivity(), "添加共享成功，挂载成功!", Toast.LENGTH_SHORT).show();
+								Toast.makeText(getActivity(), "磁盘挂载成功!", Toast.LENGTH_SHORT).show();
 							}
 							else if(errNum==ResponseMessageEnum.SUCCESSDELETE.ordinal())
 							{
-								Toast.makeText(getActivity(), "删除共享成功!", Toast.LENGTH_SHORT).show();
+								Toast.makeText(getActivity(), "删除磁盘共享成功!", Toast.LENGTH_SHORT).show();
 							}
 							else
 							{
@@ -477,6 +479,7 @@ public class SettingFragment extends Fragment
 		builder.setTitle("配置代理服务器：");
 		String proxyIpAdress=sharedPreferences.getString("proxyIpAdress",null);
 		int proxyPortNumber=sharedPreferences.getInt("proxyPortNumber",0);
+		
 		if(proxyIpAdress!=null)
 		{	
 			mEtProxyServerIp.setText(proxyIpAdress);
@@ -654,14 +657,8 @@ public class SettingFragment extends Fragment
             	   editor.putInt("homeServicePortNumber", Integer.valueOf(homeServicePort));
             	   if(editor.commit())
             	   {
-            		   //Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_LONG).show();
-            		   connectionIP = sharedPreferences.getString("homeServiceIp", "0000");
-       				   connectionPwd = sharedPreferences.getString("homeServicePwd", "0000");
-       				   TouchFlag.getInstance().setIp(connectionIP);
-       				   TouchFlag.getInstance().setPwd(connectionPwd);
-       				   vncEditor.putString("IP", connectionIP);
-       				   vncEditor.putString("password", connectionPwd);
-       				   vncEditor.commit();
+            		   Toast.makeText(getActivity(), "保存成功", Toast.LENGTH_LONG).show();
+            		   DeviceConnection.getInstance().init(homeServiceIp, 64788, homeServicePwd);
             	   }
             	   else
             	   {

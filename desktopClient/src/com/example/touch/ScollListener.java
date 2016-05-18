@@ -2,6 +2,8 @@ package com.example.touch;
 
 
 
+import java.io.IOException;
+
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -9,7 +11,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.example.action.MouseWheelAction;
-import com.example.connection.ConnectServer;
+import com.example.connection.DeviceConnection;
 
 public class ScollListener implements OnTouchListener{
 
@@ -66,7 +68,22 @@ public class ScollListener implements OnTouchListener{
 		{
 			Log.d("debug", wheelFinal+"");
 			MouseWheelAction mouseWheel = new MouseWheelAction((byte)wheelFinal);
-			ConnectServer.getInstance().sendAction(mouseWheel);
+			try
+			{
+				DeviceConnection.getInstance().sendAction(
+						mouseWheel);
+			} catch (IOException e)
+			{
+				DeviceConnection.getInstance().close();
+				try
+				{
+					DeviceConnection.getInstance().connect();
+				} catch (IOException e1)
+				{
+					e1.printStackTrace();
+				}
+				e.printStackTrace();
+			}
 		}
 		
 		this.wheelResult = wheelRaw - wheelFinal;

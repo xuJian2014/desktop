@@ -14,7 +14,7 @@
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            
+            android:checked="true"
             android:text="远程虚拟桌面" />
 
         <RadioButton
@@ -22,7 +22,7 @@
             android:id="@+id/familyCon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
+            
             android:text="家庭控制中心" />
     </RadioGroup>
 

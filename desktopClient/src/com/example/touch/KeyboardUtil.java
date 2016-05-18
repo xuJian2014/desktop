@@ -1,5 +1,6 @@
 package com.example.touch;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -15,8 +16,7 @@ import android.view.View;
 
 import com.example.action.ControllerDroidAction;
 import com.example.action.KeyboardAction;
-import com.example.action.SystemControlAction;
-import com.example.connection.ConnectServer;
+import com.example.connection.DeviceConnection;
 import com.example.desktop.R;
 
 public class KeyboardUtil {
@@ -266,7 +266,22 @@ public class KeyboardUtil {
 		return wordStr.contains(str.toLowerCase());
 	}
 	private void sendAction2Remote(final ControllerDroidAction action) {
-		ConnectServer.getInstance().sendAction(action);
+		try
+		{
+			DeviceConnection.getInstance().sendAction(
+					action);
+		} catch (IOException e)
+		{
+			DeviceConnection.getInstance().close();
+			try
+			{
+				DeviceConnection.getInstance().connect();
+			} catch (IOException e1)
+			{
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
 	}
 	public void showKeyboard() {
 		int visibility = keyboardView.getVisibility();

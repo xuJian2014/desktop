@@ -1,16 +1,17 @@
 package com.example.controller;
 
+import java.io.IOException;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.example.action.ProjectionAction;
-import com.example.connection.ConnectServer;
+import com.example.connection.DeviceConnection;
 import com.example.desktop.R;
 
 public class ProjectionActivity extends Activity
@@ -87,7 +88,21 @@ public class ProjectionActivity extends Activity
 			}
 			if (action != null)
 			{
-				ConnectServer.getInstance().sendAction(action);
+				try
+				{
+					DeviceConnection.getInstance().sendAction(action);
+				} catch (IOException e)
+				{
+					DeviceConnection.getInstance().close();
+					try
+					{
+						DeviceConnection.getInstance().connect();
+					} catch (IOException e1)
+					{
+						e1.printStackTrace();
+					}
+					e.printStackTrace();
+				}
 			}
 		}
 	}

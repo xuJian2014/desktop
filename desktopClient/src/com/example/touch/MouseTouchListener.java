@@ -1,12 +1,14 @@
 package com.example.touch;
 
+import java.io.IOException;
+
 import android.os.Vibrator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.example.action.MouseClickAction;
-import com.example.connection.ConnectServer;
+import com.example.connection.DeviceConnection;
 
 
 
@@ -50,7 +52,22 @@ public class MouseTouchListener implements OnTouchListener{
 	{
 		vibrator.vibrate(new long[]{0,100}, -1);
 		MouseClickAction mouseCliekAction = new MouseClickAction(this.button, MouseClickAction.STATE_DOWN);
-		ConnectServer.getInstance().sendAction(mouseCliekAction);
+		try
+		{
+			DeviceConnection.getInstance().sendAction(
+					mouseCliekAction);
+		} catch (IOException e)
+		{
+			DeviceConnection.getInstance().close();
+			try
+			{
+				DeviceConnection.getInstance().connect();
+			} catch (IOException e1)
+			{
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -68,7 +85,21 @@ public class MouseTouchListener implements OnTouchListener{
 	{
 		
 		MouseClickAction mouseCliekAction = new MouseClickAction(this.button, MouseClickAction.STATE_UP);
-		ConnectServer.getInstance().sendAction(mouseCliekAction);
+		try
+		{
+			DeviceConnection.getInstance().sendAction(mouseCliekAction);
+		} catch (IOException e)
+		{
+			DeviceConnection.getInstance().close();
+			try
+			{
+				DeviceConnection.getInstance().connect();
+			} catch (IOException e1)
+			{
+				e1.printStackTrace();
+			}
+			e.printStackTrace();
+		}
 	}
 
 }

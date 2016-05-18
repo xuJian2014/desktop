@@ -1,10 +1,14 @@
 package com.example.utilTool;
 
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.sun.org.apache.xml.internal.security.Init;
+
 public class StringUtil
 {
+	private static HashSet<String> documentType=new HashSet<String>();
 	/*
 	 * 判断字符串是否为空
 	 */
@@ -27,7 +31,8 @@ public class StringUtil
 		flag = m.matches();
 		return flag;
 	}
-
+	
+	//判断是否包含中文
 	public static boolean isContainsChinese(String str)
 	{
 		String regEx = "[\u4e00-\u9fa5]";
@@ -40,4 +45,38 @@ public class StringUtil
 		}
 		return flg;
 	}
+	private static void initData()
+	{
+		documentType.add("txt");
+		documentType.add("docx");
+		documentType.add("doc");
+		documentType.add("pptx");
+	}
+	
+	//是否包含documentType中的元素
+	public static boolean isFileForProjection(String str)
+	{
+		initData();
+		boolean flag=false;
+		if(documentType.contains(str))
+		{
+			flag=true;
+		}
+		return flag;
+	}
+	
+	//获取文件的后缀名
+	public static String getExtensionName(String filename) 
+	{   
+			
+	     if ((filename != null) && (filename.length() > 0)) 
+	       {   
+	            int dot = filename.lastIndexOf('.');   
+	            if ((dot >-1) && (dot < (filename.length() - 1))) 
+	            {   
+	                return filename.substring(dot + 1);   
+	            }   
+	       }   
+	        return filename;   
+	   }   
 }
