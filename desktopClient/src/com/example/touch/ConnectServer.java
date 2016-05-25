@@ -1,7 +1,4 @@
 package com.example.touch;
-
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

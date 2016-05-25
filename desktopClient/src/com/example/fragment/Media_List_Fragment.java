@@ -2,6 +2,7 @@ package com.example.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.Toast;
+
 import com.example.Entity.MediaItem;
 import com.example.desktop.R;
 import com.example.tree_view.FileBean;
@@ -38,6 +40,7 @@ import com.example.utilTool.ReFlashListView;
 import com.example.utilTool.ReFlashListView.IReflashListener;
 import com.example.utilTool.ScreenResponseMsg;
 import com.example.utilTool.SendMsgAppScreen;
+import com.example.utilTool.SendMsgAppScreenFileSystem;
 import com.example.utilTool.SendMsgThread;
 import com.example.utilTool.Send_FileSystem_MsgThread;
 import com.example.utilTool.StringUtil;
@@ -55,7 +58,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 	private ListView mTree;
 	private SimpleTreeAdapter<FileBean> mAdapter;
 	private int currentId=1;
-	private static String selectedFileDir=null;
+	private String selectedFileDir=null;
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -250,7 +253,7 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 					            mDialog.setTitle("屏幕");  
 					            mDialog.setMessage("正在获取屏幕，请稍等...");  
 					            mDialog.show();
-								SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
+					            SendMsgAppScreenFileSystem sendMsgScreen=new SendMsgAppScreenFileSystem(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
 								Thread threadScreen =new Thread(sendMsgScreen);
 								threadScreen.start(); 	
 							}
@@ -411,15 +414,18 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 			@Override
 			public void onClick(DialogInterface dialog, int which)
 			{
-				 mDialog = new ProgressDialog(getActivity());  
-		         mDialog.setTitle("投影");  
-		         mDialog.setMessage("正在进行投影，请稍等...");  
-		         mDialog.show();
-		         ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
-			    		 JsonParse.Json2String(OptionEnum.PROJECTION_FILE.ordinal(), new Parameter2Option(String.valueOf(info.id), String.valueOf(which))));
-				 Thread thread=new Thread(msgAppScreen);
-				 thread.start();
-				}
+				 if(info!=null)
+				 {
+					 mDialog = new ProgressDialog(getActivity());  
+			         mDialog.setTitle("投影");  
+			         mDialog.setMessage("正在进行投影，请稍等...");  
+			         mDialog.show();
+			         ScreenResponseMsg msgAppScreen=new ScreenResponseMsg(handler, getActivity(), 
+				    		 JsonParse.Json2String(OptionEnum.PROJECTION_FILE.ordinal(), new Parameter2Option(String.valueOf(info.id), String.valueOf(which))));
+					 Thread thread=new Thread(msgAppScreen);
+					 thread.start();
+				 }
+			}
 			});
 		builder.create().show();
 	}
@@ -431,26 +437,32 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 		inflater.inflate(R.menu.application_menu, menu);	 
 		
 	}
+	@Override
 	public boolean onContextItemSelected(MenuItem item) 
 	{ 
-			if (getUserVisibleHint())
-		 	{  
-				info = (AdapterContextMenuInfo)item.getMenuInfo();
-				switch (item.getItemId()) 
-				{
-					case R.id.screen: //投影屏幕
-						 mDialog = new ProgressDialog(getActivity());  
-			             mDialog.setTitle("屏幕");  
-			             mDialog.setMessage("正在获取屏幕，请稍等...");  
-			             mDialog.show();
-						SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
-						Thread threadScreen =new Thread(sendMsgScreen);
-						threadScreen.start(); 	
-						break;
-				}
-		        return true;  
-		    }
-			return false;
+		if( getUserVisibleHint() == false ) 
+	    {
+	        return false;
+	    }
+		if(item.getMenuInfo() instanceof AdapterContextMenuInfo)
+		{
+			info = (AdapterContextMenuInfo) item.getMenuInfo();
+			switch (item.getItemId()) 
+			{
+				case R.id.screen: //投影屏幕
+					 mDialog = new ProgressDialog(getActivity());  
+				     mDialog.setTitle("屏幕");  
+				     mDialog.setMessage("正在获取屏幕，请稍等...");  
+				     mDialog.show();
+					 SendMsgAppScreen sendMsgScreen=new SendMsgAppScreen(handler, getActivity(),JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
+					 Thread threadScreen =new Thread(sendMsgScreen);
+					threadScreen.start(); 	
+					break;
+			}
+			return true; 
+		}
+		else
+			 return false;
     } 
 	
 	@Override

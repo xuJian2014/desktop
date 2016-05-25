@@ -20,13 +20,11 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.ExpandableListContextMenuInfo;
-import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -63,7 +61,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 	private ProgressDialog mDialog;
 	private String screenIsSuccess;
 	
-	
+
 	private ExpandableListContextMenuInfo info;
 	
 	private MyAdapter adapter;
@@ -548,12 +546,22 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		//info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
 		
 	}
-
+	
+	@Override
 	public boolean onContextItemSelected(MenuItem item)
 	{
-		 if (getUserVisibleHint()) 
-		 {  
-			 info=(ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
+		if( getUserVisibleHint() == false ) 
+	    {
+	        return false;
+	    }
+		
+		 //info=(ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
+		 ContextMenuInfo minfo = item.getMenuInfo();
+		 if(minfo instanceof ExpandableListView.ExpandableListContextMenuInfo){
+			 info = (ExpandableListContextMenuInfo) minfo;
+		 }else{
+			 return false;
+		 }
 				switch (item.getItemId())
 				{
 					case R.id.screen: // Í¶Ó°ÆÁÄ»
@@ -566,9 +574,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 						threadScreen.start();
 						break;
 				} 
-				return true;
-		 }
-		  return false;
+		 return true;
 	}
 
 	@Override

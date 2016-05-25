@@ -14,19 +14,9 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter
 {
 
 	protected Context mContext;
-	/**
-	 * 存储�?有可见的Node
-	 */
 	protected List<Node> mNodes;
 	protected LayoutInflater mInflater;
-	/**
-	 * 存储�?有的Node
-	 */
 	protected List<Node> mAllNodes;
-
-	/**
-	 * 点击的回调接�?
-	 */
 	private OnTreeNodeClickListener onTreeNodeClickListener;
 
 	public interface OnTreeNodeClickListener
@@ -39,33 +29,15 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter
 		this.onTreeNodeClickListener = onTreeNodeClickListener;
 	}
 
-	/**
-	 * 
-	 * @param mTree
-	 * @param context
-	 * @param datas
-	 * @param defaultExpandLevel
-	 *            默认展开几级�?
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
 	public TreeListViewAdapter(ListView mTree, Context context, List<T> datas,int defaultExpandLevel) throws IllegalArgumentException,
 			IllegalAccessException
 	{
 		mContext = context;
-		/**
-		 * 对所有的Node进行排序
-		 */
+		
 		mAllNodes = TreeHelper.getSortedNodes(datas, defaultExpandLevel);
-		/**
-		 * 过滤出可见的Node
-		 */
+		
 		mNodes = TreeHelper.filterVisibleNode(mAllNodes);
 		mInflater = LayoutInflater.from(context);
-
-		/**
-		 * 设置节点点击时，可以展开以及关闭；并且将ItemClick事件继续�?外公�?
-		 */
 		mTree.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override
@@ -83,12 +55,6 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter
 		});
 
 	}
-
-	/**
-	 * 相应ListView的点击事�? 展开或关闭某节点
-	 * 
-	 * @param position
-	 */
 	public void expandOrCollapse(int position)
 	{
 		Node n = mNodes.get(position);
@@ -127,7 +93,6 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter
 	{
 		Node node = mNodes.get(position);
 		convertView = getConvertView(node, position, convertView, parent);
-		// 设置内边�?
 		convertView.setPadding(node.getLevel() * 30, 3, 3, 3);
 		return convertView;
 	}

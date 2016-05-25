@@ -118,7 +118,6 @@ public class SimpleTreeAdapter<T> extends TreeListViewAdapter<T>
 		return convertView;
 	}
 
-	// 获取文件的后�?�?
 	public static String getExtensionName(String filename)
 	{
 

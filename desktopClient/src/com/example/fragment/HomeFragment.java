@@ -124,13 +124,6 @@ public class HomeFragment extends Fragment
 						startActivity(new Intent(getActivity(), VncCanvasActivity.class));
 						break;
 					case 2:
-						/*SharedPreferences getFamilyPreferences = getActivity().getSharedPreferences("configInfo", Context.MODE_PRIVATE);
-						connectionIP = getFamilyPreferences.getString("homeServiceIp", "0000");
-						connectionPwd = getFamilyPreferences.getString("homeServicePwd", "0000");
-						vncEditor.putString("IP", connectionIP);
-						vncEditor.putString("password", connectionPwd);
-						vncEditor.commit();
-						startActivity(new Intent(getActivity(), VncCanvasActivity.class));*/
 						
 						HomeControlFragment controlFragment = new HomeControlFragment();
 						getFragmentManager().beginTransaction().replace(R.id.content_frame, controlFragment).commit();

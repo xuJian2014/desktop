@@ -6,21 +6,14 @@ import java.util.List;
 public class Node
 {
 	private int id;
-	/**
-	 * 根节点pId�?0
-	 */
+	
 	private int pId = 0;
 
 	private String name;
 
-	/**
-	 * 当前的级�?
-	 */
+	
 	private int level;
 
-	/**
-	 * 是否展开
-	 */
 	private boolean isExpand = false;
 
 	private int icon;
@@ -46,14 +39,10 @@ public class Node
 	{
 		this.file_icon = file_icon;
 	}
-	/**
-	 * 下一级的子Node
-	 */
+	
 	private List<Node> children = new ArrayList<Node>();
 
-	/**
-	 * 父Node
-	 */
+	
 	private Node parent;
 
 	public Node()
@@ -146,21 +135,13 @@ public class Node
 		this.parent = parent;
 	}
 
-	/**
-	 * 是否为跟节点
-	 * 
-	 * @return
-	 */
+	
 	public boolean isRoot()
 	{
 		return parent == null;
 	}
 
-	/**
-	 * 判断父节点是否展�?
-	 * 
-	 * @return
-	 */
+	
 	public boolean isParentExpand()
 	{
 		if (parent == null)
@@ -168,29 +149,17 @@ public class Node
 		return parent.isExpand();
 	}
 
-	/**
-	 * 是否是叶子界�?
-	 * 
-	 * @return
-	 */
+	
 	public boolean isLeaf()
 	{
 		return children.size() == 0;
 	}
 
-	/**
-	 * 获取level
-	 */
 	public int getLevel()
 	{
 		return parent == null ? 0 : parent.getLevel() + 1;
 	}
 
-	/**
-	 * 设置展开
-	 * 
-	 * @param isExpand
-	 */
 	public void setExpand(boolean isExpand)
 	{
 		this.isExpand = isExpand;

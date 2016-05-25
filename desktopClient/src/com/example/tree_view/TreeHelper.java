@@ -8,23 +8,12 @@ import com.example.desktop.R;
 
 public class TreeHelper
 {
-	/**
-	 * 传入我们的普通bean，转化为我们排序后的Node
-	 * 
-	 * @param datas
-	 * @param defaultExpandLevel
-	 * @return
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
-	 */
+	
 	public static <T> List<Node> getSortedNodes(List<T> datas,int defaultExpandLevel) throws IllegalArgumentException,IllegalAccessException
 	{
 		List<Node> result = new ArrayList<Node>();
-		// 将用户数据转化为List<Node>
 		List<Node> nodes = convetData2Node(datas);
-		// 拿到根节�?
 		List<Node> rootNodes = getRootNodes(nodes);
-		// 排序以及设置Node间关�?
 		for (Node node : rootNodes)
 		{
 			addNode(result, node, defaultExpandLevel, 1);
@@ -32,38 +21,24 @@ public class TreeHelper
 		return result;
 	}
 
-	/**
-	 * 过滤出所有可见的Node
-	 * 
-	 * @param nodes
-	 * @return
-	 */
+	
 	public static List<Node> filterVisibleNode(List<Node> nodes)
 	{
 		List<Node> result = new ArrayList<Node>();
 
 		for (Node node : nodes)
 		{
-			// 如果为跟节点，或者上层目录为展开状�??
+			
 			if (node.isRoot() || node.isParentExpand())
 			{
 				setNodeIcon(node);
-				set_file_NodeIcon(node);//展开文件夹图�?
+				set_file_NodeIcon(node);
 				result.add(node);
 			}
 		}
 		return result;
 	}
 
-	/**
-	 * 将我们的数据转化为树的节�?
-	 * 
-	 * @param datas
-	 * @return
-	 * @throws NoSuchFieldException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 */
 	private static <T> List<Node> convetData2Node(List<T> datas)throws IllegalArgumentException, IllegalAccessException
 
 	{
@@ -103,9 +78,7 @@ public class TreeHelper
 			nodes.add(node);
 		}
 
-		/**
-		 * 设置Node间，父子关系;让每两个节点都比较一次，即可设置其中的关�?
-		 */
+		
 		for (int i = 0; i < nodes.size(); i++)
 		{
 			Node n = nodes.get(i);
@@ -124,11 +97,11 @@ public class TreeHelper
 			}
 		}
 
-		// 设置图片
+	
 		for (Node n : nodes)
 		{
-			setNodeIcon(n);//设置展开按钮图标
-			set_file_NodeIcon(n);//展开文件夹图�?
+			setNodeIcon(n);
+			set_file_NodeIcon(n);
 		}
 		return nodes;
 	}
@@ -144,9 +117,7 @@ public class TreeHelper
 		return root;
 	}
 
-	/**
-	 * 把一个节点上的所有的内容都挂上去
-	 */
+	
 	private static void addNode(List<Node> nodes, Node node,int defaultExpandLeval, int currentLevel)
 	{
 		nodes.add(node);
@@ -162,11 +133,7 @@ public class TreeHelper
 		}
 	}
 
-	/**
-	 * 设置节点的图�?
-	 * 
-	 * @param node
-	 */
+	
 	private static void setNodeIcon(Node node)
 	{
 		if (node.getChildren().size() > 0 && node.isExpand())
@@ -181,7 +148,7 @@ public class TreeHelper
 			node.setIcon(-1);
 	}
 	
-	//设置文件夹图�?
+	
 	private static void set_file_NodeIcon(Node node)
 	{
 		if(node.getFlag()==1)

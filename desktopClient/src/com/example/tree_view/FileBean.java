@@ -18,8 +18,6 @@ public class FileBean
 		this.parentId = parentId;
 		this.name = name;
 	}
-	
-	
 	public String getName()
 	{
 		return name;

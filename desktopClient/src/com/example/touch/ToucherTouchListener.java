@@ -1,8 +1,4 @@
 package com.example.touch;
-
-
-
-
 import java.io.IOException;
 
 import android.content.SharedPreferences;
@@ -83,12 +79,6 @@ public class ToucherTouchListener implements OnTouchListener{
 		
 		this.clickAtMove = true;
 	}
-	
-	/*private void onTouchDownMouseWheel(MotionEvent event)
-	{
-		this.wheelPrevious = event.getRawY();
-		this.wheelResult = 0;
-	}*/
 	
 	private void onTouchMove(MotionEvent event)
 	{
@@ -184,8 +174,6 @@ public class ToucherTouchListener implements OnTouchListener{
 	
 	private void reloadPreferences()
 	{
-		
-		
 		this.immobileDistance = Float.parseFloat(preferences.getString("control_immobile_distance", null));
 		this.immobileDistance *= screenDensity;
 		
@@ -196,7 +184,4 @@ public class ToucherTouchListener implements OnTouchListener{
 		this.wheelAcceleration = this.moveAcceleration;
 		
 	}
-	
-	
-	
 }

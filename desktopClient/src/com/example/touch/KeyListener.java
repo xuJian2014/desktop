@@ -137,46 +137,4 @@ public class KeyListener implements OnTouchListener {
 				keyboardAction);
 		lock.unlock();
 	}
-
-	/*
-	 * private int search(int id) { Log.d("debug", "search"+id); int code = 0;
-	 * switch(id) {
-	 * 
-	 * case R.id.button1: code = getCode(prop.getProperty("button1")); break;
-	 * case R.id.button2: code = getCode(prop.getProperty("button2")); break;
-	 * case R.id.button3: code = getCode(prop.getProperty("button3")); break;
-	 * case R.id.button4: code = getCode(prop.getProperty("button4")); break;
-	 * case R.id.button7: code = getCode(prop.getProperty("button7")); break;
-	 * case R.id.button8: code = getCode(prop.getProperty("button8")); break;
-	 * case R.id.button9: code = getCode(prop.getProperty("button9")); break;
-	 * case R.id.button10: code = getCode(prop.getProperty("button10")); break;
-	 * case R.id.button11: code = getCode(prop.getProperty("button11")); break;
-	 * case R.id.button12: code = getCode(prop.getProperty("button12")); break;
-	 * default: code = 0; }
-	 * 
-	 * return code; }
-	 * 
-	 * private int getCode(String str) {
-	 * 
-	 * Log.d("debug", "getcode"+str); // TODO Auto-generated method stub int
-	 * unicode = 0; switch(str.toUpperCase().toCharArray()[0]) { case 'A':
-	 * unicode = KeyEvent.VK_A; break; case 'B': unicode = KeyEvent.VK_B; break;
-	 * case 'C': unicode = KeyEvent.VK_C; break; case 'D': unicode =
-	 * KeyEvent.VK_D; break; case 'E': unicode = KeyEvent.VK_E; break; case 'F':
-	 * unicode = KeyEvent.VK_F; break; case 'J': unicode = KeyEvent.VK_J; break;
-	 * case 'H': unicode = KeyEvent.VK_H; break; case 'I': unicode =
-	 * KeyEvent.VK_I; break; case 'G': unicode = KeyEvent.VK_G; break; case 'K':
-	 * unicode = KeyEvent.VK_K; break; case 'L': unicode = KeyEvent.VK_L; break;
-	 * case 'M': unicode = KeyEvent.VK_M; break; case 'N': unicode =
-	 * KeyEvent.VK_N; break; case 'O': unicode = KeyEvent.VK_O; break; case 'P':
-	 * unicode = KeyEvent.VK_P; break; case 'Q': unicode = KeyEvent.VK_Q; break;
-	 * case 'R': unicode = KeyEvent.VK_R; break; case 'S': unicode =
-	 * KeyEvent.VK_S; break; case 'T': unicode = KeyEvent.VK_T; break; case 'U':
-	 * unicode = KeyEvent.VK_U; break; case 'V': unicode = KeyEvent.VK_V; break;
-	 * case 'W': unicode = KeyEvent.VK_W; break; case 'X': unicode =
-	 * KeyEvent.VK_X; break; case 'Y': unicode = KeyEvent.VK_Y; break; case 'Z':
-	 * unicode = KeyEvent.VK_Z; break; }
-	 * 
-	 * return unicode; }
-	 */
 }

@@ -21,26 +21,20 @@ public class BrowserActivity extends Activity
 
 	private OnBtnClickListenerImpl listener;
 	private OnTouchListener touchListener;
-
 	private Button nextPage;
 	private Button prevPage;
 	private Button homePage;
-
 	private Button search;
-
 	private Button refresh;
 	private Button refreshStop;
-
 	private Button close;
-
 	private Button browseDown;
 	private Button browseUp;
-
 	private Button fullscreen;
 	private Button bookmark;
-	
 	protected boolean longPress = false;
-	//Logger logger = Logger.getAnonymousLogger();
+
+	// Logger logger = Logger.getAnonymousLogger();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -78,9 +72,7 @@ public class BrowserActivity extends Activity
 
 		browseDown = (Button) findViewById(R.id.ButtonBrowserDown);
 		browseUp = (Button) findViewById(R.id.ButtonBrowserUp);
-		
-		
-		
+
 		fullscreen = (Button) findViewById(R.id.ButtonBrowserFullscreen);
 		fullscreen.setOnClickListener(listener);
 
@@ -95,12 +87,10 @@ public class BrowserActivity extends Activity
 
 		browseUp = (Button) findViewById(R.id.ButtonBrowserUp);
 		// browseUp.setOnClickListener(listener);
-		
+
 		browseDown.setOnTouchListener(touchListener);
 		browseUp.setOnTouchListener(touchListener);
 	}
-
-	
 
 	protected class OnBtnClickListenerImpl implements OnClickListener
 	{
@@ -175,7 +165,7 @@ public class BrowserActivity extends Activity
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
@@ -187,44 +177,57 @@ public class BrowserActivity extends Activity
 
 		return super.onOptionsItemSelected(item);
 	}
-	
-	protected class OnBtnTouchListenerImpl implements OnTouchListener {
+
+	protected class OnBtnTouchListenerImpl implements OnTouchListener
+	{
 
 		@Override
-		public boolean onTouch(final View view, MotionEvent event) {
+		public boolean onTouch(final View view, MotionEvent event)
+		{
 
-			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+			if (event.getAction() == MotionEvent.ACTION_DOWN)
+			{
 				longPress = true;
 				new Thread(new Runnable() {
 
 					@Override
-					public void run() {
+					public void run()
+					{
 						BrowserControlAction action = null;
-						if (view.getId() == R.id.ButtonBrowserDown) {
+						if (view.getId() == R.id.ButtonBrowserDown)
+						{
 							action = new BrowserControlAction(
 									BrowserControlAction.BROWSE_DOWN);
-						} else if (view.getId() == R.id.ButtonBrowserUp) {
+						} else if (view.getId() == R.id.ButtonBrowserUp)
+						{
 							action = new BrowserControlAction(
 									BrowserControlAction.BROWSE_UP);
-						} else {
+						} else
+						{
 							return;
 						}
-						while (longPress) {
-							try {
+						while (longPress)
+						{
+							try
+							{
 								Thread.sleep(120);
-							} catch (InterruptedException e) {
+							} catch (InterruptedException e)
+							{
 								e.printStackTrace();
 							}
-							if (longPress) {
+							if (longPress)
+							{
 								try
 								{
-									DeviceConnection.getInstance().sendAction(action);
+									DeviceConnection.getInstance().sendAction(
+											action);
 								} catch (IOException e)
 								{
 									DeviceConnection.getInstance().close();
 									try
 									{
-										DeviceConnection.getInstance().connect();
+										DeviceConnection.getInstance()
+												.connect();
 									} catch (IOException e1)
 									{
 										e1.printStackTrace();
@@ -235,7 +238,8 @@ public class BrowserActivity extends Activity
 						}
 					}
 				}).start();
-			} else if (event.getAction() == MotionEvent.ACTION_UP) {
+			} else if (event.getAction() == MotionEvent.ACTION_UP)
+			{
 				longPress = false;
 			}
 

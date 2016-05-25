@@ -60,16 +60,12 @@ public class SetActivity extends Activity{
 		});
 	}
 	
-	
-	
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
 		this.onDestroy();
 	}
-
-
 
 	private int getUnicode(String str)
 	{
