@@ -21,7 +21,7 @@ import android.os.Message;
 
 public class SendMsgAuthority implements Runnable
 {
-	private final int TIME_OUT=8*1000;//最大响应时间，超时设置
+	private final int TIME_OUT=20*1000;//最大响应时间，超时设置
 		Socket socketClient=null;
 		Handler handler=null;
 		Activity activity;

@@ -1,6 +1,345 @@
 package com.example.fragment;
 
 import java.util.ArrayList;
+import android.app.ActionBar.Tab;
+import android.app.ActionBar.TabListener;
+import android.app.FragmentTransaction;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.example.desktop.R;
+public class Media_List_Fragment extends Fragment implements OnPageChangeListener,TabListener
+{
+	private ViewPager mPager;
+	private ArrayList<Fragment> mfragmentList;
+	// 标题列表
+	ArrayList<String> titleList = new ArrayList<String>();
+	View view;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+	}
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
+	{
+		view=inflater.inflate(R.layout.activity_view_pager, container,false);
+		initViewPager();
+		return view;
+	}
+	
+	private void initViewPager() 
+	{
+		mPager = (ViewPager) view.findViewById(R.id.viewpager);
+
+		mfragmentList = new ArrayList<Fragment>();
+		mfragmentList.add(new com.example.media_file.LocalMediaFragment());
+		mfragmentList.add(new com.example.media_file.RemoteMediaFragment());
+
+		mPager.setAdapter(new MyViewPagerAdapter(getChildFragmentManager(),mfragmentList));
+		mPager.setCurrentItem(0);   
+		mPager.setOnPageChangeListener(this);
+
+		/*getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		getActivity().getActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.title_bar_shape));
+		// 初始化TAB属性
+		String[] tabName = null;
+		String[] temTabName = { "本地 媒体库", "远程媒体库" };
+		tabName = temTabName;
+
+		for (int i = 0; i < tabName.length; i++) {
+			ActionBar.Tab tab = getActivity().getActionBar().newTab();
+			tab.setText(tabName[i]);
+			tab.setTabListener(this);
+			tab.setTag(i);
+			getActivity().getActionBar().addTab(tab);
+		}*/
+	}
+
+	//三个页面选项卡Fragment适配器
+	public class MyViewPagerAdapter extends FragmentPagerAdapter 
+	{
+		ArrayList<Fragment> list;
+		public MyViewPagerAdapter(FragmentManager fManager,ArrayList<Fragment> arrayList)
+		{
+			super(fManager);
+			this.list = arrayList;
+		}
+
+		@Override
+		public int getCount()
+		{
+			return list == null ? 0 : list.size();
+		}
+
+		@Override
+		public Fragment getItem(int arg0)
+		{
+
+			return list.get(arg0);
+		}
+
+		@Override
+		public int getItemPosition(Object object)
+		{
+			return POSITION_NONE;
+		}
+
+		@Override
+		public boolean isViewFromObject(View view, Object obj)
+		{
+			return view == ((Fragment) obj).getView();
+		}
+
+		@Override
+		public void destroyItem(ViewGroup container, int position, Object object)
+		{
+				
+		}
+	}
+	
+	@Override
+	public void onPageScrollStateChanged(int arg0) 
+	{
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onPageScrolled(int arg0, float arg1, int arg2)
+	{
+		// TODO Auto-generated method stub
+
+	}
+	@Override
+	public void onPageSelected(int arg0) 
+	{
+		//滑动ViewPager的时候设置相对应的ActionBar Tab被选中  
+		//getActivity().getActionBar().getTabAt(arg0).select();
+	}
+
+	@Override
+	public void onTabReselected(Tab arg0, FragmentTransaction arg1)
+	{
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onTabSelected(Tab tab, FragmentTransaction arg1) 
+	{
+		if (tab.getTag() == null)
+			return;
+		//选中tab,滑动选项卡
+		int index = ((Integer) tab.getTag()).intValue();
+		if (mPager != null && mPager.getChildCount() > 0 && mfragmentList.size() > index)
+			mPager.setCurrentItem(index);
+	}
+
+	@Override
+	public void onTabUnselected(Tab arg0, FragmentTransaction arg1)
+	{
+		// TODO Auto-generated method stub
+
+	}
+	
+}
+
+
+
+//2016.05.27日版本
+/*import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils.TruncateAt;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.desktop.R;
+import com.example.media_file.VideosActivity;
+import com.example.touch.GameActivity;
+import com.example.utilTool.ReFlashExpandableListView;
+import com.example.utilTool.ReFlashExpandableListView.IReflashListener;
+	
+public class Media_List_Fragment extends Fragment implements IReflashListener
+{
+
+	private View view;
+	private ReFlashExpandableListView listView;
+	private String[] armTypes = new String[]{"本地媒体库","远程媒体库"};
+	private String[][] arms=new String[][]{} ;// 二维数组，表示ExpandableListview数据
+	private MyAdapter adapter;
+	private LinearLayout childView;
+	private int[] images=new int[]
+	{
+		R.drawable.mediafile_moive,R.drawable.mediafile_music,
+		R.drawable.mediafile_office,R.drawable.mediafile_image
+	};
+	
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState)
+	{
+		view = inflater.inflate(R.layout.media_file_view,container,false);
+		listView=(ReFlashExpandableListView) view.findViewById(R.id.mediafilelistview);
+		listView.setInterface(this);
+		initdata();
+		adapter = new MyAdapter();
+		listView.setAdapter(adapter);
+		
+		listView.setOnChildClickListener(new OnChildClickListener() {
+			
+			@Override
+			public boolean onChildClick(ExpandableListView parent, View v,
+					int groupPosition, int childPosition, long id)
+			{
+				//Toast.makeText(getActivity(), armTypes[groupPosition]+"的"+arms[groupPosition][childPosition], Toast.LENGTH_SHORT).show();
+				startActivity(new Intent(getActivity(), VideosActivity.class));
+				return true;
+			}
+		});
+		
+		
+		return view;
+	}
+	private void initdata()
+	{
+		arms=new String[][]{new String[]{"视频","音乐","文档","图像"},new String[]{"视频","音乐","文档","图像"}};
+	}
+	class MyAdapter extends BaseExpandableListAdapter
+	{
+
+		@Override
+		public int getGroupCount()
+		{
+			return armTypes.length;
+		}
+
+		@Override
+		public int getChildrenCount(int groupPosition)
+		{
+			return arms[groupPosition].length;
+		}
+
+		@Override
+		public Object getGroup(int groupPosition)
+		{
+			return armTypes[groupPosition];
+		}
+
+		@Override
+		public Object getChild(int groupPosition, int childPosition)
+		{
+			return arms[groupPosition][childPosition];
+		}
+
+		@Override
+		public long getGroupId(int groupPosition)
+		{
+			return groupPosition;
+		}
+
+		@Override
+		public long getChildId(int groupPosition, int childPosition)
+		{
+			return childPosition;
+		}
+
+		@Override
+		public boolean hasStableIds()
+		{
+			return true;
+		}
+
+		@Override
+		public View getGroupView(int groupPosition, boolean isExpanded,
+				View convertView, ViewGroup parent)
+		{
+			TextView textView = getTextView();// 调用定义的getTextView()方法
+			textView.setText("     " + getGroup(groupPosition).toString());// 添加数据
+			textView.setPadding(0, 20, 0, 20);
+			textView.setBackgroundColor(android.graphics.Color.parseColor("#d9d9d9"));
+			textView.setTextSize(25);
+			textView.setWidth(parent.getWidth());
+			return textView;
+		}
+
+		@Override
+		public View getChildView(int groupPosition, int childPosition,
+				boolean isLastChild, View convertView, ViewGroup parent)
+		{
+			childView = new LinearLayout(getActivity());
+			childView.setOrientation(LinearLayout.VERTICAL);
+			ImageView logo = new ImageView(getActivity()); 
+			logo.setImageResource(images[childPosition]);
+			logo.setPadding(0, 30, 0, 20);
+			logo.invalidate();
+			childView.addView(logo);
+			TextView textView = getTextView();// 调用定义的getTextView()方法
+			textView.setText(getChild(groupPosition, childPosition).toString());// 添加数据
+			childView.addView(textView);
+			textView.setGravity(Gravity.CENTER_HORIZONTAL);
+			childView.invalidate();
+			return childView;
+		}
+		
+		// 定义一个TextView
+		private TextView getTextView()
+		{
+			AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+			TextView textView = new TextView(getActivity());
+			textView.setLayoutParams(lp);
+			textView.setPadding(20, 40, 0, 40);
+			textView.setTextSize(20);
+			textView.setSingleLine();
+			textView.setEllipsize(TruncateAt.END);
+			return textView;
+		}
+		
+		@Override
+		public boolean isChildSelectable(int groupPosition, int childPosition)
+		{
+			return true;
+		}
+		
+	}
+	
+	@Override
+	public void onReflash()
+	{
+		
+		Toast.makeText(getActivity(), "刷新了一下", Toast.LENGTH_SHORT).show();
+		listView.reflashComplete();
+	}
+}*/
+
+/*package com.example.fragment;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -483,4 +822,4 @@ public class Media_List_Fragment extends Fragment implements IReflashListener
 		setReflashData();
 		listView.reflashComplete();
 	}
-}
+}*/

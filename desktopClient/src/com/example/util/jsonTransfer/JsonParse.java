@@ -32,4 +32,14 @@ public class JsonParse
 		responseMessage=gson.fromJson(object.toString(), ResponseMessage.class);
 		return responseMessage;
 	}
+	
+	public static Response2Message Json3Object(String jsonStr)
+	{
+		if(jsonStr==null)
+			return null;
+		Response2Message responseMessage=null;
+		JsonObject object=(JsonObject) parse.parse(jsonStr);
+		responseMessage=gson.fromJson(object.toString(), Response2Message.class);
+		return responseMessage;
+	}
 }

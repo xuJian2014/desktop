@@ -19,9 +19,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    
-    
-    
     <uses-permission android:name="android.permission.ACCESS_DOWNLOAD_MANAGER" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -106,11 +103,18 @@
         </activity>
         <activity android:name="com.example.controller.ProjectionActivity" >
         </activity>
-        
         <activity
             android:name="com.example.desktop.LoginAndRegisterActivity"
-            android:label="登录"
-           >
+            android:label="登录" >
+        </activity>
+        <activity
+            android:name="com.example.media_file.LocalMediaActivity"
+            android:label="@string/title_activity_videos" >
+        </activity>
+        
+         <activity
+            android:name="com.example.media_file.RemoteMediaActivity"
+            android:label="@string/title_activity_videos" >
         </activity>
     </application>
 

@@ -1,5 +1,4 @@
 package com.example.fragment;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -35,6 +34,7 @@ import com.example.desktop.R;
 import com.example.util.jsonTransfer.JsonParse;
 import com.example.util.jsonTransfer.OptionEnum;
 import com.example.util.jsonTransfer.Parameter2Option;
+import com.example.util.jsonTransfer.Response2Message;
 import com.example.util.jsonTransfer.ResponseMessage;
 import com.example.util.jsonTransfer.ResponseMessageEnum;
 import com.example.utilTool.ReFlashExpandableListView;
@@ -53,27 +53,26 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 	private String[] content_VmApp;// 远端虚拟机应用列表
 	private String[] screenList = new String[]{};// 屏幕列表
 	private String responseStr = null;;
-	private String[] armTypes = new String[]{ "正在运行", "已安装" };
-	private String[][] arms = new String[][]{};// 二维数组，表示ExpandableListview数据
+	private String[] armTypes = new String[]{"正在投影","本地应用", "远程应用" };
+	private String[][] arms ;// 二维数组，表示ExpandableListview数据
 	private ReFlashExpandableListView listView;
 	private View view;
 	private String screenStr;
 	private ProgressDialog mDialog;
 	private String screenIsSuccess;
-	
-
 	private ExpandableListContextMenuInfo info;
-	
 	private MyAdapter adapter;
 	private LinearLayout childView;
 	private SharedPreferences remoteIpInfo;
-	private String remoteIp;;
+	private String remoteIp;
 	private SharedPreferences getFamilyPreferences;
 	private String connectionIP;
 	private String connectionPwd;
 	private SharedPreferences getVNCPreferences;
 	private SharedPreferences.Editor vncEditor;
-
+	private String[] projectedAppArray;
+	
+	
 	private int[] images = new int[]
 	{ 		
 			R.drawable.application_explorer, R.drawable.application_item,
@@ -93,12 +92,13 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState)
 	{
 		view = inflater.inflate(R.layout.application_list, container, false);
 		listView = (ReFlashExpandableListView) view.findViewById(R.id.listView1);
 		listView.setInterface(this);
+		projectedAppArray=new String[]{"当前无投影应用"};
+		arms = new String[][]{};
 		remoteIp = getRemoteIp();
 		if (StringUtil.isNullString(remoteIp))
 		{
@@ -218,26 +218,59 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 					if (responseMessage2 == null)
 					{
 						Toast.makeText(getActivity(), "对不起，投影失败，请重试...",Toast.LENGTH_LONG).show();
+						projectedAppArray=new String[]{"当前无投影应用"};
 					} 
 					else
 					{
 						int errNum = responseMessage2.getErrNum();
 						if (errNum == ResponseMessageEnum.SUCCESS.ordinal())
 						{
-							Toast.makeText(getActivity(),"投影"+ adapter.getTextView().getText().toString() + "成功！",Toast.LENGTH_LONG).show();
-						} else if (errNum == ResponseMessageEnum.WAIT.ordinal())
+							Toast.makeText(getActivity(),"投影成功！",Toast.LENGTH_LONG).show();
+							String protectedAppName=responseMessage2.getResponseMessage();
+							if(StringUtil.isNullString(protectedAppName))
+							{
+								projectedAppArray=new String[]{"当前无投影应用"};
+							}
+							else
+							{ 
+								String localorremote="";
+								if(!StringUtil.isNullString(responseMessage2.getResponseMessage2()))
+								{
+									String s=responseMessage2.getResponseMessage2();
+									if(s.equals(String.valueOf(OptionEnum.PROJECTIONFILE_LOCAL.ordinal())))
+									{
+										localorremote="家庭服务终端";
+									}
+									else
+									{
+										localorremote="远程虚拟机";
+									}
+									projectedAppArray=new String[]{"应用名称："+protectedAppName,"应用位置："+localorremote};
+								}
+								else
+								{
+									projectedAppArray=new String[]{"当前无投影应用"};
+								}
+							}
+						}
+						else if (errNum == ResponseMessageEnum.WAIT.ordinal())
 						{
 							Toast.makeText(getActivity(), "正在连接中，稍后请重试...",Toast.LENGTH_LONG).show();
+							projectedAppArray=new String[]{"当前无投影应用"};
 						} 
 						else if (errNum == ResponseMessageEnum.UNCONNECTED.ordinal())
 						{
 							Toast.makeText(getActivity(), "对不起，未能成功连接，请重试...",Toast.LENGTH_LONG).show();
+							projectedAppArray=new String[]{"当前无投影应用"};
 						}
 						else
 						// error
 						{
-							Toast.makeText(getActivity(),"投影"+ adapter.getTextView().getText().toString() + "失败！",Toast.LENGTH_LONG).show();
+							Toast.makeText(getActivity(),"投影失败！",Toast.LENGTH_LONG).show();
+							projectedAppArray=new String[]{"当前无投影应用"};
 						}
+						arms[0]=projectedAppArray;
+						adapter.notifyDataSetChanged();
 					}
 					break;
 				default:
@@ -322,8 +355,15 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		{
 			childView = new LinearLayout(getActivity());
 			childView.setOrientation(0);// 定义为纵向排列
-			ImageView logo = new ImageView(getActivity());
-			if (groupPosition == 0)// 设置正运行程序的图片
+			ImageView logo = new ImageView(getActivity()); 
+			if(groupPosition==0)
+			{
+				if(childPosition==0)
+					logo.setImageResource(R.drawable.screen_item);
+				if(childPosition==1)
+					logo.setImageResource(R.drawable.local);
+			}
+			else if (groupPosition == 1)// 设置正运行程序的图片
 			{
 				// logo.setImageBitmap(bitmapArrs[childPosition]);
 				Bitmap icon = getResizedBitmap(bitmapArrs[childPosition], 100,100);
@@ -331,7 +371,7 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 				if (icon != null)
 					logo.setImageBitmap(icon);
 
-			} else
+			} else if(groupPosition==2)
 			// 已安装图片
 			{
 				logo.setImageResource(images[resourceImage(arms[groupPosition][childPosition])]);// 添加图片
@@ -449,40 +489,10 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 		{
 			vmApp[i+1]=vmAppList[i];
 		}
-		arms = new String[][]{ homeAppList, vmApp };
+		arms = new String[][]{projectedAppArray,homeAppList, vmApp };
 		adapter = new MyAdapter(bitmapArrs);
 		listView.setAdapter(adapter);
 		listView.expandGroup(0);
-		
-		/*listView.setOnChildClickListener(new OnChildClickListener()
-		{
-			@Override
-			public boolean onChildClick(ExpandableListView parent, View v,
-					int groupPosition, int childPosition, long id)
-			{
-				if(groupPosition==0)
-				{
-					Toast.makeText(getActivity(), "第一组"+childPosition, Toast.LENGTH_SHORT).show();
-				}
-				if(groupPosition==1)
-				{
-					Toast.makeText(getActivity(), "第二组"+childPosition, Toast.LENGTH_SHORT).show();
-				}
-				return true;
-			}
-		});
-		
-		listView.setOnCreateContextMenuListener(new OnCreateContextMenuListener() {
-			
-			@Override
-			public void onCreateContextMenu(ContextMenu menu, View v,ContextMenuInfo menuInfo)
-			{
-				MenuInflater inflater = getActivity().getMenuInflater();
-				inflater.inflate(R.menu.application_menu, menu);
-				info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
-				
-			}
-		});*/
 		registerForContextMenu(listView);
 		listView.invalidate();
 	}
@@ -500,13 +510,14 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 				mDialog.setTitle("投影");
 				mDialog.setMessage("正在进行投影，请稍等...");
 				mDialog.show();
-				int optionId;
-				if (ExpandableListView.getPackedPositionGroup(info.packedPosition) == 0)
+				int optionId=OptionEnum.PROJECTIONFILE_LOCAL.ordinal();
+				
+				if (ExpandableListView.getPackedPositionGroup(info.packedPosition) == 1)
 				{
 					optionId = OptionEnum.PROJECTIONFILE_LOCAL.ordinal();
 					connectionIP = getFamilyPreferences.getString("homeServiceIp", "");
 					connectionPwd = getFamilyPreferences.getString("homeServicePwd", "");
-					//DeviceConnection.getInstance().setLocalOrVm(0);
+					
 					if(("").equals(connectionPwd))
 					{
 						Toast.makeText(getActivity(), "请到个人设置页面设置家庭服务终端信息",Toast.LENGTH_LONG).show();
@@ -515,19 +526,18 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 					{
 						DeviceConnection.getInstance().init(connectionIP, 64788,connectionPwd);
 					}
-					
 				} 
-				else
+				else if(ExpandableListView.getPackedPositionGroup(info.packedPosition) == 2)
 				{
 					optionId = OptionEnum.PROJECTION_VM.ordinal();
 					connectionIP = remoteIpInfo.getString("remoteIP","0000");
 					connectionPwd = remoteIpInfo.getString("remotePassword", "0000");
-					//DeviceConnection.getInstance().setLocalOrVm(1);
 					DeviceConnection.getInstance().init(connectionIP, 64788,connectionPwd);	
-				}
+				}	
 				vncEditor.putString("IP", connectionIP);
 				vncEditor.putString("password", connectionPwd);
 				vncEditor.commit();
+				
 				ScreenResponseMsg msgAppScreen = new ScreenResponseMsg(handler,getActivity(),JsonParse.Json2String(optionId,new Parameter2Option(String.valueOf(ExpandableListView
 												.getPackedPositionChild(info.packedPosition)),String.valueOf(which))));
 				Thread thread = new Thread(msgAppScreen);
@@ -554,35 +564,38 @@ public class Application_List_Fragment extends Fragment implements IReflashListe
 	    {
 	        return false;
 	    }
-		
 		 //info=(ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
 		 ContextMenuInfo minfo = item.getMenuInfo();
-		 if(minfo instanceof ExpandableListView.ExpandableListContextMenuInfo){
+		 if(minfo instanceof ExpandableListView.ExpandableListContextMenuInfo)
+		 {
 			 info = (ExpandableListContextMenuInfo) minfo;
-		 }else{
+			 switch (item.getItemId())
+			 {
+				case R.id.screen: // 投影屏幕
+					mDialog = new ProgressDialog(getActivity());
+					mDialog.setTitle("屏幕");
+					mDialog.setMessage("正在获取屏幕，请稍等...");
+					mDialog.show();
+					SendMsgAppScreen sendMsgScreen = new SendMsgAppScreen(handler,getActivity(), JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
+					Thread threadScreen = new Thread(sendMsgScreen);
+					threadScreen.start();
+					break;
+			 } 
+				 return true;
+		 }
+		 else
+		 {
 			 return false;
 		 }
-				switch (item.getItemId())
-				{
-					case R.id.screen: // 投影屏幕
-						mDialog = new ProgressDialog(getActivity());
-						mDialog.setTitle("屏幕");
-						mDialog.setMessage("正在获取屏幕，请稍等...");
-						mDialog.show();
-						SendMsgAppScreen sendMsgScreen = new SendMsgAppScreen(handler,getActivity(), JsonParse.Json2String(OptionEnum.DISPLAY.ordinal(), null));
-						Thread threadScreen = new Thread(sendMsgScreen);
-						threadScreen.start();
-						break;
-				} 
-		 return true;
+		
 	}
 
-	@Override
+	/*@Override
 	public void onDestroy()
 	{
 		handler.removeCallbacksAndMessages(null);
 		super.onDestroy();
-	}
+	}*/
 
 	private void setReflashData()
 	{

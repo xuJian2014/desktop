@@ -22,12 +22,12 @@ public final class R {
 		public static final int btn_zoom_up_selected = 0x7f020033;
 	}
 	public static final class id {
-		public static final int zoomIn = 0x7f0c00f9;
-		public static final int zoomKeys = 0x7f0c00f8;
-		public static final int zoomOut = 0x7f0c00f7;
+		public static final int zoomIn = 0x7f0c00fe;
+		public static final int zoomKeys = 0x7f0c00fd;
+		public static final int zoomOut = 0x7f0c00fc;
 	}
 	public static final class layout {
-		public static final int zoom_controls = 0x7f030040;
+		public static final int zoom_controls = 0x7f030046;
 	}
 	public static final class string {
 		public static final int app_name = 0x7f060001;

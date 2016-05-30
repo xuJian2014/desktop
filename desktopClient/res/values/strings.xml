@@ -245,5 +245,6 @@
     <string name="browse_bookmark">书签</string>
     <string name="browse_fullscreen">全屏</string>
     <string name="title_activity_login_and_register">LoginAndRegisterActivity</string>
+    <string name="title_activity_videos">视频</string>
 
 </resources>
